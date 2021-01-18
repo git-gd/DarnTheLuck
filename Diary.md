@@ -15,6 +15,8 @@
 
 # Jan 18, 2021
 
-## Blazor Support
+## Ticket
 
-* Created blazor-support branch to add blazor support to the project
+* Initial Ticket setup completed
+
+##### Blazor support pushed back - possibly to a second WASM project connected through DTOs
