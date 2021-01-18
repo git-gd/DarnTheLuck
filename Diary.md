@@ -1,18 +1,18 @@
-Jan 17, 2021
------
+# Jan 17, 2021
 
-NuGet
------
+## NuGet
 
-# Add Pomelo for MySQL support
+* Add Pomelo for MySQL support
 
-appsettings.json
------
+## appsettings.json
 
-# "DefaultConnection": "server=localhost;database=darntheluck;user=darntheluck;password=badpassword1"
+* "DefaultConnection": "server=localhost;database=darntheluck;user=darntheluck;password=badpassword1"
 
-MySQL
------
+## MySQL
 
-# Create schema for project (darntheluck)
-# Create user for project (darntheluck/badpassword1)
+* Create schema for project (darntheluck)
+* Create user for project (darntheluck/badpassword1)
+
+# Jan 18, 2021
+
+* Created blazor-support branch to add blazor support to the project
