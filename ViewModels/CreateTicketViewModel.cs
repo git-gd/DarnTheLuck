@@ -1,16 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DarnTheLuck.ViewModels
 {
-    public class TicketViewModel
+    public class CreateTicketViewModel
     {
-        public int TicketId { get; set; }
-        public DateTime Created { get; set; }
+        [Required]
         public string ContactName { get; set; }
+        [Required]
         public string ContactPhone { get; set; }
+        [Required]
         public string ContactEmail { get; set; }
         public string TicketNotes { get; set; }
-
     }
 }

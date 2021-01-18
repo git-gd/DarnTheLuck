@@ -17,6 +17,7 @@
 
 ## Ticket
 
-* Initial Ticket setup completed
+* Initial Ticket Controller, empty Models, View setup completed
+* Ticket Controller set to use [Authorize]
 
 ##### Blazor support pushed back - possibly to a second WASM project connected through DTOs

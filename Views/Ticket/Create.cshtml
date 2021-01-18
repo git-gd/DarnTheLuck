@@ -1,6 +1,11 @@
-﻿@page
-@model DarnTheLuck.Views.Ticket.CreateModel
-@{
-}
+﻿@model DarnTheLuck.ViewModels.CreateTicketViewModel
 
 <h1>Create Ticket</h1>
+
+<form asp-controller="Ticket" asp-action="Create" method="post" >
+    <label>Contact Name</label><input asp-for="ContactName" type="text" />
+    <label>Contact Email</label><input asp-for="ContactEmail" type="text" />
+    <label>Contact Phone</label><input asp-for="ContactPhone" type="text" />
+    <label>Contact Notes</label><input asp-for="TicketNotes" type="text" />
+    <button>Submit</button>
+</form>
