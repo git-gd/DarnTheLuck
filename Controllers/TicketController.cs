@@ -4,6 +4,7 @@ using DarnTheLuck.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace DarnTheLuck.Controllers
 {
@@ -53,26 +54,25 @@ namespace DarnTheLuck.Controllers
                 _context.Tickets.Add(newTicket);
                 _context.SaveChanges();
 
-                TicketViewModel ticketView = new TicketViewModel()
-                {
-                    TicketId = newTicket.TicketId,
-                    ContactName = newTicket.ContactName,
-                    TicketNotes = newTicket.TicketNotes,
-                    Created = newTicket.Created
-                };
+                TicketViewModel ticketView = new TicketViewModel(newTicket);
 
-                // redirect to a view of the ticket
                 return View("Details", ticketView);
             }
 
             return View("Create", ticketModel);
-        }        
+        }
 
-        public IActionResult Details()
+        [HttpGet("/ticket/details/{id?}")]
+        public IActionResult Details(int Id)
         {
+            Ticket ticket = _context.Tickets
+                .FirstOrDefault(t =>
+                    t.UserId == _userManager.GetUserId(HttpContext.User) &&
+                    t.TicketId == Id);
 
+            TicketViewModel ticketView = (ticket == null)?null:new TicketViewModel(ticket);
 
-            return View();
+            return View(ticketView);
         }
     }
 }
