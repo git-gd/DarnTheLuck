@@ -38,14 +38,33 @@ namespace DarnTheLuck.Migrations
                     b.Property<string>("TicketNotes")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int>("TicketStatusId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("TicketId");
 
+                    b.HasIndex("TicketStatusId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("DarnTheLuck.Models.TicketStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TicketStatuses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -246,6 +265,12 @@ namespace DarnTheLuck.Migrations
 
             modelBuilder.Entity("DarnTheLuck.Models.Ticket", b =>
                 {
+                    b.HasOne("DarnTheLuck.Models.TicketStatus", "TicketStatus")
+                        .WithMany()
+                        .HasForeignKey("TicketStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");

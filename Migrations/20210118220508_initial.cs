@@ -48,6 +48,19 @@ namespace DarnTheLuck.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TicketStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketStatuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -164,11 +177,18 @@ namespace DarnTheLuck.Migrations
                     ContactName = table.Column<string>(nullable: true),
                     ContactPhone = table.Column<string>(nullable: true),
                     ContactEmail = table.Column<string>(nullable: true),
-                    TicketNotes = table.Column<string>(nullable: true)
+                    TicketNotes = table.Column<string>(nullable: true),
+                    TicketStatusId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tickets", x => x.TicketId);
+                    table.ForeignKey(
+                        name: "FK_Tickets_TicketStatuses_TicketStatusId",
+                        column: x => x.TicketStatusId,
+                        principalTable: "TicketStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Tickets_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -215,6 +235,11 @@ namespace DarnTheLuck.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tickets_TicketStatusId",
+                table: "Tickets",
+                column: "TicketStatusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tickets_UserId",
                 table: "Tickets",
                 column: "UserId");
@@ -242,6 +267,9 @@ namespace DarnTheLuck.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "TicketStatuses");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

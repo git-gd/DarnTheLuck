@@ -29,9 +29,14 @@ namespace DarnTheLuck.Models
 
         public string TicketNotes { get; set; }
 
+        /*
+         * Ticket Status - currently just has an Id and Name
+         */
+        public int TicketStatusId { get; set; }
+        public TicketStatus TicketStatus { get; set; }
+
         //TODO: Complete Ticket Model
         /*
-         * Ticket Status
          * Device
          * Issues (DropDown)
          * Technician
@@ -39,7 +44,7 @@ namespace DarnTheLuck.Models
 
         public Ticket()
         {
-            Created = DateTime.UtcNow;
+            Created = DateTime.UtcNow; // UTC - keep time zones in mind
         }
     }
 }

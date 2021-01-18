@@ -11,6 +11,7 @@ namespace DarnTheLuck.ViewModels
         public string ContactPhone { get; set; }
         public string ContactEmail { get; set; }
         public string TicketNotes { get; set; }
+        public string Status { get; set; }
 
         public TicketViewModel(Ticket ticket)
         {
@@ -18,6 +19,7 @@ namespace DarnTheLuck.ViewModels
             ContactName = ticket.ContactName;
             TicketNotes = ticket.TicketNotes;
             Created = ticket.Created;
+            Status = ticket.TicketStatus.Name;
         }
     }
 }

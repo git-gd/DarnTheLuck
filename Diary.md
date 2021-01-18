@@ -20,5 +20,6 @@
 * Initial Ticket Controller, empty Models, View setup completed
 * Ticket Controller set to use [Authorize]
 * Initial Ticket creation process is working
+* Added Ticket Status table and linked it to Ticket
 
 ##### Blazor support pushed back - possibly to a second WASM project connected through DTOs
