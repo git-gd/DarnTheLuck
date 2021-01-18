@@ -15,7 +15,6 @@
 
 # Jan 18, 2021
 
-## GitHub Branch Test
-* Created razor-support branch to test branch merges
+## Blazor Support
+
 * Created blazor-support branch to add blazor support to the project
-* Merged razor-support into blazor-support
