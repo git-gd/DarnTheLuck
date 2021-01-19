@@ -7,10 +7,24 @@
     <h1><a asp-controller="Ticket" asp-action="Create">Create Ticket</a></h1>
 </div>
 
-<table>
-    <tr><th>Status</th></tr>
+<div class="container">
+    <div class="row ticket-head text-center">
+        <div class="col h1">Status</div>
+        <div class="col h1">Created</div>
+        <div class="col h1">Model</div>
+        <div class="col h1">Serial #</div>
+        <div class="col h1">Ticket #</div>
+    </div>
     @foreach (TicketListViewModel ticket in Model)
     {
-        <tr><td><div>@ticket.Status</div></td></tr>
+        <a asp-controller="Ticket" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
+            <div class="row text-center ticket-round border border-dark ticket-created">
+                <div class="col h1">@ticket.Status</div>
+                <div class="col h1">@ticket.Created.ToString("MM/dd/yy")</div>
+                <div class="col h1">@ticket.Model</div>
+                <div class="col h1">@ticket.Serial</div>
+                <div class="col h1">@ticket.TicketId</div>
+            </div>
+        </a>
     }
-</table>
+</div>
