@@ -26,4 +26,8 @@
 
 ##### Blazor support pushed back - possibly to a second WASM project connected through DTOs
 
-### TODO: Work on Technician functions and Ticket Status
+# Jan 19, 2021
+
+## Ticket List (HTML)
+
+* No-Wrap Bootstrap grid with text-overflow: elipse and scalable font size

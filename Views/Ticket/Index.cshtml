@@ -1,13 +1,13 @@
 ﻿@using DarnTheLuck.ViewModels
 @model List<TicketListViewModel>
 
-<div class="container">
-    <div class="row ticket-head text-center">
-        <div class="col h1">Status</div>
-        <div class="col h1">Created</div>
-        <div class="col h1">Model</div>
-        <div class="col h1">Serial #</div>
-        <div class="col h1">Ticket #</div>
+<div class="container overflow-auto">
+    <div class="row ticket-head text-center flex-nowrap text-nowrap">
+        <div class="col d-txt">Status</div>
+        <div class="col d-txt">Created</div>
+        <div class="col d-txt">Model</div>
+        <div class="col d-txt">Serial #</div>
+        <div class="col d-txt">Ticket #</div>
     </div>
     @foreach (TicketListViewModel ticket in Model)
     {
@@ -17,11 +17,11 @@
                     TODO: background color is controlled by the ticket status
                           no-wrap text and scalable font-size  
                 *@
-                <div class="col h1">@ticket.Status</div>
-                <div class="col h1">@ticket.Created.ToString("MM/dd/yy")</div>
-                <div class="col h1">@ticket.Model</div>
-                <div class="col h1">@ticket.Serial</div>
-                <div class="col h1">@ticket.TicketId</div>
+                <div class="col d-txt">@ticket.Status</div>
+                <div class="col d-txt">@ticket.Created.ToString("MM/dd/yy")</div>
+                <div class="col d-txt">@ticket.Model</div>
+                <div class="col d-txt">@ticket.Serial</div>
+                <div class="col d-txt">@ticket.TicketId</div>
             </div>
         </a>
     }
