@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DarnTheLuck.Controllers
@@ -23,7 +24,20 @@ namespace DarnTheLuck.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            List<TicketListViewModel> ticketList = new List<TicketListViewModel>();
+
+            List<Ticket> tickets = _context.Tickets
+                .Include(t => t.TicketStatus) // so we can access the Name string in the related table
+                .Where(t => t.UserId == _userManager.GetUserId(HttpContext.User))
+                .ToList();
+
+            foreach(Ticket ticket in tickets)
+            {
+                TicketListViewModel ticketListItem = new TicketListViewModel(ticket);
+                ticketList.Add(ticketListItem);
+            }
+
+            return View(ticketList);
         }
 
         [HttpGet]
@@ -83,7 +97,7 @@ namespace DarnTheLuck.Controllers
         public IActionResult Details(int Id)
         {
             Ticket ticket = _context.Tickets
-                .Include(t => t.TicketStatus) // This includes the TicketStatus object so we can access the Name string
+                .Include(t => t.TicketStatus) // so we can access the Name string in the related table
                 .FirstOrDefault(t =>
                     t.UserId == _userManager.GetUserId(HttpContext.User) &&
                     t.TicketId == Id);

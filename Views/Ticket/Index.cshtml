@@ -1,4 +1,5 @@
-﻿@model DarnTheLuck.ViewModels.TicketViewModel
+﻿@using DarnTheLuck.ViewModels
+@model List<TicketListViewModel>
 <div class="text-center">
     <h1>Ticket Index.cshtml</h1>
 </div>
@@ -6,3 +7,10 @@
     <h1><a asp-controller="Ticket" asp-action="Create">Create Ticket</a></h1>
 </div>
 
+<table>
+    <tr><th>Status</th></tr>
+    @foreach (TicketListViewModel ticket in Model)
+    {
+        <tr><td><div>@ticket.Status</div></td></tr>
+    }
+</table>
