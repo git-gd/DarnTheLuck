@@ -1,12 +1,14 @@
-DarnTheLuck is my LaunchCode LiftOff project.
+DarnTheLuck is my LaunchCode LiftOff project that I will use to demonstrate some of the programming skills I have learned.
 
-I intend to demonstrate some of what I have learned from the LaunchCode course by creating a computer repair shop ticketing system.
+DarnTheLuck is a computer repair shop ticketing system. Users are authenticated.
+* Customers can create and view their own repair tickets. 
+* Technicians can view and update customer tickets.
+* Admins will be able to create, read, update and delete all tickets.
 
 DarnTheLuck will use:
-C#
-ASP.NET CORE
-MVC/DTO/WASM
-Razor/Blazor/Ajax
-MySQL
-JavaScript
-BootStrap
+* C#
+* JavaScript
+* ASP.NET CORE / MVC
+* Razor / HTML
+* MySQL
+* BootStrap / CSS
