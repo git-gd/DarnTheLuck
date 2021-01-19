@@ -7,16 +7,53 @@
 }
 else
 {
-    <div>Ticket Status: @Model.Status</div>
-    <div>Ticket Id: @Model.TicketId</div>
-    <div>Created: @Model.Created</div>
-    <div>Name: @Model.ContactName</div>
-    <div>Notes: @Model.TicketNotes</div>
-
-    <div>@Model.ContactPhone</div>
-    <div>@Model.ContactEmail</div>
-    <div>@Model.Model</div>
-    <div>@Model.Serial</div>
-    <div>@Model.TechName</div>
-    <div>@Model.TechEmail</div>
+<div class="d-txt">Ticket:</div>
+<div class="container-fluid overflow-auto">
+    <div class="row ticket-round border border-dark t-@Model.Status">
+        <div class="col-2 d-txt">Status</div><div class="col d-txt">@Model.Status</div>
+    </div>
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Created</div><div class="col d-txt">@Model.Created.ToString("MM/dd/yy")</div>
+    </div>
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Ticket #</div><div class="col d-txt">@Model.TicketId</div>
+    </div>
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Model</div><div class="col d-txt">@Model.Model</div>
+    </div>
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Serial #</div><div class="col d-txt">@Model.Serial</div>
+    </div>
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 o-txt">Notes</div><div class="col o-txt">@Model.TicketNotes</div>
+    </div>
+</div>
+<div class="d-txt">User:</div="d-txt">
+<div class="container-fluid overflow-auto">
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Name:</div><div class="col d-txt">@Model.ContactName</div>
+    </div>
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Phone:</div><div class="col d-txt">@Model.ContactPhone</div>
+    </div>
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Email:</div><div class="col d-txt">@Model.ContactEmail</div>
+    </div>
+</div>
+<div class="d-txt">Technician:</div>
+<div class="container-fluid overflow-auto">
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Tech:</div><div class="col d-txt">@Model.TechName</div>
+    </div>
+    <div class="row ticket-round border border-dark">
+        <div class="col-2 d-txt">Email:</div><div class="col d-txt">@Model.TechEmail</div>
+    </div>
+</div>
 }
+
+<div class="text-center">
+    <h1><a asp-controller="Ticket" asp-action="Index">View All Tickets</a></h1>
+</div>
+<div class="text-center">
+    <h1><a asp-controller="Ticket" asp-action="Create">Create New Ticket</a></h1>
+</div>

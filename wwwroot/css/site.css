@@ -92,6 +92,11 @@ body {
     font-size: 2vw;
 }
 
+.o-txt {
+    font-size: 24px; /* fallback */
+    font-size: 2vw;
+}
+
 /* ticket status colors */
 .t-Created {
     background-color: #a4feff;

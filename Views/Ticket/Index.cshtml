@@ -12,9 +12,6 @@
     {
         <a asp-controller="Ticket" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
             <div class="row text-center ticket-round border border-dark t-@ticket.Status">
-                @*
-                    TODO: background color is controlled by the ticket status
-                *@
                 <div class="col d-txt">@ticket.Status</div>
                 <div class="col d-txt">@ticket.Created.ToString("MM/dd/yy")</div>
                 <div class="col d-txt">@ticket.Model</div>
