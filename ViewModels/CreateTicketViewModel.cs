@@ -11,5 +11,7 @@ namespace DarnTheLuck.ViewModels
         [Required]
         public string ContactEmail { get; set; }
         public string TicketNotes { get; set; }
+        public string Model { get; set; }
+        public string Serial { get; set; }
     }
 }

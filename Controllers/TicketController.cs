@@ -25,7 +25,7 @@ namespace DarnTheLuck.Controllers
         {
             return View();
         }
-        
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -36,7 +36,7 @@ namespace DarnTheLuck.Controllers
 
             return View(ticket);
         }
-        
+
         [HttpPost]
         [ActionName("Create")]
         public IActionResult SaveTicket(CreateTicketViewModel ticketModel)
@@ -50,7 +50,8 @@ namespace DarnTheLuck.Controllers
 
                 TicketStatus ticketStatus = _context.TicketStatuses.FirstOrDefault();
 
-                if (ticketStatus == null) {
+                if (ticketStatus == null)
+                {
                     ticketStatus = new TicketStatus()
                     {
                         /*
@@ -63,15 +64,9 @@ namespace DarnTheLuck.Controllers
                     _context.SaveChanges();
                 }
 
-                Ticket newTicket = new Ticket()
-                {
-                    UserId = _userManager.GetUserId(HttpContext.User),
-                    ContactName = ticketModel.ContactName,
-                    ContactEmail = ticketModel.ContactEmail,
-                    ContactPhone = ticketModel.ContactPhone,
-                    TicketNotes = ticketModel.TicketNotes,
-                    TicketStatusId = ticketStatus.Id
-                };
+                string userId = _userManager.GetUserId(HttpContext.User);
+
+                Ticket newTicket = new Ticket(ticketModel, userId);
 
                 _context.Tickets.Add(newTicket);
                 _context.SaveChanges();
@@ -93,7 +88,7 @@ namespace DarnTheLuck.Controllers
                     t.UserId == _userManager.GetUserId(HttpContext.User) &&
                     t.TicketId == Id);
 
-            TicketViewModel ticketView = (ticket == null)?null:new TicketViewModel(ticket);
+            TicketViewModel ticketView = (ticket == null) ? null : new TicketViewModel(ticket);
 
             return View(ticketView);
         }

@@ -2,10 +2,41 @@
 
 <h1>Create Ticket</h1>
 
-<form asp-controller="Ticket" asp-action="Create" method="post" >
-    <label>Contact Name</label><input asp-for="ContactName" type="text" />
-    <label>Contact Email</label><input asp-for="ContactEmail" type="text" />
-    <label>Contact Phone</label><input asp-for="ContactPhone" type="text" />
-    <label>Contact Notes</label><input asp-for="TicketNotes" type="text" />
-    <button>Submit</button>
+<form asp-controller="Ticket" asp-action="Create" method="post">
+    <div>
+        <label>Contact Name</label>
+    </div><div>
+        <input asp-for="ContactName" type="text" />
+        <span asp-validation-for="ContactName"></span>
+    </div>
+    <div>
+        <label>Contact Email</label>
+    </div><div>
+        <input asp-for="ContactEmail" type="text" />
+        <span asp-validation-for="ContactEmail"></span>
+    </div>
+    <div>
+        <label>Contact Phone</label>
+    </div><div>
+        <input asp-for="ContactPhone" type="text" />
+        <span asp-validation-for="ContactPhone"></span>
+    </div>
+    <div>
+        <label>Ticket Notes</label>
+    </div><div>
+        <input asp-for="TicketNotes" type="text" />
+    </div>
+    <div>
+        <label>Device Model Number</label>
+    </div><div>
+        <input asp-for="Model" type="text" />
+    </div>
+    <div>
+        <label>Device Serial Number</label>
+    </div><div>
+        <input asp-for="Serial" type="text" />
+    </div>
+    <div>
+        <button>Submit</button>
+    </div>
 </form>

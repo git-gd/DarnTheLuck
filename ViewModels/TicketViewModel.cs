@@ -12,14 +12,26 @@ namespace DarnTheLuck.ViewModels
         public string ContactEmail { get; set; }
         public string TicketNotes { get; set; }
         public string Status { get; set; }
+        public string Model { get; set; }
+        public string Serial { get; set; }
+        public string TechName { get; set; }
+        public string TechEmail { get; set; }
 
         public TicketViewModel(Ticket ticket)
         {
             TicketId = ticket.TicketId;
-            ContactName = ticket.ContactName;
-            TicketNotes = ticket.TicketNotes;
             Created = ticket.Created;
+            ContactName = ticket.ContactName;
+            ContactPhone = ticket.ContactPhone;
+            ContactEmail = ticket.ContactEmail;
+            TicketNotes = ticket.TicketNotes;
             Status = ticket.TicketStatus.Name;
+            Model = ticket.Model;
+            Serial = ticket.Serial;
+
+            //TODO: Add Tech Info - need to setup relationship and pull in extra info
+            TechName = "TODO: TechName";
+            TechEmail = "TODO: TechEmail";
         }
     }
 }

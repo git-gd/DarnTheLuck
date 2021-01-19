@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DarnTheLuck.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace DarnTheLuck.Models
@@ -35,16 +36,43 @@ namespace DarnTheLuck.Models
         public int TicketStatusId { get; set; }
         public TicketStatus TicketStatus { get; set; }
 
-        //TODO: Complete Ticket Model
         /*
-         * Device
+         * Device - could be expanded on and placed in its own table, but this isn't beneficial, yet
+         */
+        public string Model { get; set; }
+        public string Serial { get; set; }
+
+        /*
+         * The TechId field will be set by the Technician when the Technician claims the ticket
+         * TechId can be blank/null and can change after it is set (if a new Technician takes over)
+         * We will use this property in a Join to supply the Tech Name and Email
+         */
+        public int TechId { get; set; }
+
+        /*
          * Issues (DropDown)
-         * Technician
+         * 
+         * This is a many to many relationsihp. Each ticket can have many issues and each issue can
+         * belong to many tickets.
+         * 
+         * We do not store Issue Ids here. We use a Join Table to set this relationship up.
          */
 
         public Ticket()
         {
             Created = DateTime.UtcNow; // UTC - keep time zones in mind
+        }
+
+        public Ticket(CreateTicketViewModel ticket, string userId) : this()
+        {
+            UserId = userId;
+            ContactName = ticket.ContactName;
+            ContactEmail = ticket.ContactEmail;
+            ContactPhone = ticket.ContactPhone;
+            TicketNotes = ticket.TicketNotes;
+            TicketStatusId = 1;
+            Model = ticket.Model;
+            Serial = ticket.Serial;
         }
     }
 }
