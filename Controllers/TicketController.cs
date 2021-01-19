@@ -69,9 +69,7 @@ namespace DarnTheLuck.Controllers
                     ticketStatus = new TicketStatus()
                     {
                         /*
-                         * MySQL can set this value but I want the Id to be 1
-                         * 
-                         * Currently hard-coded - may change
+                         * MySQL can set the Id but I chose to hard-code these values on initialization
                          */
                         Id = 1,
                         Name = "Created"

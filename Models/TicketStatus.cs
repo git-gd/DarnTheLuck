@@ -6,11 +6,13 @@
         public string Name { get; set; }
 
         /*
-         * Better than using an Enum
+         * This table could be replaced with a Ticket field but is included to show use of related tables
          * 
-         * Enables the option to allow users to modify status codes
+         * Using a table is usually better than using an Enum
          * 
-         * Can be expanded with additional information such as optional HTML/CSS color codes or if a Status has been retired and should not be used for new Tickets
+         * Tables allow users to modify status codes
+         * 
+         * This table can expanded with additional information such as if a Status has been retired and should not be used for new Tickets
          */
     }
 }

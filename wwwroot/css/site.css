@@ -83,9 +83,6 @@ body {
     color: black;
     border-radius: 10px;
 }
-.ticket-created {
-    background-color: #a4feff;
-}
 
 .d-txt {
     overflow: hidden;
@@ -93,4 +90,24 @@ body {
     text-overflow: ellipsis;
     font-size: 24px; /* fallback */
     font-size: 2vw;
+}
+
+/* ticket status colors */
+.t-Created {
+    background-color: #a4feff;
+}
+.t-Limbo {
+    background-color: #ffa4a4;
+}
+.t-Ready {
+    background-color: #a4ffb1;
+}
+.t-Shipped {
+    background-color: #a0a0a0;
+}
+
+@media only screen and (min-width : 1200px) {
+    .container {
+        max-width: 1400px;
+    }
 }

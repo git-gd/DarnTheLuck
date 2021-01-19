@@ -1,7 +1,6 @@
 ﻿@using DarnTheLuck.ViewModels
 @model List<TicketListViewModel>
-
-<div class="container overflow-auto">
+<div class="container-fluid overflow-auto">
     <div class="row ticket-head text-center flex-nowrap text-nowrap">
         <div class="col d-txt">Status</div>
         <div class="col d-txt">Created</div>
@@ -12,10 +11,9 @@
     @foreach (TicketListViewModel ticket in Model)
     {
         <a asp-controller="Ticket" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
-            <div class="row text-center ticket-round border border-dark ticket-created">
+            <div class="row text-center ticket-round border border-dark t-@ticket.Status">
                 @*
                     TODO: background color is controlled by the ticket status
-                          no-wrap text and scalable font-size  
                 *@
                 <div class="col d-txt">@ticket.Status</div>
                 <div class="col d-txt">@ticket.Created.ToString("MM/dd/yy")</div>
