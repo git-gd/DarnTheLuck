@@ -21,5 +21,9 @@
 * Ticket Controller set to use [Authorize]
 * Initial Ticket creation process is working
 * Added Ticket Status table and linked it to Ticket
+* Added Ticket List view
+* Users can create, list and view details of Tickets
 
 ##### Blazor support pushed back - possibly to a second WASM project connected through DTOs
+
+### TODO: Work on Technician functions and Ticket Status

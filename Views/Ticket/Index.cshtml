@@ -1,11 +1,5 @@
 ﻿@using DarnTheLuck.ViewModels
 @model List<TicketListViewModel>
-<div class="text-center">
-    <h1>Ticket Index.cshtml</h1>
-</div>
-<div class="text-center">
-    <h1><a asp-controller="Ticket" asp-action="Create">Create Ticket</a></h1>
-</div>
 
 <div class="container">
     <div class="row ticket-head text-center">
@@ -19,6 +13,10 @@
     {
         <a asp-controller="Ticket" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
             <div class="row text-center ticket-round border border-dark ticket-created">
+                @*
+                    TODO: background color is controlled by the ticket status
+                          no-wrap text and scalable font-size  
+                *@
                 <div class="col h1">@ticket.Status</div>
                 <div class="col h1">@ticket.Created.ToString("MM/dd/yy")</div>
                 <div class="col h1">@ticket.Model</div>
@@ -27,4 +25,8 @@
             </div>
         </a>
     }
+</div>
+<hr />
+<div class="text-center">
+    <h1><a asp-controller="Ticket" asp-action="Create">Create New Ticket</a></h1>
 </div>
