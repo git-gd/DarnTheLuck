@@ -15,6 +15,19 @@
 
 # Jan 18, 2021
 
-## Blazor Support
+## Ticket
 
-* Created blazor-support branch to add blazor support to the project
+* Initial Ticket Controller, empty Models, View setup completed
+* Ticket Controller set to use [Authorize]
+* Initial Ticket creation process is working
+* Added Ticket Status table and linked it to Ticket
+* Added Ticket List view
+* Users can create, list and view details of Tickets
+
+##### Blazor support pushed back - possibly to a second WASM project connected through DTOs
+
+# Jan 19, 2021
+
+## Ticket List (HTML)
+
+* No-Wrap Bootstrap grid with text-overflow: elipse and scalable font size

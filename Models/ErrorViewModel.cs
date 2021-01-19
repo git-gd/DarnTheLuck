@@ -1,5 +1,3 @@
-using System;
-
 namespace DarnTheLuck.Models
 {
     public class ErrorViewModel
