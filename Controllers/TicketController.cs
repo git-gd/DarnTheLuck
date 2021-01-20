@@ -31,7 +31,19 @@ namespace DarnTheLuck.Controllers
                 .Where(t => t.UserId == _userManager.GetUserId(HttpContext.User))
                 .ToList();
 
-            foreach(Ticket ticket in tickets)
+            /***********************************************
+             * USERS CAN ONLY VIEW TICKETS THEY HAVE CREATED
+             ***********************************************
+             * 
+             * When a new ticket is created the STRING returned by _userManager.GetUserId(HttpContext.User)
+             * is stored in the UserId field of the new ticket.
+             * 
+             * When a user attempts to view a list of tickets we filter our database results by the current User's UserId.
+             * 
+             * Only tickets with matching UserId fields will be returned.
+             */
+
+            foreach (Ticket ticket in tickets)
             {
                 TicketListViewModel ticketListItem = new TicketListViewModel(ticket);
                 ticketList.Add(ticketListItem);
