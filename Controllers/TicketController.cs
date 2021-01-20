@@ -93,7 +93,7 @@ namespace DarnTheLuck.Controllers
             return View("Create", ticketModel);
         }
 
-        [HttpGet("/ticket/details/{id?}")]
+        [HttpGet("/ticket/details/{id?}")] // This enables routing that we can use in a link
         public IActionResult Details(int Id)
         {
             Ticket ticket = _context.Tickets
@@ -101,6 +101,18 @@ namespace DarnTheLuck.Controllers
                 .FirstOrDefault(t =>
                     t.UserId == _userManager.GetUserId(HttpContext.User) &&
                     t.TicketId == Id);
+
+            /***********************************************
+             * USERS CAN ONLY VIEW TICKETS THEY HAVE CREATED
+             ***********************************************
+             * 
+             * When a new ticket is created the STRING returned by _userManager.GetUserId(HttpContext.User)
+             * is stored in the UserId field of the new ticket.
+             * 
+             * When a user attempts to view ticket details we filter our database results by the current User's UserId.
+             * 
+             * If the current UserId does not match the stored UserId then no results will be returned.
+             */
 
             TicketViewModel ticketView = (ticket == null) ? null : new TicketViewModel(ticket);
 
