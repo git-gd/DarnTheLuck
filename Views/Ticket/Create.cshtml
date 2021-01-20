@@ -1,31 +1,32 @@
 ﻿@model DarnTheLuck.ViewModels.CreateTicketViewModel
+@section CustomStyle {<link rel="stylesheet" href="~/css/forminput.css" />}
 
 <h1>Create Ticket</h1>
 
 <form asp-controller="Ticket" asp-action="Create" method="post">
-    <div class="container">
+    <div class="container ticket-round border-dark bg-light shadow p-2">
         <div>
             <label>Contact Name</label>
         </div><div>
-            <input asp-for="ContactName" type="text" class="input-group-text" />
+            <input asp-for="ContactName" type="text" class="input-group-text ticket-round text-left" />
             <span asp-validation-for="ContactName"></span>
         </div>
         <div>
             <label>Contact Email</label>
         </div><div>
-            <input asp-for="ContactEmail" type="text" class="input-group" />
+            <input asp-for="ContactEmail" type="text" class="input-group ticket-round" />
             <span asp-validation-for="ContactEmail"></span>
         </div>
         <div>
             <label>Contact Phone</label>
         </div><div>
-            <input asp-for="ContactPhone" type="text" />
+            <input asp-for="ContactPhone" type="text" class="input-group input-group-text ticket-round" />
             <span asp-validation-for="ContactPhone"></span>
         </div>
         <div>
             <label>Ticket Notes</label>
         </div><div>
-            <input asp-for="TicketNotes" type="text" />
+            <textarea asp-for="TicketNotes" cols="40" rows="5"></textarea>
         </div>
         <div>
             <label>Device Model Number</label>
@@ -39,6 +40,9 @@
         </div>
         <div>
             <button>Submit</button>
+        </div>
+        <div class="u-div">
+            <span contenteditable>How do we bind this?</span>
         </div>
     </div>
 </form>

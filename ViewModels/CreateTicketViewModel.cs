@@ -15,3 +15,4 @@ namespace DarnTheLuck.ViewModels
         public string Serial { get; set; }
     }
 }
+//TODO: finish setting up validation
