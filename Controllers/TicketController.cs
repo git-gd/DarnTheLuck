@@ -1,7 +1,6 @@
 ﻿using DarnTheLuck.Data;
 using DarnTheLuck.Models;
 using DarnTheLuck.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,6 @@ using System.Linq;
 
 namespace DarnTheLuck.Controllers
 {
-    [Authorize]
     public class TicketController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -1,4 +1,5 @@
 using DarnTheLuck.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -25,9 +26,22 @@ namespace DarnTheLuck
                 // We use MySQL
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                //***** Add Role services to Identity
+                // https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-5.0
+                .AddRoles<IdentityRole>()
+                //*****
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //***** Require Authentication By Default
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
+            //*****
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
