@@ -1,11 +1,25 @@
 ﻿/*@import url("https://fonts.googleapis.com/css?family=Lato:400,400i,700");
+@import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap');
 */
+
+@import url('https://fonts.googleapis.com/css2?family=Unkempt:wght@700&display=swap');
+
+h1 {
+    font-family: 'Unkempt', cursive;
+}
+
+.c-inp {
+    margin-bottom: 30px;
+    border-radius: 15px;
+    box-shadow: inset 1px 1px 1px #cbced1, inset -1px -1px 1px #ffffff;
+}
+
 .u-div {
     padding: 0.4rem 0;
     border-bottom: 4px solid #383838;
 }
 
-span {
+.t-box {
     position: relative;
     bottom: -11px;
     color: black;
@@ -13,6 +27,22 @@ span {
     padding: 0.4rem 0;
     border-bottom: 4px solid #D5BA5E;
     outline: 0;
+}
+
+.x-box {
+    position: relative;
+    bottom: -11px;
+    color: black;
+    display: inline-block;
+    padding: 0.4rem 0;
+    border: none;
+    border-bottom: 4px solid #D5BA5E;
+    outline: 0;
+}
+
+.b-shadow {
+    /*box-shadow: -4px -4px 6px 0 rgba(0, 0, 0, 0.3), 6px 6px 8px rgba(0, 0, 0, 0.3);*/
+    box-shadow: 0 2px 2px rgba(0,0,0,0.5), 0 4px 4px rgba(0,0,0,0.4), 0 6px 6px rgba(0,0,0,0.3), 0 12px 12px rgba(0,0,0,0.1);
 }
 
 /*body {

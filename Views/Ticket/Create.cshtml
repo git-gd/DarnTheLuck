@@ -1,10 +1,10 @@
 ﻿@model DarnTheLuck.ViewModels.CreateTicketViewModel
 @section CustomStyle {<link rel="stylesheet" href="~/css/forminput.css" />}
 
-<h1>Create Ticket</h1>
+<h1>Tell me about your Motherboard</h1>
 
 <form asp-controller="Ticket" asp-action="Create" method="post">
-    <div class="container ticket-round border-dark bg-light shadow p-2">
+    <div class="container ticket-round border bg-light b-shadow p-2">
         <div>
             <label>Contact Name</label>
         </div><div>
@@ -30,19 +30,21 @@
         </div>
         <div>
             <label>Device Model Number</label>
-        </div><div>
-            <input asp-for="Model" type="text" />
+        </div><div class="u-div">
+            <input asp-for="Model" type="text" id="modelInput" />
+            <span contenteditable class="t-box" onchange="alert(this.value);"></span> @* onchange not triggering, need to set modelInput somewhere.. can do it on submit as well *@
         </div>
         <div>
             <label>Device Serial Number</label>
         </div><div>
-            <input asp-for="Serial" type="text" />
+            <input asp-for="Serial" type="text" class="c-inp" />
         </div>
         <div>
             <button>Submit</button>
         </div>
-        <div class="u-div">
-            <span contenteditable>How do we bind this?</span>
-        </div>
     </div>
 </form>
+@*
+    Currently playing with different styles.    
+    TODO: settle on a style for this page and try to avoid script solutions (leave script for the future SAP components)
+*@
