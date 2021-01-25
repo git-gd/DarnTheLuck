@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace DarnTheLuck.Controllers
 {
+    // this should be restricted to admins.. but if we have no admin?
+    // TODO: research best way to initialize admin account (database command? hardcode?)
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
@@ -22,9 +24,6 @@ namespace DarnTheLuck.Controllers
 
         public IActionResult Index()
         {
-            // this should be restricted to admins.. but if we have no admin?
-            // TODO: research best way to initialize admin account (database command? hardcode?)
-
             IEnumerable<IdentityRole> roles = _roleManager.Roles;
 
             return View(roles);
