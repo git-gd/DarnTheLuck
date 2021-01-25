@@ -5,6 +5,12 @@ namespace DarnTheLuck.ViewModels
 {
     public class TicketViewModel
     {
+        //***
+        public bool IsAdmin { get; set; } = false;
+        public bool IsTech { get; set; } = false;
+        public bool IsOwner { get; set; } = false;
+        //***
+
         public int TicketId { get; set; }
         public DateTime Created { get; set; }
         public string ContactName { get; set; }

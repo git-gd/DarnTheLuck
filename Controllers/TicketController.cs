@@ -130,7 +130,10 @@ namespace DarnTheLuck.Controllers
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
 
-            bool isElevated = currentUserRoles.Intersect(elevated).Any();
+            bool isAdmin = currentUserRoles.Contains("Admin");
+            bool isTech  = currentUserRoles.Contains("Technician");
+
+            bool isElevated = isAdmin || isTech;
 
             // ****** DRY?
 
@@ -141,7 +144,18 @@ namespace DarnTheLuck.Controllers
                        isElevated)             // allow Elevated users (Admin, Tech) to view details
                     && t.TicketId == Id);
 
-            TicketViewModel ticketView = (ticket == null) ? null : new TicketViewModel(ticket);
+            TicketViewModel ticketView; 
+
+            //= (ticket == null) ? null : new TicketViewModel(ticket);
+
+            if(ticket is null){
+                ticketView = null;
+            } else {
+                ticketView = new TicketViewModel(ticket);
+                ticketView.IsAdmin = isAdmin;
+                ticketView.IsTech  = isTech;
+                ticketView.IsOwner = ticket.UserId == user.Id;
+            }
 
             return View(ticketView);
         }
