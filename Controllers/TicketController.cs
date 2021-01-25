@@ -135,11 +135,11 @@ namespace DarnTheLuck.Controllers
             // ****** DRY?
 
             Ticket ticket = _context.Tickets
-                .Include(t => t.TicketStatus) // so we can access the Name string in the related table
+                .Include(t => t.TicketStatus)  // so we can access the Name string in the related table
                 .FirstOrDefault(t =>
-                    t.UserId == user.Id ||    // match UserId - individuals can access their ticket details
-                    isElevated &&             // allow Elevated users (Admin, Tech) to view details
-                    t.TicketId == Id);
+                    (  t.UserId == user.Id ||  // match UserId - individuals can access their ticket details
+                       isElevated)             // allow Elevated users (Admin, Tech) to view details
+                    && t.TicketId == Id);
 
             TicketViewModel ticketView = (ticket == null) ? null : new TicketViewModel(ticket);
 
