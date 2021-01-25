@@ -31,7 +31,7 @@ namespace DarnTheLuck.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        private string[] elevated = new string[] { "Admin", "Technician" }; // temporary spot to store our elevated roles
+        private readonly string[] elevated = new string[] { "Admin", "Technician" }; // temporary spot to store our elevated roles
 
         public TicketController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
@@ -51,9 +51,7 @@ namespace DarnTheLuck.Controllers
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
 
-            bool isElevated = currentUserRoles.Select(x => x)
-                          .Intersect(elevated)
-                          .Any();
+            bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
             List<Ticket> tickets = _context.Tickets
                 .Include(t => t.TicketStatus) // so we can access the Name string in the related table
@@ -132,9 +130,8 @@ namespace DarnTheLuck.Controllers
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
 
-            bool isElevated = currentUserRoles.Select(x => x)
-                          .Intersect(elevated)
-                          .Any();
+            bool isElevated = currentUserRoles.Intersect(elevated).Any();
+
             // ****** DRY?
 
             Ticket ticket = _context.Tickets
