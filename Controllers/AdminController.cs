@@ -1,4 +1,5 @@
 ﻿using DarnTheLuck.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace DarnTheLuck.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -93,16 +95,9 @@ namespace DarnTheLuck.Controllers
                 {
                     UserId = user.Id,
                     UserName = user.UserName
-                };
+            };
 
-                if (await _userManager.IsInRoleAsync(user, role.Name))
-                {
-                    userRoleViewModel.IsSelected = true;
-                }
-                else
-                {
-                    userRoleViewModel.IsSelected = false;
-                }
+                userRoleViewModel.IsSelected = await _userManager.IsInRoleAsync(user, role.Name);
 
                 model.Add(userRoleViewModel);
             }
