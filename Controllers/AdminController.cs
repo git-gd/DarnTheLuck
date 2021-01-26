@@ -148,9 +148,4 @@ namespace DarnTheLuck.Controllers
  * await roleManager.CreateAsync(new IdentityRole(role));
  * await userManager.FindByIdAsync(uid);
  * await userManager.AddToRoleAsync(user, role);
- * 
- * TODO: Tech and Admin user roles
- * Advanced features like tech groups and authorization links (allow others to view Ticket) can likely be simple database functions.
- * 
- * TODO: EVERY View will need to test for NULL - If a user types an URL that produces a NULL we need to catch and deal with this
  */
