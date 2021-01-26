@@ -11,13 +11,6 @@ namespace DarnTheLuck.ViewModels
         public string Model { get; set; }
         public string Serial { get; set; }
 
-        public TicketListViewModel(Ticket ticket)
-        {
-            TicketId = ticket.TicketId;
-            Created = ticket.Created;
-            Status = ticket.TicketStatus.Name;
-            Model = ticket.Model;
-            Serial = ticket.Serial;
-        }
+        public TicketListViewModel() { }
     }
 }

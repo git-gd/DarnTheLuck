@@ -43,9 +43,9 @@ namespace DarnTheLuck.Controllers
          *  Learning opportunity: ASYNC - Task<>, await
          */
 
-        public async Task<IActionResult> Index(int sort, bool descending)
+        public async Task<IActionResult> Index(string sort, string sortDir)
         {
-            List<TicketListViewModel> ticketList = new List<TicketListViewModel>();
+            //List<TicketListViewModel> ticketList = new List<TicketListViewModel>();
 
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -53,30 +53,46 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
-            IQueryable<Ticket> ticketsIQ = _context.Tickets
-                .Include(t => t.TicketStatus) // so we can access the Name string in the related table
-                .Where(t =>
-                    t.UserId == user.Id || // match UserId - individuals can access their ticket
-                    isElevated);           // match RoleId - Techs can access all tickets
-                                           //.ToList();
-            
+            //TODO: Complete Sort (decide on properties, connect to View, fill out switch)
+            //TODO: Pagination
+            //TODO: Search (collapsable form, text input, checkbox properties/fields)
+
+            //TODO: This is so ugly... there has to be a better way
             // set sort method
-            if (descending)
+            IQueryable<TicketListViewModel> ticketListQuery = (
+                from Ticket in _context.Tickets
+                where (Ticket.UserId == user.Id || isElevated)
+                select new TicketListViewModel()
+                {
+                    TicketId = Ticket.TicketId,
+                    Created = Ticket.Created,
+                    Status = Ticket.TicketStatus.Name,
+                    Model = Ticket.Model,
+                    Serial = Ticket.Serial
+                });
+
+            if (sortDir == "descinding")
             {
-                // switch (sort)
-                ticketsIQ.OrderByDescending(t => t.TicketId);
-            } else
+                switch (sort)
+                {
+
+                    default:
+                        ticketListQuery.OrderByDescending(t => t.TicketId);
+                        break;
+                }
+            }
+            else
             {
-                ticketsIQ.OrderBy(t => t.TicketId);
+                switch (sort)
+                {
+
+                    default:
+                        ticketListQuery.OrderBy(t => t.TicketId);
+                        break;
+                }
             }
 
-            List<Ticket> tickets = ticketsIQ.ToList(); // execute query
-
-            foreach (Ticket ticket in tickets)
-            {
-                TicketListViewModel ticketListItem = new TicketListViewModel(ticket);
-                ticketList.Add(ticketListItem);
-            }
+            List<TicketListViewModel> ticketList = ticketListQuery.ToList();
 
             return View(ticketList);
         }
