@@ -45,7 +45,8 @@ namespace DarnTheLuck.Controllers
 
         public async Task<IActionResult> Index(string sort, string sortDir)
         {
-            //List<TicketListViewModel> ticketList = new List<TicketListViewModel>();
+            ViewBag.sort = string.IsNullOrEmpty(sort)?"ticket":sort;
+            ViewBag.sortDir = string.IsNullOrEmpty(sortDir) ? "descinding" : string.Empty;
 
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -57,8 +58,6 @@ namespace DarnTheLuck.Controllers
             //TODO: Pagination
             //TODO: Search (collapsable form, text input, checkbox properties/fields)
 
-            //TODO: This is so ugly... there has to be a better way
-            // set sort method
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
                 where (Ticket.UserId == user.Id || isElevated)
@@ -71,12 +70,25 @@ namespace DarnTheLuck.Controllers
                     Serial = Ticket.Serial
                 });
 
+            //TODO: This is so ugly... there has to be a better way
+            // set sort method
             if (sortDir == "descinding")
             {
                 switch (sort)
                 {
-
-                    default:
+                    case "status":
+                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.Status);
+                        break;
+                    case "created":
+                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.Created);
+                        break;
+                    case "model":
+                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.Model);
+                        break;
+                    case "serial":
+                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.Serial);
+                        break;
+                    default: // TicketId
                         ticketListQuery = ticketListQuery.OrderByDescending(t => t.TicketId);
                         break;
                 }
@@ -85,8 +97,19 @@ namespace DarnTheLuck.Controllers
             {
                 switch (sort)
                 {
-
-                    default:
+                    case "status":
+                        ticketListQuery = ticketListQuery.OrderBy(t => t.Status);
+                        break;
+                    case "created":
+                        ticketListQuery = ticketListQuery.OrderBy(t => t.Created);
+                        break;
+                    case "model":
+                        ticketListQuery = ticketListQuery.OrderBy(t => t.Model);
+                        break;
+                    case "serial":
+                        ticketListQuery = ticketListQuery.OrderBy(t => t.Serial);
+                        break;
+                    default: // TicketId
                         ticketListQuery = ticketListQuery.OrderBy(t => t.TicketId);
                         break;
                 }

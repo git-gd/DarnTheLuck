@@ -1,12 +1,30 @@
-﻿@using DarnTheLuck.ViewModels
+﻿@using DarnTheLuck.ViewModels;
+
 @model List<TicketListViewModel>
+
+@{ 
+    string[][] columns = new string[][] {
+                new string []{ "Status", "status" },
+                new string []{ "Created", "created"},
+                new string []{ "Model", "model" },
+                new string []{ "Serial #", "serial" },
+                new string []{ "Ticket #", "ticket" }
+    };
+}
+
 <div class="container-fluid overflow-auto">
     <div class="row ticket-head text-center flex-nowrap text-nowrap">
-        <div class="col d-txt">Status</div>
-        <div class="col d-txt">Created</div>
-        <div class="col d-txt">Model</div>
-        <div class="col d-txt">Serial #</div>
-        <div class="col d-txt">Ticket #</div>
+        @foreach (string[] col in columns)
+        {
+            if (ViewBag.sort == col[1])
+            {
+                <div class="col d-txt"><a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(ViewBag.sortDir)?"#ff8000":"#ffff00")" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]" asp-route-sortDir="@ViewBag.sortDir">@col[0]</a></div>
+            }
+            else
+            {
+                <div class="col d-txt"><a class="text-decoration-none" style="color:white" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]">@col[0]</a></div>
+            }
+        }
     </div>
     @foreach (TicketListViewModel ticket in Model)
     {
