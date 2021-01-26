@@ -80,12 +80,8 @@ namespace DarnTheLuck.Controllers
             var model = new List<UserRoleViewModel>();
 
             /*****
-             * LEARNING OPPORTUNITY:
-             * 
-             * _userManager.Users seems to keep the database connection OPEN
-             * 
-             * using .ToList() seems to save the Users to a List and close the connection
-             * 
+             * LEARNED:
+             * _userManager.Users does not complete until .ToList()
              *****/
 
             foreach (var user in _userManager.Users.ToList()) 

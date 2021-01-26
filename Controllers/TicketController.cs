@@ -43,7 +43,7 @@ namespace DarnTheLuck.Controllers
          *  Learning opportunity: ASYNC - Task<>, await
          */
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int sort, bool descending)
         {
             List<TicketListViewModel> ticketList = new List<TicketListViewModel>();
 
@@ -53,12 +53,24 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
-            List<Ticket> tickets = _context.Tickets
+            IQueryable<Ticket> ticketsIQ = _context.Tickets
                 .Include(t => t.TicketStatus) // so we can access the Name string in the related table
                 .Where(t =>
                     t.UserId == user.Id || // match UserId - individuals can access their ticket
-                    isElevated)            // match RoleId - Techs can access all tickets
-                .ToList();
+                    isElevated);           // match RoleId - Techs can access all tickets
+                                           //.ToList();
+            
+            // set sort method
+            if (descending)
+            {
+                // switch (sort)
+                ticketsIQ.OrderByDescending(t => t.TicketId);
+            } else
+            {
+                ticketsIQ.OrderBy(t => t.TicketId);
+            }
+
+            List<Ticket> tickets = ticketsIQ.ToList(); // execute query
 
             foreach (Ticket ticket in tickets)
             {
