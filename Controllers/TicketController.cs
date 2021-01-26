@@ -77,7 +77,7 @@ namespace DarnTheLuck.Controllers
                 {
 
                     default:
-                        ticketListQuery.OrderByDescending(t => t.TicketId);
+                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.TicketId);
                         break;
                 }
             }
@@ -87,7 +87,7 @@ namespace DarnTheLuck.Controllers
                 {
 
                     default:
-                        ticketListQuery.OrderBy(t => t.TicketId);
+                        ticketListQuery = ticketListQuery.OrderBy(t => t.TicketId);
                         break;
                 }
             }
