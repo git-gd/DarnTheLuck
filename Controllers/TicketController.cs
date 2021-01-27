@@ -46,7 +46,7 @@ namespace DarnTheLuck.Controllers
         public async Task<IActionResult> Index(string sort, string sortDir)
         {
             ViewBag.sort = string.IsNullOrEmpty(sort)?"ticket":sort;
-            ViewBag.sortDir = string.IsNullOrEmpty(sortDir) ? "descinding" : string.Empty;
+            ViewBag.sortDir = string.IsNullOrEmpty(sortDir) ? "descending" : string.Empty;
 
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -54,7 +54,6 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
-            //TODO: Complete Sort (decide on properties, connect to View, fill out switch)
             //TODO: Pagination
             //TODO: Search (collapsable form, text input, checkbox properties/fields)
 
@@ -72,7 +71,7 @@ namespace DarnTheLuck.Controllers
 
             //TODO: This is so ugly... there has to be a better way
             // set sort method
-            if (sortDir == "descinding")
+            if (sortDir == "descending")
             {
                 switch (sort)
                 {
@@ -197,8 +196,6 @@ namespace DarnTheLuck.Controllers
 
             TicketViewModel ticketView; 
 
-            //= (ticket == null) ? null : new TicketViewModel(ticket);
-
             if(ticket is null){
                 ticketView = null;
             } else {
@@ -210,5 +207,5 @@ namespace DarnTheLuck.Controllers
 
             return View(ticketView);
         }
-    }
+    }       //TODO: Info Pages - (i)Show code snippets, how the page works, what the features are
 }
