@@ -69,7 +69,10 @@ namespace DarnTheLuck.Controllers
                     Serial = Ticket.Serial
                 });
 
-            //TODO: This is so ugly... there has to be a better way
+            /*
+             * TODO: This is so ugly... there has to be a better way
+             */
+
             // set sort method
             if (sortDir == "descending")
             {
@@ -157,6 +160,10 @@ namespace DarnTheLuck.Controllers
                     _context.SaveChanges();
                 }
 
+                /*
+                 * TODO: Query Past User Tickets To Pull Contact Info Or Table Link?
+                 */
+
                 string userId = _userManager.GetUserId(HttpContext.User);
 
                 Ticket newTicket = new Ticket(ticketModel, userId);
@@ -184,7 +191,6 @@ namespace DarnTheLuck.Controllers
             bool isTech  = currentUserRoles.Contains("Technician");
 
             bool isElevated = isAdmin || isTech;
-
             // ****** DRY?
 
             Ticket ticket = _context.Tickets
@@ -194,14 +200,20 @@ namespace DarnTheLuck.Controllers
                        isElevated)             // allow Elevated users (Admin, Tech) to view details
                     && t.TicketId == Id);
 
-            TicketViewModel ticketView; 
+            TicketViewModel ticketView;
 
-            if(ticket is null){
+            /*
+             * Below is one way to test Roles, another is to inject AuthorizationService into the page (Home/Index does this).
+             * 
+             * Another possibile way to do this would be create an Elevated controller and do our Role checks there
+            */
+
+            if (ticket is null){
                 ticketView = null;
             } else {
                 ticketView = new TicketViewModel(ticket);
                 ticketView.IsAdmin = isAdmin;
-                ticketView.IsTech  = isTech;
+                ticketView.IsTech  = isTech;   
                 ticketView.IsOwner = ticket.UserId == user.Id;
             }
 
