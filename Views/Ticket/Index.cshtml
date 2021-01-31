@@ -1,8 +1,9 @@
-﻿@using DarnTheLuck.ViewModels;
+﻿@using DarnTheLuck.Helpers;
+@using DarnTheLuck.ViewModels;
 
-@model List<TicketListViewModel>
+@model PaginatedList<TicketListViewModel>
 
-@{ 
+@{
     string[][] columns = new string[][] {
                 new string []{ "Status", "status" },
                 new string []{ "Created", "created"},
@@ -18,9 +19,10 @@
         {
             if (ViewBag.sort == col[1])
             {
+                string flipSort = string.IsNullOrEmpty(ViewBag.sortDir) ? "descending" : string.Empty; 
                 <div class="col d-txt">
-                    <a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(ViewBag.sortDir)?"#ff8000":"#ffff00")" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]" asp-route-sortDir="@ViewBag.sortDir">@col[0]</a>
-                </div>
+                    <a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(ViewBag.sortDir) ? "#ffff00" : "#ff8000")" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]" asp-route-sortDir="@flipSort">@col[0]</a>
+</div>
             }
             else
             {
@@ -43,6 +45,25 @@
         </a>
     }
 </div>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sort="@ViewBag.sort"
+   asp-route-sortDir="@ViewBag.sortDir"
+   asp-route-page="@(Model.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sort="@ViewBag.sort"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-sortDir="@ViewBag.sortDir"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
 <hr />
 <div class="text-center">
     <h1><a asp-controller="Ticket" asp-action="Create">Create New Ticket</a></h1>

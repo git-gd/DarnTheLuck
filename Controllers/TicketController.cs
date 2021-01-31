@@ -1,4 +1,5 @@
 ﻿using DarnTheLuck.Data;
+using DarnTheLuck.Helpers;
 using DarnTheLuck.Models;
 using DarnTheLuck.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -43,10 +44,13 @@ namespace DarnTheLuck.Controllers
          *  Learning opportunity: ASYNC - Task<>, await
          */
 
-        public async Task<IActionResult> Index(string sort, string sortDir)
+        public async Task<IActionResult> Index(string sort, string sortDir, int page = 1)
         {
+            const int pageSize = 3; // How many records do we want to list?
+
             ViewBag.sort = string.IsNullOrEmpty(sort)?"ticket":sort;
-            ViewBag.sortDir = string.IsNullOrEmpty(sortDir) ? "descending" : string.Empty;
+            ViewBag.sortDir = sortDir;
+            //ViewBag.sortDir = string.IsNullOrEmpty(sortDir) ? string.Empty : "descending";
 
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -54,7 +58,6 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
-            //TODO: Pagination
             //TODO: Search (collapsable form, text input, checkbox properties/fields)
 
             IQueryable<TicketListViewModel> ticketListQuery = (
@@ -117,7 +120,7 @@ namespace DarnTheLuck.Controllers
                 }
             }
 
-            List<TicketListViewModel> ticketList = ticketListQuery.ToList();
+            PaginatedList<TicketListViewModel> ticketList = await PaginatedList<TicketListViewModel>.CreateAsync(ticketListQuery, page, pageSize);
 
             return View(ticketList);
         }
