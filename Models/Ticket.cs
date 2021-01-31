@@ -50,7 +50,7 @@ namespace DarnTheLuck.Models
         public int TechId { get; set; }
 
         /*
-         * Issues (DropDown)
+         * Issues (DropDown) - Not implemented
          * 
          * This is a many to many relationsihp. Each ticket can have many issues and each issue can
          * belong to many tickets.

@@ -5,7 +5,7 @@
 <div class="text-center">
     <h1><a asp-controller="Ticket" asp-action="Index">View Tickets</a></h1>
     <h1><a asp-controller="Ticket" asp-action="Create">Create Ticket</a></h1>
-    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")) // Are we logged in? Are we an Admin (role)?
     {
         <h1><a asp-controller="Admin" asp-action="Index">View Roles</a></h1>
         <h1><a asp-controller="Admin" asp-action="CreateRole">Create Role</a></h1>
