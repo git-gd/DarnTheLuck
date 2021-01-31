@@ -16,13 +16,17 @@
     <div class="row ticket-head text-center flex-nowrap text-nowrap">
         @foreach (string[] col in columns)
         {
-            if (ViewBag.sort == col[1]) //TODO: DRY?
+            if (ViewBag.sort == col[1])
             {
-                <div class="col d-txt"><a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(ViewBag.sortDir)?"#ff8000":"#ffff00")" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]" asp-route-sortDir="@ViewBag.sortDir">@col[0]</a></div>
+                <div class="col d-txt">
+                    <a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(ViewBag.sortDir)?"#ff8000":"#ffff00")" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]" asp-route-sortDir="@ViewBag.sortDir">@col[0]</a>
+                </div>
             }
             else
             {
-                <div class="col d-txt"><a class="text-decoration-none" style="color:white" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]">@col[0]</a></div>
+                <div class="col d-txt">
+                    <a class="text-decoration-none" style="color:white" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]">@col[0]</a>
+                </div>
             }
         }
     </div>
