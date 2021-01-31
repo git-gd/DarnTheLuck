@@ -44,13 +44,11 @@ namespace DarnTheLuck.Controllers
          *  Learning opportunity: ASYNC - Task<>, await
          */
 
-        public async Task<IActionResult> Index(string sort, string sortDir, int page = 1)
+        public async Task<IActionResult> Index(string sort, string sortDir, int page = 1, int pageSize = 3)
         {
-            const int pageSize = 3; // How many records do we want to list?
-
             ViewBag.sort = string.IsNullOrEmpty(sort)?"ticket":sort;
             ViewBag.sortDir = sortDir;
-            //ViewBag.sortDir = string.IsNullOrEmpty(sortDir) ? string.Empty : "descending";
+            ViewBag.pageSize = pageSize;
 
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 

@@ -19,15 +19,15 @@
         {
             if (ViewBag.sort == col[1])
             {
-                string flipSort = string.IsNullOrEmpty(ViewBag.sortDir) ? "descending" : string.Empty; 
+                string flipSort = string.IsNullOrEmpty(ViewBag.sortDir) ? "descending" : string.Empty;
                 <div class="col d-txt">
-                    <a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(ViewBag.sortDir) ? "#ffff00" : "#ff8000")" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]" asp-route-sortDir="@flipSort">@col[0]</a>
-</div>
+                    <a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(ViewBag.sortDir) ? "#ffff00" : "#ff8000")" asp-controller="Ticket" asp-action="Index" asp-route-pageSize="@ViewBag.pageSize" asp-route-sort="@col[1]" asp-route-sortDir="@flipSort">@col[0]</a>
+                </div>
             }
             else
             {
                 <div class="col d-txt">
-                    <a class="text-decoration-none" style="color:white" asp-controller="Ticket" asp-action="Index" asp-route-sort="@col[1]">@col[0]</a>
+                    <a class="text-decoration-none" style="color:white" asp-controller="Ticket" asp-route-pageSize="@ViewBag.pageSize" asp-action="Index" asp-route-sort="@col[1]">@col[0]</a>
                 </div>
             }
         }
@@ -53,17 +53,32 @@
 <a asp-action="Index"
    asp-route-sort="@ViewBag.sort"
    asp-route-sortDir="@ViewBag.sortDir"
+   asp-route-pageSize="@ViewBag.pageSize"
    asp-route-page="@(Model.PageIndex - 1)"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
    asp-route-sort="@ViewBag.sort"
-   asp-route-page="@(Model.PageIndex + 1)"
    asp-route-sortDir="@ViewBag.sortDir"
+   asp-route-pageSize="@ViewBag.pageSize"
+   asp-route-page="@(Model.PageIndex + 1)"
    class="btn btn-default @nextDisabled">
     Next
 </a>
+<hr />
+<form method="Get" asp-action="Index">
+    <input type="hidden" name="sort" value="@ViewBag.sort" />
+    <input type="hidden" name="sortDir" value="@ViewBag.sortDir" />
+    <label for="pageSize">Records Per Page:</label>
+    <select name="pageSize" id="pageSize">
+        <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
+        <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
+        <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
+        <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
+    </select>
+    <button>Submit</button>
+</form>
 <hr />
 <div class="text-center">
     <h1><a asp-controller="Ticket" asp-action="Create">Create New Ticket</a></h1>
