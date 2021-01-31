@@ -1,11 +1,15 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@{ViewData["Title"] = "Home Page";}
 <div class="text-center">
     <h1><a asp-controller="Ticket" asp-action="Index">View Tickets</a></h1>
     <h1><a asp-controller="Ticket" asp-action="Create">Create Ticket</a></h1>
-    <h1><a asp-controller="Admin" asp-action="Index">View Roles</a></h1>
-    <h1><a asp-controller="Admin" asp-action="CreateRole">Create Role</a></h1>
-    <h1><a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="cc8861b9-bc94-4ff0-b7eb-902fa60613e1">Edit Admin Role</a></h1> @* Hard coded to Admin atm *@
-    <h1><a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="0529ffe9-1d23-4f01-9d4b-2bd6f485327c">Edit Tech Role</a></h1> @* Hard coded to Tech atm *@
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <h1><a asp-controller="Admin" asp-action="Index">View Roles</a></h1>
+        <h1><a asp-controller="Admin" asp-action="CreateRole">Create Role</a></h1>
+        <h1><a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="cc8861b9-bc94-4ff0-b7eb-902fa60613e1">Edit Admin Role</a></h1> @* Hard coded to Admin atm *@
+        <h1><a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="0529ffe9-1d23-4f01-9d4b-2bd6f485327c">Edit Tech Role</a></h1> @* Hard coded to Tech atm *@
+    }
 </div>
