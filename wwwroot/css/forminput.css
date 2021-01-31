@@ -8,17 +8,6 @@ h1 {
     font-family: 'Unkempt', cursive;
 }
 
-.c-inp {
-    margin-bottom: 30px;
-    border-radius: 15px;
-    box-shadow: inset 1px 1px 1px #cbced1, inset -1px -1px 1px #ffffff;
-}
-
-.u-div {
-    padding: 0.4rem 0;
-    border-bottom: 4px solid #383838;
-}
-
 .t-box {
     position: relative;
     bottom: -11px;
@@ -44,6 +33,31 @@ h1 {
     /*box-shadow: -4px -4px 6px 0 rgba(0, 0, 0, 0.3), 6px 6px 8px rgba(0, 0, 0, 0.3);*/
     box-shadow: 0 2px 2px rgba(0,0,0,0.5), 0 4px 4px rgba(0,0,0,0.4), 0 6px 6px rgba(0,0,0,0.3), 0 12px 12px rgba(0,0,0,0.1);
 }
+
+.txt:focus {
+    outline: none;
+    box-shadow: 0 0 5pt #000000;
+}
+
+.fbtn {
+    font-weight: bold;
+    color: black;
+    background: #e9ecef;
+    border-radius: 10px;
+    box-shadow: 0 0 2pt #000000;
+}
+
+/*#212125
+#d1d1d1
+#ccb79f
+#c79e6d
+#c2853c
+
+#F3F1F3
+#99969A
+#AF9A69
+#838687
+#2C393D*/
 
 /*body {
     font-family: Lato;

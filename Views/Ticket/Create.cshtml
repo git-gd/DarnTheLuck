@@ -8,39 +8,38 @@
         <div>
             <label>Contact Name</label>
         </div><div>
-            <input asp-for="ContactName" type="text" class="input-group-text ticket-round text-left" />
-            <span asp-validation-for="ContactName"></span>
+            <input asp-for="ContactName" type="text" class="input-group input-group-text ticket-round text-left txt" />
+            <span class="text-danger" asp-validation-for="ContactName"></span>
         </div>
         <div>
             <label>Contact Email</label>
         </div><div>
-            <input asp-for="ContactEmail" type="text" class="input-group ticket-round" />
-            <span asp-validation-for="ContactEmail"></span>
+            <input asp-for="ContactEmail" type="text" class="input-group input-group-text ticket-round text-left txt" />
+            <span class="text-danger" asp-validation-for="ContactEmail"></span>
         </div>
         <div>
             <label>Contact Phone</label>
         </div><div>
-            <input asp-for="ContactPhone" type="text" class="input-group input-group-text ticket-round" />
-            <span asp-validation-for="ContactPhone"></span>
+            <input asp-for="ContactPhone" type="text" class="input-group input-group-text ticket-round text-left txt" />
+            <span class="text-danger" asp-validation-for="ContactPhone"></span>
         </div>
         <div>
             <label>Ticket Notes</label>
         </div><div>
-            <textarea asp-for="TicketNotes" cols="40" rows="5"></textarea>
+            <textarea asp-for="TicketNotes" class="input-group input-group-text text-left"></textarea>
         </div>
         <div>
             <label>Device Model Number</label>
-        </div><div class="u-div">
-            <input asp-for="Model" type="text" id="modelInput" />
-            <span contenteditable class="t-box" onchange="alert(this.value);"></span> @* onchange not triggering, need to set modelInput somewhere.. can do it on submit as well *@
+        </div><div>
+            <input asp-for="Model" type="text" id="modelInput" class="input-group input-group-text ticket-round text-left txt" />
         </div>
         <div>
             <label>Device Serial Number</label>
         </div><div>
-            <input asp-for="Serial" type="text" class="c-inp" />
+            <input asp-for="Serial" type="text" class="input-group input-group-text ticket-round text-left txt" />
         </div>
-        <div>
-            <button>Submit</button>
+        <div class="pt-3">
+            <button class="btn fbtn">Submit</button>
         </div>
     </div>
 </form>
