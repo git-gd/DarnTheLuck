@@ -99,16 +99,16 @@ body {
 
 /* ticket status colors */
 .t-Created {
-    background-color: #a4feff;
+    background-color: #ccffff;
 }
 .t-Limbo {
-    background-color: #ffa4a4;
+    background-color: #ffaaaa;
 }
 .t-Ready {
-    background-color: #a4ffb1;
+    background-color: #ccffcc;
 }
 .t-Shipped {
-    background-color: #a0a0a0;
+    background-color: #cccccc;
 }
 
 @media only screen and (min-width : 1200px) {
