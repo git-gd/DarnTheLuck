@@ -71,13 +71,12 @@
     <input type="hidden" name="sort" value="@ViewBag.sort" />
     <input type="hidden" name="sortDir" value="@ViewBag.sortDir" />
     <label for="pageSize">Records Per Page:</label>
-    <select name="pageSize" id="pageSize">
+    <select name="pageSize" id="pageSize" onchange="this.form.submit()">
         <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
         <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
         <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
         <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
     </select>
-    <button>Submit</button>
 </form>
 <hr />
 <div class="text-center">
