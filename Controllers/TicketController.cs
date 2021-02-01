@@ -230,17 +230,32 @@ namespace DarnTheLuck.Controllers
         [HttpPost]
         [ActionName("UpdateStatus")]
         [Authorize(Roles = "Technician")]
-        public async Task<IActionResult> UpdateStatus(string setStatus, int Id)
+        public async Task<IActionResult> UpdateStatus(string? setTech, string? setStatus, int Id)
         {
             int num;    
 
+            //TODO: is Id 0, null, valid? How about setStatus or setTech? Use a ViewModel?
+
             Ticket ticket = await _context.Tickets.FindAsync(Id);
+
+            //This is janky !! currently tossing both updates at the same controller, only one will evaluate and fire off 
 
             if (System.Int32.TryParse(setStatus, out num)){
                 ticket.TicketStatusId = num;
 
                 _context.SaveChanges();
-            } // else ERROR! TODO: lookup and verify status, really could use an error page
+            }
+
+            if (setTech == "True") // No need to expose the Tech Id as they are the current user
+            {
+                IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+                // May not want to use these values
+                ticket.TechName = user.NormalizedUserName;
+                ticket.TechEmail = user.Email;
+
+                _context.SaveChanges();
+            }
 
             return Redirect("/ticket/details/" + Id);
         }

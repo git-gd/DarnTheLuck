@@ -47,7 +47,8 @@ namespace DarnTheLuck.Models
          * TechId can be blank/null and can change after it is set (if a new Technician takes over)
          * We will use this property in a Join to supply the Tech Name and Email
          */
-        public int TechId { get; set; }
+        public string TechName { get; set; }
+        public string TechEmail { get; set; }
 
         /*
          * Issues (DropDown) - Not implemented

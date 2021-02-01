@@ -34,10 +34,8 @@ namespace DarnTheLuck.ViewModels
             Status = ticket.TicketStatus.Name;
             Model = ticket.Model;
             Serial = ticket.Serial;
-
-            //TODO: Add Tech Info - need to setup relationship and pull in extra info
-            TechName = "TODO: TechName";
-            TechEmail = "TODO: TechEmail";
+            TechName = ticket.TechName;
+            TechEmail = ticket.TechEmail;
         }
     }
 }
