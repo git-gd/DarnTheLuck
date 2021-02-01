@@ -24,9 +24,8 @@ namespace DarnTheLuck.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<IdentityRole> roles = _roleManager.Roles;
-
-            return View(roles);
+            // Trying injection on the Razor page
+            return View();
         }
 
         [HttpGet]
