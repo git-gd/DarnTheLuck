@@ -3,7 +3,7 @@
 
 @if (Model == null)
 {
-    <h1>No Details</h1>
+    <h1 class="text-center">No Details</h1>
 }
 else
 {
@@ -75,18 +75,12 @@ else
             <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.TechEmail</div>
         </div>
     </div>
-
-    @if (Model.IsOwner)
-    {
-        <div><h1>This is your ticket, @Model.ContactName!</h1></div>
-    }
-    @if (Model.IsTech)
-    {
-        <div><h1>You are a Technician</h1></div>
-    }
     @if (Model.IsAdmin)
-    {
-        <div><h1>You are an Admin</h1></div>
+    {<div class="container-fluid overflow-auto">
+            <div class="row">
+                <button class="ticket-round btn-danger d-txt">DELETE TICKET @Model.TicketId</button>
+            </div>
+        </div>
     }
 }
 
