@@ -55,7 +55,7 @@ namespace DarnTheLuck.Controllers
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
 
-            bool isElevated = currentUserRoles.Intersect(elevated).Any();
+            bool isElevated = currentUserRoles.Intersect(elevated).Any(); 
 
             //TODO: Search (collapsable form, text input, checkbox properties/fields)
 
@@ -152,10 +152,9 @@ namespace DarnTheLuck.Controllers
             return View("Create", ticketModel);
         }
 
-        [HttpGet("/ticket/details/{id?}")] // This enables routing that we can use in a link
+        [HttpGet("/ticket/details/{id?}")]
         public async Task<IActionResult> Details(int Id)
         {
-            // ****** DRY?
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
@@ -164,7 +163,6 @@ namespace DarnTheLuck.Controllers
             bool isTech  = currentUserRoles.Contains("Technician");
 
             bool isElevated = isAdmin || isTech;
-            // ****** DRY?
 
             Ticket ticket = _context.Tickets
                 .Include(t => t.TicketStatus)  // so we can access the Name string in the related table
