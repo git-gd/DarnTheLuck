@@ -116,9 +116,4 @@ namespace DarnTheLuck.Controllers
 /*
  * https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-5.0
  * https://csharp-video-tutorials.blogspot.com/2019/07/creating-roles-in-aspnet-core.html
- * 
- * var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
- * await roleManager.CreateAsync(new IdentityRole(role));
- * await userManager.FindByIdAsync(uid);
- * await userManager.AddToRoleAsync(user, role);
  */
