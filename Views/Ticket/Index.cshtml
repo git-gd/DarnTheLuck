@@ -49,35 +49,35 @@
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-
-<a asp-action="Index"
-   asp-route-sort="@ViewBag.sort"
-   asp-route-sortDir="@ViewBag.sortDir"
-   asp-route-pageSize="@ViewBag.pageSize"
-   asp-route-page="@(Model.PageIndex - 1)"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index"
-   asp-route-sort="@ViewBag.sort"
-   asp-route-sortDir="@ViewBag.sortDir"
-   asp-route-pageSize="@ViewBag.pageSize"
-   asp-route-page="@(Model.PageIndex + 1)"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
-<hr />
-<form method="Get" asp-action="Index">
-    <input type="hidden" name="sort" value="@ViewBag.sort" />
-    <input type="hidden" name="sortDir" value="@ViewBag.sortDir" />
-    <label for="pageSize">Records Per Page:</label>
-    <select name="pageSize" id="pageSize" onchange="this.form.submit()">
-        <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
-        <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
-        <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
-        <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
-    </select>
-</form>
+<div class="container font-weight-bold">
+    <a asp-action="Index"
+       asp-route-sort="@ViewBag.sort"
+       asp-route-sortDir="@ViewBag.sortDir"
+       asp-route-pageSize="@ViewBag.pageSize"
+       asp-route-page="@(Model.PageIndex - 1)"
+       class="btn btn-default font-weight-bold @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-sort="@ViewBag.sort"
+       asp-route-sortDir="@ViewBag.sortDir"
+       asp-route-pageSize="@ViewBag.pageSize"
+       asp-route-page="@(Model.PageIndex + 1)"
+       class="btn btn-default font-weight-bold @nextDisabled">
+        Next
+    </a>
+    <form method="Get" asp-action="Index">
+        <input type="hidden" name="sort" value="@ViewBag.sort" />
+        <input type="hidden" name="sortDir" value="@ViewBag.sortDir" />
+        <label for="pageSize">Records Per Page:</label>
+        <select name="pageSize" id="pageSize" onchange="this.form.submit()">
+            <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
+            <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
+            <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
+            <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
+        </select>
+    </form>
+</div>
 <hr />
 <div class="text-center">
     <h1><a asp-controller="Ticket" asp-action="Create">Create New Ticket</a></h1>
