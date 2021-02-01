@@ -7,74 +7,87 @@
 }
 else
 {
-<div class="d-txt font-weight-bold">Ticket:</div>
-<div class="container-fluid overflow-auto">
-    <div class="row ticket-round border border-dark t-@Model.Status">
-        <div class="col-2 d-txt">Status</div>
-        @if (Model.IsTech)
-        {
-            <div class="col-2 d-txt">
-                <form method="post" asp-controller="Ticket" asp-action="UpdateStatus">
-                    <input type="hidden" name="Id" value="@Model.TicketId" />
-                    <input type="hidden" name="setField" value="Status" />
-                    <select name="setValue" id="setValue" onchange="this.form.submit()" class="bg-transparent border-0 font-weight-bold">
-                        @foreach (TicketStatus status in ViewBag.ticketStatusList)
-                        {
-                            <option value="@status.Id" selected="@(Model.Status == status.Name)">@status.Name</option>
-                        }
-                    </select>
-                </form>
-            </div>}
-        else
-        {
-            <div class="col d-txt">@Model.Status</div>
-        }
+    <div class="d-txt font-weight-bold">Ticket:</div>
+    <div class="container-fluid overflow-auto">
+        <div class="row ticket-round border border-dark t-@Model.Status">
+            <div class="col-2 d-txt">Status</div>
+            @if (Model.IsTech)
+            {
+                <div class="col-2 d-txt">
+                    <form method="post" asp-controller="Ticket" asp-action="UpdateStatus">
+                        <input type="hidden" name="Id" value="@Model.TicketId" />
+                        <input type="hidden" name="setField" value="Status" />
+                        <select name="setValue" id="setValue" onchange="this.form.submit()" class="bg-transparent border-0 font-weight-bold">
+                            @foreach (TicketStatus status in ViewBag.ticketStatusList)
+                            {
+                                <option value="@status.Id" selected="@(Model.Status == status.Name)">@status.Name</option>
+                            }
+                        </select>
+                    </form>
+                </div>}
+            else
+            {
+                <div class="col d-txt">@Model.Status</div>
+            }
+        </div>
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Date</div><div class="col d-txt">@Model.Created.ToString("MM/dd/yy")</div>
+        </div>
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Ticket #</div><div class="col d-txt">@Model.TicketId</div>
+        </div>
     </div>
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Date</div><div class="col d-txt">@Model.Created.ToString("MM/dd/yy")</div>
+    <div class="d-txt font-weight-bold">Device:</div>
+    <div class="container-fluid overflow-auto">
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Model</div><div class="col d-txt">@Model.Model</div>
+        </div>
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Serial #</div><div class="col d-txt">@Model.Serial</div>
+        </div>
     </div>
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Ticket #</div><div class="col d-txt">@Model.TicketId</div>
+    <div class="container-fluid overflow-auto">
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 o-txt">Notes</div><div class="col o-txt">@Model.TicketNotes</div>
+        </div>
     </div>
-</div>
-<div class="d-txt font-weight-bold">Device:</div>
-<div class="container-fluid overflow-auto">
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Model</div><div class="col d-txt">@Model.Model</div>
+    <div class="d-txt font-weight-bold">User:</div>
+    <div class="container-fluid overflow-auto">
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Name</div><div class="col d-txt">@Model.ContactName</div>
+        </div>
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Phone</div><div class="col d-txt">@Model.ContactPhone</div>
+        </div>
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.ContactEmail</div>
+        </div>
     </div>
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Serial #</div><div class="col d-txt">@Model.Serial</div>
+    <div class="form-inline d-txt font-weight-bold">
+        Technician:@if (Model.IsTech)
+        {<form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-setField="Tech" asp-route-Id="@Model.TicketId"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></form>}
     </div>
-</div>
-<div class="container-fluid overflow-auto">
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 o-txt">Notes</div><div class="col o-txt">@Model.TicketNotes</div>
+    <div class="container-fluid overflow-auto">
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Name</div><div class="col d-txt">@Model.TechName</div>
+        </div>
+        <div class="row ticket-round border border-dark">
+            <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.TechEmail</div>
+        </div>
     </div>
-</div>
-<div class="d-txt font-weight-bold">User:</div>
-<div class="container-fluid overflow-auto">
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Name</div><div class="col d-txt">@Model.ContactName</div>
-    </div>
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Phone</div><div class="col d-txt">@Model.ContactPhone</div>
-    </div>
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.ContactEmail</div>
-    </div>
-</div>
-<div class="form-inline d-txt font-weight-bold">
-    Technician:@if (Model.IsTech)
-    {<form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-setField="Tech" asp-route-Id="@Model.TicketId"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></form>}
-</div>
-<div class="container-fluid overflow-auto">
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Name</div><div class="col d-txt">@Model.TechName</div>
-    </div>
-    <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.TechEmail</div>
-    </div>
-</div>
+
+    @if (Model.IsOwner)
+    {
+        <div><h1>This is your ticket, @Model.ContactName!</h1></div>
+    }
+    @if (Model.IsTech)
+    {
+        <div><h1>You are a Technician</h1></div>
+    }
+    @if (Model.IsAdmin)
+    {
+        <div><h1>You are an Admin</h1></div>
+    }
 }
 
 <div class="text-center">
@@ -83,16 +96,3 @@ else
 <div class="text-center">
     <h1><a asp-controller="Ticket" asp-action="Create">Create New Ticket</a></h1>
 </div>
-
-@if (Model.IsOwner)
-{
-    <div><h1>This is your ticket, @Model.ContactName!</h1></div>
-}
-@if (Model.IsTech)
-{
-    <div><h1>You are a Technician</h1></div>
-}
-@if (Model.IsAdmin)
-{
-    <div><h1>You are an Admin</h1></div>
-}

@@ -244,52 +244,37 @@ namespace DarnTheLuck.Controllers
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
             List<int> validStatus = await _context.TicketStatuses.Select(ts => ts.Id).ToListAsync();
+            bool isTech, isOwner = false;
 
             //TODO: is Id 0, null, valid? How about setStatus or setTech? Use a ViewModel?
             Ticket ticket = await _context.Tickets.FindAsync(Id);
 
-            switch (setField)
+            if (ticket is object) // Null check
             {
-                case ("Tech"):
-                    // A tech clicked the claim button, set the Tech Name and Email to the current user(Tech)
-                    if(await _userManager.IsInRoleAsync(user, "Technician"))
-                    {
-                        ticket.TechName  = user.UserName;
-                        ticket.TechEmail = user.Email;
-                    }
-                    break;
-                case ("Status"):
-                    if(System.Int32.TryParse(setValue, out int value))
-                    {
-                        if (validStatus.Contains(value))
+
+                switch (setField)
+                {
+                    case ("Tech"):
+                        // A tech clicked the claim button, set the Tech Name and Email to the current user(Tech)
+                        if (await _userManager.IsInRoleAsync(user, "Technician"))
                         {
-                            ticket.TicketStatusId = value;
+                            ticket.TechName = user.UserName;
+                            ticket.TechEmail = user.Email;
                         }
-                    }
-                    break;
+                        break;
+                    case ("Status"):
+                        if (System.Int32.TryParse(setValue, out int value))
+                        {
+                            if (validStatus.Contains(value))
+                            {
+                                ticket.TicketStatusId = value;
+                            }
+                        }
+                        break;
+                }
+
+                _context.SaveChanges();
             }
-
-            _context.SaveChanges();
-
-            //This is janky !! currently tossing both updates at the same controller, only one will evaluate and fire off 
-
-            //if (System.Int32.TryParse(setStatus, out num)){
-            //    ticket.TicketStatusId = num;
-
-            //    _context.SaveChanges();
-            //}
-
-            //if (setTech == "True") // No need to expose the Tech Id as they are the current user
-            //{
-            //    IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
-
-            //    // May not want to use these values
-            //    ticket.TechName = user.NormalizedUserName;
-            //    ticket.TechEmail = user.Email;
-
-            //    _context.SaveChanges();
-            //}
-
             return Redirect("/ticket/details/" + Id);
         }
     }       //TODO: Info Pages - (i)Show code snippets, how the page works, what the features are
