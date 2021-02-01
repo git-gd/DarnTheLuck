@@ -2,6 +2,7 @@
 using DarnTheLuck.Helpers;
 using DarnTheLuck.Models;
 using DarnTheLuck.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -218,7 +219,30 @@ namespace DarnTheLuck.Controllers
                 ticketView.IsOwner = ticket.UserId == user.Id;
             }
 
+            if (isTech) // Intentionally leaving Admins out here, only Technicians can change Ticket Status (for demonstration)
+            {
+                ViewBag.ticketStatusList = await _context.TicketStatuses.ToListAsync();
+            }
+
             return View(ticketView);
+        }
+
+        [HttpPost]
+        [ActionName("UpdateStatus")]
+        [Authorize(Roles = "Technician")]
+        public async Task<IActionResult> UpdateStatus(string setStatus, int Id)
+        {
+            int num;    
+
+            Ticket ticket = await _context.Tickets.FindAsync(Id);
+
+            if (System.Int32.TryParse(setStatus, out num)){
+                ticket.TicketStatusId = num;
+
+                _context.SaveChanges();
+            } // else ERROR! TODO: lookup and verify status, really could use an error page
+
+            return Redirect("/ticket/details/" + Id);
         }
     }       //TODO: Info Pages - (i)Show code snippets, how the page works, what the features are
 }
