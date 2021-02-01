@@ -11,6 +11,19 @@
                 new string []{ "Serial #", "serial" },
                 new string []{ "Ticket #", "ticket" }
     };
+
+    string highlight(string input)
+    {
+        if (input != null && ViewBag.search != null)
+        {
+            if (input.Contains(ViewBag.search))
+            {
+                return "style=color:red";
+            }
+        }
+
+        return null;
+    }
 }
 <div class="container-fluid overflow-auto">
     <div class="row ticket-head text-center flex-nowrap text-nowrap">
@@ -35,11 +48,11 @@
     {
         <a asp-controller="Ticket" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
             <div class="row text-center ticket-round border border-dark t-@ticket.Status">
-                <div class="col d-txt">@ticket.Status</div>
-                <div class="col d-txt">@ticket.Created.ToString("MM/dd/yy")</div>
-                <div class="col d-txt">@ticket.Model</div>
-                <div class="col d-txt">@ticket.Serial</div>
-                <div class="col d-txt">@ticket.TicketId</div>
+                <div class="col d-txt" @highlight(ticket.Status)>@ticket.Status</div>
+                <div class="col d-txt" @highlight(ticket.Created.Date.ToString())>@ticket.Created.ToString("MM/dd/yy")</div>
+                <div class="col d-txt" @highlight(ticket.Model)>@ticket.Model</div>
+                <div class="col d-txt" @highlight(ticket.Serial)>@ticket.Serial</div>
+                <div class="col d-txt" @highlight(ticket.TicketId.ToString())>@ticket.TicketId</div>
             </div>
         </a>
     }
@@ -87,6 +100,9 @@
     </div>
     <div class="col-auto pt-1">
         <form method="post" asp-controller="Ticket" asp-action="Index">
+            <input type="hidden" name="sort" value="@ViewBag.sort" />
+            <input type="hidden" name="sortDir" value="@ViewBag.sortDir" />
+            <input type="hidden" name="pageSize" value="@ViewBag.pageSize" />
             <div class="container-fluid">
                 <label>Search: <input type="text" name="search" value="@ViewBag.search" class="txt ticket-round" /></label>
                 <button class="ticket-round">Submit</button>
