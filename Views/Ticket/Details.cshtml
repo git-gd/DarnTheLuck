@@ -78,7 +78,11 @@ else
     @if (Model.IsAdmin)
     {<div class="container-fluid overflow-auto">
             <div class="row">
-                <button class="ticket-round btn-danger d-txt">DELETE TICKET @Model.TicketId</button>
+                <form method="post" asp-controller="Ticket" asp-action="DeleteTicket" onsubmit="return document.getElementById('Id').value == document.getElementById('confirm').value">
+                    <input type="hidden" name="Id" id="Id" value="@Model.TicketId" />
+                    <input type="hidden" name="confirm" id="confirm" value="0" />
+                    <button class="ticket-round btn-danger d-txt" onclick="document.getElementById('confirm').value = prompt('Confirm the Ticket Number to DELETE: ')">Delete Ticket @Model.TicketId</button>
+                </form>
             </div>
         </div>
     }
