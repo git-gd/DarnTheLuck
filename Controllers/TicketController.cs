@@ -239,7 +239,6 @@ namespace DarnTheLuck.Controllers
          */
 
         [HttpPost]
-        //[Authorize(Roles = "Technician")]
         public async Task<IActionResult> UpdateStatus(string setField, string setValue, int Id)
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
@@ -263,18 +262,27 @@ namespace DarnTheLuck.Controllers
                         }
                         break;
                     case ("Status"):
-                        if (System.Int32.TryParse(setValue, out int value))
+                        if (System.Int32.TryParse(setValue, out int value) && validStatus.Contains(value))
                         {
-                            if (validStatus.Contains(value))
-                            {
-                                ticket.TicketStatusId = value;
-                            }
+                            ticket.TicketStatusId = value;
                         }
                         break;
                 }
 
                 _context.SaveChanges();
             }
+            return Redirect("/ticket/details/" + Id);
+        }
+        
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteTicket(string confirm, int Id)
+        {
+            // confirm match
+
+            // on confirm fail, add error message and return
+
+            // on confirm remove record
             return Redirect("/ticket/details/" + Id);
         }
     }       //TODO: Info Pages - (i)Show code snippets, how the page works, what the features are

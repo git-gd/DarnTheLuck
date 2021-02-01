@@ -71,6 +71,8 @@ namespace DarnTheLuck.Controllers
 
             if (role == null) { return View(model); } // send our Null model to the View to display a message
 
+            ViewBag.roleName = role.Name;
+
             foreach (var user in _userManager.Users.ToList()) 
             {
                 UserRoleViewModel userRoleViewModel = new UserRoleViewModel
