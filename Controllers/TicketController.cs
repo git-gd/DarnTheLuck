@@ -43,9 +43,10 @@ namespace DarnTheLuck.Controllers
 
         public async Task<IActionResult> Index(string sort, string sortDir, string search, int page = 1, int pageSize = 3)
         {
-            ViewBag.sort = string.IsNullOrEmpty(sort)?"ticket":sort;
+            ViewBag.sort = string.IsNullOrEmpty(sort) ? "ticket" : sort;
             ViewBag.sortDir = sortDir;
             ViewBag.pageSize = pageSize;
+            ViewBag.search = search;
 
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -68,7 +69,14 @@ namespace DarnTheLuck.Controllers
             // set search value
             if (search != null)
             {
-                ticketListQuery = ticketListQuery.Where(q => q.Status.Contains(search));
+                //TODO: checkbox selectors (currently searching all fields)
+                ticketListQuery = ticketListQuery.Where(q =>
+                    q.TicketId.ToString().Contains(search) ||
+                    q.Created.Date.ToString().Contains(search) || // Date so we don't get time values
+                    q.Status.Contains(search) ||
+                    q.Model.Contains(search) ||
+                    q.Serial.Contains(search)
+                );
             }
 
             // set sort method
@@ -223,7 +231,7 @@ namespace DarnTheLuck.Controllers
             {
                 if (isTech)
                 {
-                    switch(setField)
+                    switch (setField)
                     {
                         case ("Tech"):
                             ticket.TechName = user.UserName;
