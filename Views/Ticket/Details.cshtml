@@ -35,17 +35,22 @@ else
     <div class="row ticket-round border border-dark">
         <div class="col-2 d-txt">Ticket #</div><div class="col d-txt">@Model.TicketId</div>
     </div>
+</div>
+<div class="d-txt font-weight-bold">Device:</div>
+<div class="container-fluid overflow-auto">
     <div class="row ticket-round border border-dark">
         <div class="col-2 d-txt">Model</div><div class="col d-txt">@Model.Model</div>
     </div>
     <div class="row ticket-round border border-dark">
         <div class="col-2 d-txt">Serial #</div><div class="col d-txt">@Model.Serial</div>
     </div>
+</div>
+<div class="container-fluid overflow-auto">
     <div class="row ticket-round border border-dark">
         <div class="col-2 o-txt">Notes</div><div class="col o-txt">@Model.TicketNotes</div>
     </div>
 </div>
-<div class="d-txt font-weight-bold">User:</div="d-txt">
+<div class="d-txt font-weight-bold">User:</div>
 <div class="container-fluid overflow-auto">
     <div class="row ticket-round border border-dark">
         <div class="col-2 d-txt">Name</div><div class="col d-txt">@Model.ContactName</div>
@@ -57,10 +62,13 @@ else
         <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.ContactEmail</div>
     </div>
 </div>
-<div class="form-inline d-txt font-weight-bold">Technician:@if(Model.IsTech) { <form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-setTech="True" asp-route-Id="@Model.TicketId"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></form>}</div>
+<div class="form-inline d-txt font-weight-bold">
+    Technician:@if (Model.IsTech)
+    {<form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-setTech="True" asp-route-Id="@Model.TicketId"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></form>}
+</div>
 <div class="container-fluid overflow-auto">
     <div class="row ticket-round border border-dark">
-        <div class="col-2 d-txt">Tech</div><div class="col d-txt">@Model.TechName</div>
+        <div class="col-2 d-txt">Name</div><div class="col d-txt">@Model.TechName</div>
     </div>
     <div class="row ticket-round border border-dark">
         <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.TechEmail</div>
@@ -77,13 +85,13 @@ else
 
 @if (Model.IsOwner)
 {
-<div><h1>This is your ticket, @Model.ContactName!</h1></div>
+    <div><h1>This is your ticket, @Model.ContactName!</h1></div>
 }
 @if (Model.IsTech)
 {
-<div><h1>You are a Technician</h1></div>
+    <div><h1>You are a Technician</h1></div>
 }
 @if (Model.IsAdmin)
 {
-<div><h1>You are an Admin</h1></div>
+    <div><h1>You are an Admin</h1></div>
 }
