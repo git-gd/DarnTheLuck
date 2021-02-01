@@ -248,7 +248,7 @@ namespace DarnTheLuck.Controllers
             //TODO: is Id 0, null, valid? How about setStatus or setTech? Use a ViewModel?
             Ticket ticket = await _context.Tickets.FindAsync(Id);
 
-            if (ticket is object) // Null check
+            if (ticket != null) // Null check
             {
 
                 switch (setField)
@@ -275,14 +275,21 @@ namespace DarnTheLuck.Controllers
         }
         
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteTicket(string confirm, int Id)
+        [Authorize(Roles = "Admin")]  // restrict this function to Admins
+        public async Task<IActionResult> DeleteTicket(int confirm, int Id)
         {
-            // confirm match
+            // verify we have confirmation
+            if (confirm == Id)
+            {
+                Ticket ticket = await _context.Tickets.FindAsync(Id);
+            
+                if(ticket != null)
+                {
+                    _context.Tickets.Remove(ticket);
+                    await _context.SaveChangesAsync();
+                }
+            }
 
-            // on confirm fail, add error message and return
-
-            // on confirm remove record
             return Redirect("/ticket/details/" + Id);
         }
     }       //TODO: Info Pages - (i)Show code snippets, how the page works, what the features are
