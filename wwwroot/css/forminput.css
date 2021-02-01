@@ -52,6 +52,7 @@ h1 {
 }
 
 .form-control:focus {
+    color: black;
     outline: none;
     border: none;
     background-color: #e9ecef;
