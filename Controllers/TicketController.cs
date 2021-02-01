@@ -243,30 +243,36 @@ namespace DarnTheLuck.Controllers
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
             List<int> validStatus = await _context.TicketStatuses.Select(ts => ts.Id).ToListAsync();
-            bool isTech, isOwner = false;
+            
+            bool isTech = await _userManager.IsInRoleAsync(user, "Technician");
 
-            //TODO: is Id 0, null, valid? How about setStatus or setTech? Use a ViewModel?
             Ticket ticket = await _context.Tickets.FindAsync(Id);
 
             if (ticket != null) // Null check
             {
-
-                switch (setField)
+                if (isTech)
                 {
-                    case ("Tech"):
-                        // A tech clicked the claim button, set the Tech Name and Email to the current user(Tech)
-                        if (await _userManager.IsInRoleAsync(user, "Technician"))
-                        {
+                    switch(setField)
+                    {
+                        case ("Tech"):
                             ticket.TechName = user.UserName;
                             ticket.TechEmail = user.Email;
-                        }
-                        break;
-                    case ("Status"):
-                        if (System.Int32.TryParse(setValue, out int value) && validStatus.Contains(value))
-                        {
-                            ticket.TicketStatusId = value;
-                        }
-                        break;
+                            break;
+                        case ("Status"):
+                            if (System.Int32.TryParse(setValue, out int value) && validStatus.Contains(value))
+                            {
+                                ticket.TicketStatusId = value;
+                            }
+                            break;
+                    }
+                }
+                if (user.Id == ticket.UserId) // User is the Ticket Owner
+                {
+                    switch (setField)
+                    {
+                        default:
+                            break;
+                    }
                 }
 
                 _context.SaveChanges();
