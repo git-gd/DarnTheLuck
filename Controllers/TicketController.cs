@@ -71,53 +71,24 @@ namespace DarnTheLuck.Controllers
                     Serial = Ticket.Serial
                 });
 
-            /*
-             * TODO: This is so ugly... there has to be a better way
-             */
-
             // set sort method
-            if (sortDir == "descending")
-            {
-                switch (sort)
+            ticketListQuery = sortDir == "descending"
+                ? (sort switch
                 {
-                    case "status":
-                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.Status);
-                        break;
-                    case "created":
-                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.Created);
-                        break;
-                    case "model":
-                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.Model);
-                        break;
-                    case "serial":
-                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.Serial);
-                        break;
-                    default: // TicketId
-                        ticketListQuery = ticketListQuery.OrderByDescending(t => t.TicketId);
-                        break;
-                }
-            }
-            else
-            {
-                switch (sort)
+                    "status" => ticketListQuery.OrderByDescending(t => t.Status),
+                    "created" => ticketListQuery.OrderByDescending(t => t.Created),
+                    "model" => ticketListQuery.OrderByDescending(t => t.Model),
+                    "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
+                    _ => ticketListQuery.OrderByDescending(t => t.TicketId),
+                })
+                : (sort switch
                 {
-                    case "status":
-                        ticketListQuery = ticketListQuery.OrderBy(t => t.Status);
-                        break;
-                    case "created":
-                        ticketListQuery = ticketListQuery.OrderBy(t => t.Created);
-                        break;
-                    case "model":
-                        ticketListQuery = ticketListQuery.OrderBy(t => t.Model);
-                        break;
-                    case "serial":
-                        ticketListQuery = ticketListQuery.OrderBy(t => t.Serial);
-                        break;
-                    default: // TicketId
-                        ticketListQuery = ticketListQuery.OrderBy(t => t.TicketId);
-                        break;
-                }
-            }
+                    "status" => ticketListQuery.OrderBy(t => t.Status),
+                    "created" => ticketListQuery.OrderBy(t => t.Created),
+                    "model" => ticketListQuery.OrderBy(t => t.Model),
+                    "serial" => ticketListQuery.OrderBy(t => t.Serial),
+                    _ => ticketListQuery.OrderBy(t => t.TicketId),
+                });
 
             PaginatedList<TicketListViewModel> ticketList = await PaginatedList<TicketListViewModel>.CreateAsync(ticketListQuery, page, pageSize);
 
