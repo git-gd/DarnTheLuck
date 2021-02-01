@@ -62,27 +62,15 @@ namespace DarnTheLuck.Controllers
 
             return View(model);
         }
-    
-
 
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
-            var role = await _roleManager.FindByIdAsync(roleId);
+            IdentityRole role = await _roleManager.FindByIdAsync(roleId); // Get the role from the ID
 
-            if (role == null)
-            {
-                RedirectToAction("Index"); // ToDo: return error page
-            }
+            List<UserRoleViewModel> model = new List<UserRoleViewModel>();
 
-            ViewBag.roleId = roleId;
-
-            var model = new List<UserRoleViewModel>();
-
-            /*****
-             * LEARNED:
-             * _userManager.Users does not complete until .ToList()
-             *****/
+            if (role == null) { return View(model); } // send our Null model to the View to display a message
 
             foreach (var user in _userManager.Users.ToList()) 
             {
@@ -90,53 +78,37 @@ namespace DarnTheLuck.Controllers
                 {
                     UserId = user.Id,
                     UserName = user.UserName
-            };
+                };
 
                 userRoleViewModel.IsSelected = await _userManager.IsInRoleAsync(user, role.Name);
 
                 model.Add(userRoleViewModel);
             }
-
             return View(model);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model, string roleId)
         {
             var role = await _roleManager.FindByIdAsync(roleId);
 
-            if (role == null)
+            for (int i = 0; i < model.Count; i++) // Loop through the list
             {
-                return View("Index"); // ToDo: Error page
-            }
+                var user = await _userManager.FindByIdAsync(model[i].UserId); // Pull the User info
 
-            for (int i = 0; i < model.Count; i++)
-            {
-                var user = await _userManager.FindByIdAsync(model[i].UserId);
-
-                IdentityResult result;
-
+                // if checked and the user is NOT in the role, add them
                 if (model[i].IsSelected && !(await _userManager.IsInRoleAsync(user, role.Name)))
                 {
-                    result = await _userManager.AddToRoleAsync(user, role.Name);
+                    await _userManager.AddToRoleAsync(user, role.Name);
                 }
+                // if NOT checked and the user was in the role, remove them
                 else if (!model[i].IsSelected && await _userManager.IsInRoleAsync(user, role.Name))
                 {
-                    result = await _userManager.RemoveFromRoleAsync(user, role.Name);
+                    await _userManager.RemoveFromRoleAsync(user, role.Name);
                 }
-                else
-                {
-                    continue;
-                }
-
-                if (result.Succeeded && i > (model.Count))
-                    return RedirectToAction("Index"); // EditRole - we did not do this
             }
-
-            return RedirectToAction("Index"); // EditRole - we did not do this .. the example redirects an edit page
+            return RedirectToAction("Index");
         }
-
     }
 }
 
