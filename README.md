@@ -1,6 +1,4 @@
-DarnTheLuck is my LaunchCode LiftOff project that I will use to demonstrate some of the programming skills I have learned.
-
-DarnTheLuck is a computer repair shop ticketing system.
+DarnTheLuck is a simulated computer repair shop ticketing system.
 * Users are authenticated.
 * Customers can create and view their own repair tickets. 
 * Technicians can view and update customer tickets.
@@ -13,3 +11,6 @@ DarnTheLuck will use:
 * Razor / HTML
 * MySQL
 * BootStrap / CSS
+
+Public Domain Art:
+https://publicdomainvectors.org/en/free-clipart/Bad-bug-icon/82925.html
