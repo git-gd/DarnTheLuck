@@ -12,7 +12,15 @@
                 new string []{ "Ticket #", "ticket" }
     };
 }
-
+<form method="post" asp-controller="Ticket" asp-action="Index">
+    <div class="container-fluid">
+        <label>Search:<input type="text" name="search" /></label>
+        <button>Submit</button>
+    </div>
+    <div class="container collapse show" id="searchBar">
+        <label>Fields:<input type="checkbox" /></label>
+    </div>
+</form>
 <div class="container-fluid overflow-auto">
     <div class="row ticket-head text-center flex-nowrap text-nowrap">
         @foreach (string[] col in columns)

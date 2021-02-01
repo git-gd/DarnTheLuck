@@ -41,11 +41,7 @@ namespace DarnTheLuck.Controllers
             _userManager = userManager;
         }
 
-        /*
-         *  Learning opportunity: ASYNC - Task<>, await
-         */
-
-        public async Task<IActionResult> Index(string sort, string sortDir, int page = 1, int pageSize = 3)
+        public async Task<IActionResult> Index(string sort, string sortDir, string search, int page = 1, int pageSize = 3)
         {
             ViewBag.sort = string.IsNullOrEmpty(sort)?"ticket":sort;
             ViewBag.sortDir = sortDir;
@@ -55,9 +51,7 @@ namespace DarnTheLuck.Controllers
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
 
-            bool isElevated = currentUserRoles.Intersect(elevated).Any(); 
-
-            //TODO: Search (collapsable form, text input, checkbox properties/fields)
+            bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
@@ -70,6 +64,12 @@ namespace DarnTheLuck.Controllers
                     Model = Ticket.Model,
                     Serial = Ticket.Serial
                 });
+
+            // set search value
+            if (search != null)
+            {
+                ticketListQuery = ticketListQuery.Where(q => q.Status.Contains(search));
+            }
 
             // set sort method
             ticketListQuery = sortDir == "descending"
@@ -182,10 +182,12 @@ namespace DarnTheLuck.Controllers
             if (ticket is null){
                 ticketView = null;
             } else {
-                ticketView = new TicketViewModel(ticket);
-                ticketView.IsAdmin = isAdmin;
-                ticketView.IsTech  = isTech;   
-                ticketView.IsOwner = ticket.UserId == user.Id;
+                ticketView = new TicketViewModel(ticket)
+                {
+                    IsAdmin = isAdmin,
+                    IsTech = isTech,
+                    IsOwner = ticket.UserId == user.Id
+                };
             }
 
             if (isTech) // Intentionally leaving Admins out here, only Technicians can change Ticket Status (for demonstration)
@@ -250,7 +252,7 @@ namespace DarnTheLuck.Controllers
         }
         
         [HttpPost]
-        [Authorize(Roles = "Admin")]  // restrict this function to Admins
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTicket(int confirm, int Id)
         {
             // verify we have confirmation
