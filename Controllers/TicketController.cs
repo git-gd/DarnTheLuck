@@ -68,15 +68,15 @@ namespace DarnTheLuck.Controllers
                 });
 
             // set search value
-            if (search != null)
+            if (search != null && sbox.Count > 0)
             {
                 //TODO: checkbox selectors (currently searching all fields)
                 ticketListQuery = ticketListQuery.Where(q =>
-                    sbox.Contains("ticket")?q.TicketId.ToString().Contains(search):false ||
-                    sbox.Contains("date")?q.Created.Date.ToString().Contains(search):false || // Date so we don't get time values
-                    sbox.Contains("status")?q.Status.Contains(search):false ||
-                    sbox.Contains("model")?q.Model.Contains(search):false ||
-                    sbox.Contains("serial")?q.Serial.Contains(search):false
+                    (sbox.Contains("ticket") && q.TicketId.ToString().Contains(search)) ||
+                    (sbox.Contains("created") && q.Created.Date.ToString().Contains(search)) || // Date so we don't get time values
+                    (sbox.Contains("status") && q.Status.Contains(search)) ||
+                    (sbox.Contains("model") && q.Model.Contains(search)) ||
+                    (sbox.Contains("serial") && q.Serial.Contains(search)) 
                 );
             }
 

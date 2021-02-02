@@ -76,7 +76,7 @@
     </div>
     <form method="get" asp-controller="Ticket" asp-action="Index" id="navForm">
         <div class="col-auto pt-2">
-            <input type="text" name="page" value="@Model.PageIndex" id="page"/>
+            <input type="hidden" name="page" value="@Model.PageIndex" id="page"/>
             <input type="hidden" name="sort" value="@ViewBag.sort" id="sort"/>
             <input type="hidden" name="sortDir" value="@ViewBag.sortDir" id="sortDir"/>
             <label for="pageSize">Records Per Page:</label>
