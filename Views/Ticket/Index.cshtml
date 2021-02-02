@@ -95,7 +95,7 @@
                 </div>
                 @foreach (string[] column in columns)
                 {
-                    <input name="sbox" type="checkbox" value="@column[1]" checked="@ViewBag.sbox.Contains(column[1])" /> @column[0]
+                    <label><input name="sbox" type="checkbox" value="@column[1]" checked="@ViewBag.sbox.Contains(column[1])" /> @column[0]</label>
                 }
             </div>
         </form>

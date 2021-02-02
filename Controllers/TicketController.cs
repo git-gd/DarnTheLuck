@@ -73,7 +73,8 @@ namespace DarnTheLuck.Controllers
              * 
              * ALSO: created is a DATE which causes odd behavior
              * you can search on numeric values but you cannot
-             * include format characters
+             * include format characters.. and some search terms
+             * cause incorrect results
              **************************************************/
             // set search value
             if (search != null && sbox.Count > 0)
