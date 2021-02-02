@@ -70,6 +70,10 @@ namespace DarnTheLuck.Controllers
             /**************************************************
              * NOTE: The Where Query BELOW is case INSENSITIVE
              * This is a LIKELY source of future bugs
+             * 
+             * ALSO: created is a DATE which causes odd behavior
+             * you can search on numeric values but you cannot
+             * include format characters
              **************************************************/
             // set search value
             if (search != null && sbox.Count > 0)
