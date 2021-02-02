@@ -41,12 +41,13 @@ namespace DarnTheLuck.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string sort, string sortDir, string search, int page = 1, int pageSize = 3)
+        public async Task<IActionResult> Index(string sort, string sortDir, string search, List<string> sbox, int page = 1, int pageSize = 3)
         {
             ViewBag.sort = string.IsNullOrEmpty(sort) ? "ticket" : sort;
             ViewBag.sortDir = sortDir;
             ViewBag.pageSize = pageSize;
             ViewBag.search = search;
+            ViewBag.sbox = sbox;
 
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -71,11 +72,11 @@ namespace DarnTheLuck.Controllers
             {
                 //TODO: checkbox selectors (currently searching all fields)
                 ticketListQuery = ticketListQuery.Where(q =>
-                    q.TicketId.ToString().Contains(search) ||
-                    q.Created.Date.ToString().Contains(search) || // Date so we don't get time values
-                    q.Status.Contains(search) ||
-                    q.Model.Contains(search) ||
-                    q.Serial.Contains(search)
+                    sbox.Contains("ticket")?q.TicketId.ToString().Contains(search):false ||
+                    sbox.Contains("date")?q.Created.Date.ToString().Contains(search):false || // Date so we don't get time values
+                    sbox.Contains("status")?q.Status.Contains(search):false ||
+                    sbox.Contains("model")?q.Model.Contains(search):false ||
+                    sbox.Contains("serial")?q.Serial.Contains(search):false
                 );
             }
 
