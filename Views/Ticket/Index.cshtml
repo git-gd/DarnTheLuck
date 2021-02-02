@@ -16,13 +16,13 @@
     {
         if (input != null && ViewBag.search != null)
         {
-            if (input.Contains(ViewBag.search))
+            if (input.ToLower().Contains(ViewBag.search.ToLower()))
             {
-                return "style=color:red";
+                return "style=color:red;";
             }
         }
 
-        return null;
+        return "";
     }
 }
 <div class="container-fluid overflow-auto">
@@ -48,11 +48,11 @@
     {
         <a asp-controller="Ticket" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
             <div class="row text-center ticket-round border border-dark t-@ticket.Status">
-                <div class="col d-txt" @if (ViewBag.sbox.Contains("status")) { highlight(ticket.Status); }>@ticket.Status</div>
-                <div class="col d-txt" @if (ViewBag.sbox.Contains("status")) { highlight(ticket.Created.Date.ToString()); }>@ticket.Created.ToString("MM/dd/yy")</div>
-                <div class="col d-txt" @if (ViewBag.sbox.Contains("status")) { highlight(ticket.Model); }>@ticket.Model</div>
-                <div class="col d-txt" @if (ViewBag.sbox.Contains("status")) { highlight(ticket.Serial); }>@ticket.Serial</div>
-                <div class="col d-txt" @if (ViewBag.sbox.Contains("status")) { highlight(ticket.TicketId.ToString()); }>@ticket.TicketId</div>
+                <div class="col d-txt" @(ViewBag.sbox.Contains("status")?@highlight(ticket.Status):"")>@ticket.Status</div>
+                <div class="col d-txt" @(ViewBag.sbox.Contains("created")?@highlight(ticket.Created.Date.ToString()):"")>@ticket.Created.ToString("MM/dd/yy")</div>
+                <div class="col d-txt" @(ViewBag.sbox.Contains("model")?@highlight(ticket.Model):"")>@ticket.Model</div>
+                <div class="col d-txt" @(ViewBag.sbox.Contains("serial")?@highlight(ticket.Serial):"")>@ticket.Serial</div>
+                <div class="col d-txt" @(ViewBag.sbox.Contains("ticket")?@highlight(ticket.TicketId.ToString()):"")>@ticket.TicketId</div>
             </div>
         </a>
     }
@@ -74,30 +74,32 @@
             Next
         </a>
     </div>
-    <form method="get" asp-controller="Ticket" asp-action="Index" id="navForm">
-        <div class="col-auto pt-2">
-            <input type="hidden" name="page" value="@Model.PageIndex" id="page"/>
-            <input type="hidden" name="sort" value="@ViewBag.sort" id="sort"/>
-            <input type="hidden" name="sortDir" value="@ViewBag.sortDir" id="sortDir"/>
-            <label for="pageSize">Records Per Page:</label>
-            <select name="pageSize" id="pageSize" onchange="document.getElementById('page').value=1;this.form.submit();">
-                <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
-                <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
-                <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
-                <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
-            </select>
-        </div>
-        <div class="col-auto pt-1">
-            <div class="container-fluid">
-                <label>Search: <input type="text" name="search" value="@ViewBag.search" class="txt ticket-round" /></label>
-                <button class="ticket-round">Search</button>
+    <div class="col-auto">
+        <form method="get" asp-controller="Ticket" asp-action="Index" id="navForm">
+            <div class="pt-2">
+                <input type="hidden" name="page" value="@Model.PageIndex" id="page" />
+                <input type="hidden" name="sort" value="@ViewBag.sort" id="sort" />
+                <input type="hidden" name="sortDir" value="@ViewBag.sortDir" id="sortDir" />
+                <label for="pageSize">Records Per Page:</label>
+                <select name="pageSize" id="pageSize" onchange="document.getElementById('page').value=1;this.form.submit();">
+                    <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
+                    <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
+                    <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
+                    <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
+                </select>
             </div>
-            @foreach (string[] column in columns)
-            {
-                <input name="sbox" type="checkbox" value="@column[1]" checked="@ViewBag.sbox.Contains(column[1])" /> @column[0]
-            }
-        </div>
-    </form>
+            <div class="pt-1">
+                <div class="container-fluid">
+                    <label>Search: <input type="text" name="search" value="@ViewBag.search" class="txt ticket-round" /></label>
+                    <button class="ticket-round">Search</button>
+                </div>
+                @foreach (string[] column in columns)
+                {
+                    <input name="sbox" type="checkbox" value="@column[1]" checked="@ViewBag.sbox.Contains(column[1])" /> @column[0]
+                }
+            </div>
+        </form>
+    </div>
 </div>
 <hr />
 <div class="text-center">

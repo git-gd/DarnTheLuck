@@ -67,10 +67,13 @@ namespace DarnTheLuck.Controllers
                     Serial = Ticket.Serial
                 });
 
+            /**************************************************
+             * NOTE: The Where Query BELOW is case INSENSITIVE
+             * This is a LIKELY source of future bugs
+             **************************************************/
             // set search value
             if (search != null && sbox.Count > 0)
             {
-                //TODO: checkbox selectors (currently searching all fields)
                 ticketListQuery = ticketListQuery.Where(q =>
                     (sbox.Contains("ticket") && q.TicketId.ToString().Contains(search)) ||
                     (sbox.Contains("created") && q.Created.Date.ToString().Contains(search)) || // Date so we don't get time values
