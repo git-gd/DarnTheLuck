@@ -26,6 +26,32 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="dropdown">
+                            <div class="dropdown show">
+                                <a class="nav-link text-white" href="#" role="button" id="dropdownListMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Tickets
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownListMenuLink">
+                                    <a class="dropdown-item" asp-controller="Ticket" asp-action="Index">List All Tickets</a>
+                                    <a class="dropdown-item" asp-controller="Ticket" asp-action="Create">Create A New Ticket</a>
+                                </div>
+                            </div>
+                        </li>
+                        @if (User.IsInRole("Admin")) {
+                        <li class="dropdown">
+                            <div class="dropdown show">
+                                <a class="nav-link text-white" href="#" role="button" id="dropdownAdminMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownAdminMenuLink">
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="Index">View Roles</a>
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="CreateRole">Create Role</a>
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="cc8861b9-bc94-4ff0-b7eb-902fa60613e1">Edit Admin Role</a>
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="0529ffe9-1d23-4f01-9d4b-2bd6f485327c">Edit Tech Role</a>
+                                </div>
+                            </div>
+                        </li>
+                        }
                     </ul>
                 </div>
             </div>
