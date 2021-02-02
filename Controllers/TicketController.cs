@@ -242,11 +242,11 @@ namespace DarnTheLuck.Controllers
                 {
                     switch (setField)
                     {
-                        case ("Tech"):
+                        case "Tech":
                             ticket.TechName = user.UserName;
                             ticket.TechEmail = user.Email;
                             break;
-                        case ("Status"):
+                        case "Status":
                             if (System.Int32.TryParse(setValue, out int value) && validStatus.Contains(value))
                             {
                                 ticket.TicketStatusId = value;
@@ -258,6 +258,7 @@ namespace DarnTheLuck.Controllers
                 {
                     switch (setField)
                     {
+                        //TODO: User Editable Fields HERE - Don't forget to DISABLE edits on SHIPPED status
                         default:
                             break;
                     }
