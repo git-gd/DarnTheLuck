@@ -43,6 +43,9 @@ namespace DarnTheLuck.Controllers
 
         public async Task<IActionResult> Index(string sort, string sortDir, string search, List<string> sbox, int page = 1, int pageSize = 3)
         {
+            // set default search values
+            if (sbox.Count < 1) { sbox.AddRange(new string[] { "ticket", "status", "model", "serial" }); }
+
             ViewBag.sort = string.IsNullOrEmpty(sort) ? "ticket" : sort;
             ViewBag.sortDir = sortDir;
             ViewBag.pageSize = pageSize;
