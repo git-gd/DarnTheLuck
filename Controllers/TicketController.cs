@@ -136,6 +136,7 @@ namespace DarnTheLuck.Controllers
                  * Every ticket MUST have a status
                  * If there are no valid ticket statuses, create one
                  */
+                //TODO: Admin Create/Edit Ticket Statuses
 
                 TicketStatus ticketStatus = _context.TicketStatuses.FirstOrDefault();
 

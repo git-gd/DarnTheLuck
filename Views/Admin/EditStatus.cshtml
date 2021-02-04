@@ -1,0 +1,21 @@
+﻿@model DarnTheLuck.ViewModels.EditStatusViewModel;
+
+<h1>Ticket Statuses:</h1>
+
+
+@if (Model.TicketStatuses.Count > 0)
+{
+<form method="post" asp-controller="Admin" asp-action="EditStatus">
+    <input type="text" name="Id" id="Id" />
+    <input type="text" name="Delete" id="Delete" value="false" />
+    <input type="text" name="Name" id="Name"/>
+    @foreach (TicketStatus status in Model.TicketStatuses)
+    {
+        <input type=text value="@status.Name" onchange="document.getElementById('Name').value = this.value" /><button>EDIT</button><button class="btn-danger" onclick="document.getElementById('Id').value=@status.Id;document.getElementById('Delete').value='True';">DELETE</button>
+    }
+</form>
+}
+else
+{
+    <h2>No Statuses!</h2>
+}

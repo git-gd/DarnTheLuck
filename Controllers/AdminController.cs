@@ -1,4 +1,6 @@
-﻿using DarnTheLuck.ViewModels;
+﻿using DarnTheLuck.Data;
+using DarnTheLuck.Models;
+using DarnTheLuck.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +17,13 @@ namespace DarnTheLuck.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext      _context;
 
-        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _context     = context;
         }
 
         public IActionResult Index()
@@ -109,6 +113,85 @@ namespace DarnTheLuck.Controllers
                 }
             }
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult CreateStatus()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateStatus(StatusViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                TicketStatus ticketStatus = _context.TicketStatuses
+                    .Where(ts => ts.Name == model.Name)
+                    .FirstOrDefault();
+
+                if (ticketStatus == null)
+                {
+
+                    ticketStatus = new TicketStatus()
+                    {
+                        Name = model.Name
+                    };
+
+                    _context.TicketStatuses.Add(ticketStatus);
+                    _context.SaveChanges();
+                }
+
+                return RedirectToAction("index", "admin"); // TODO: return to ticket status list
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult EditStatus()
+        {
+            EditStatusViewModel editStatusViewModel = new EditStatusViewModel();
+
+            editStatusViewModel.TicketStatuses = _context.TicketStatuses.ToList();
+
+            return View(editStatusViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditStatus(EditStatusViewModel model)
+        {
+            /*
+             * TODO: Currently a partially working mess... consider moving to its own controller?
+             * 
+             */
+
+            if (ModelState.IsValid)
+            {
+                // what is the function? Update or Delete?
+                // on update, verify the NEW name does NOT exist and save changes
+                // on delete verify it exists and then delete
+
+                //TicketStatus ticketStatus = _context.TicketStatuses
+                //    .Where(ts => ts.Name == model.Name)
+                //    .FirstOrDefault();
+
+                //if (ticketStatus == null)
+                //{
+
+                //    ticketStatus = new TicketStatus()
+                //    {
+                //        Name = model.Name
+                //    };
+
+                //    _context.TicketStatuses.Add(ticketStatus);
+                //    _context.SaveChanges();
+                //}
+
+                return RedirectToAction("EditStatus", "admin"); // TODO: return to ticket status list
+            }
+
+            return View(model);
         }
     }
 }
