@@ -61,47 +61,39 @@
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-<div class="container row font-weight-bold">
+<form method="get" asp-controller="Ticket" asp-action="Index" id="navForm" class="form-row pt-2">
     <div class="col-auto">
-        <a onclick="document.getElementById('page').value = @(Model.PageIndex - 1);document.getElementById('navForm').submit();"
-           class="btn btn-default font-weight-bold @prevDisabled">
+        <button onclick="document.getElementById('page').value = @(Model.PageIndex - 1);"
+            class="btn btn-default font-weight-bold @prevDisabled">
             Previous
-        </a>
+        </button>
     </div>
     <div class="col-auto">
-        <a onclick="document.getElementById('page').value = @(Model.PageIndex + 1);document.getElementById('navForm').submit();"
-           class="btn btn-default font-weight-bold @nextDisabled">
+        <button onclick="document.getElementById('page').value = @(Model.PageIndex + 1);"
+            class="btn btn-default font-weight-bold @nextDisabled">
             Next
-        </a>
+        </button>
     </div>
-    <div class="col-auto">
-        <form method="get" asp-controller="Ticket" asp-action="Index" id="navForm">
-            <div class="pt-2">
-                <input type="hidden" name="page" value="@Model.PageIndex" id="page" />
-                <input type="hidden" name="sort" value="@ViewBag.sort" id="sort" />
-                <input type="hidden" name="sortDir" value="@ViewBag.sortDir" id="sortDir" />
-                <label for="pageSize">Records Per Page:</label>
-                <select name="pageSize" id="pageSize" onchange="document.getElementById('page').value=1;this.form.submit();">
-                    <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
-                    <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
-                    <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
-                    <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
-                </select>
-            </div>
-            <div class="pt-1">
-                <div class="container-fluid">
-                    <label>Search: <input type="text" name="search" value="@ViewBag.search" class="txt ticket-round" /></label>
-                    <button class="ticket-round">Search</button>
-                </div>
-                @foreach (string[] column in columns)
-                {
-                    <label><input name="sbox" type="checkbox" value="@column[1]" checked="@ViewBag.sbox.Contains(column[1])" /> @column[0]</label>
-                }
-            </div>
-        </form>
+    <div class="col-auto pt-2">
+        <input type="hidden" name="page" value="@Model.PageIndex" id="page" />
+        <input type="hidden" name="sort" value="@ViewBag.sort" id="sort" />
+        <input type="hidden" name="sortDir" value="@ViewBag.sortDir" id="sortDir" />
+        <label for="pageSize">Records Per Page:</label>
+        <select name="pageSize" id="pageSize" onchange="document.getElementById('page').value=1;this.form.submit();">
+            <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
+            <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
+            <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
+            <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
+        </select>
     </div>
-</div>
-<hr />
-<div class="text-center">
-    <h1><a asp-controller="Ticket" asp-action="Create">Create New Ticket</a></h1>
-</div>
+    <div class="col-auto pt-1">
+        <div class="container-fluid">
+            <label>Search: <input type="text" name="search" value="@ViewBag.search" class="txt ticket-round" /></label>
+            <button class="ticket-round">Search</button>
+        </div>
+        @foreach (string[] column in columns)
+        {
+            <label><input name="sbox" type="checkbox" value="@column[1]" checked="@ViewBag.sbox.Contains(column[1])" /> @column[0]</label>
+        }
+    </div>
+</form>

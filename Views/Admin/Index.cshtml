@@ -10,19 +10,17 @@
 <ul>
     @foreach (IdentityRole role in roles)
     {
-        <li>@role.Name</li>
-        <ul>
-            @foreach (IdentityUser user in users)
-            {
-                bool isInRole = await UserManager.IsInRoleAsync(user, role.Name);
-                @if (isInRole)
+        <li><a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="@role.Id">@role.Name</a>
+            <ul>
+                @foreach (IdentityUser user in users)
                 {
-                    <li>@user.UserName</li>
+                    bool isInRole = await UserManager.IsInRoleAsync(user, role.Name);
+                    @if (isInRole)
+                    {
+                        <li>@user.UserName</li>
+                    }
                 }
-            }
-        </ul>
+            </ul>
+        </li>
     }
 </ul>
-<h1><a asp-controller="Admin" asp-action="CreateRole">Create Role</a></h1>
-<h1><a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="cc8861b9-bc94-4ff0-b7eb-902fa60613e1">Edit Admin Role</a></h1> @* Hard coded to Admin atm *@
-<h1><a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="0529ffe9-1d23-4f01-9d4b-2bd6f485327c">Edit Tech Role</a></h1> @* Hard coded to Tech atm *@
