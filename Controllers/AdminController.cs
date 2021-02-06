@@ -17,13 +17,11 @@ namespace DarnTheLuck.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly ApplicationDbContext _context;
 
-        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
-            _context = context;
         }
 
         public IActionResult Index()
@@ -57,6 +55,7 @@ namespace DarnTheLuck.Controllers
                     return RedirectToAction("index", "admin");
                 }
 
+                // check for errors and return the model...
                 foreach (IdentityError error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);

@@ -43,6 +43,8 @@ namespace DarnTheLuck.Controllers
 
         public async Task<IActionResult> Index(string sort, string sortDir, string search, List<string> sbox, int page = 1, int pageSize = 3)
         {
+            if (page < 1) { page = 1; }
+
             // set default search values
             if (sbox.Count < 1) { sbox.AddRange(new string[] { "ticket", "status", "model", "serial" }); }
 
@@ -75,7 +77,7 @@ namespace DarnTheLuck.Controllers
              * This is a LIKELY source of future bugs
              * 
              * ALSO: created is a DATE which causes odd behavior
-             * you can search on numeric values but you cannot
+             * You can search on numeric values but you cannot
              * include format characters.. and some search terms
              * cause incorrect results
              **************************************************/
@@ -226,6 +228,8 @@ namespace DarnTheLuck.Controllers
          * The way this should be done is with a separate Technician controller and appropriate ViewModels
          * 
          * Clumping this all together in a single View/Controller allows for "interesting" albeit janky solutions
+         * 
+         * setField is compared and the corresponding field is set to setProperty
          * 
          */
 
