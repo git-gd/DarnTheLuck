@@ -122,6 +122,23 @@ body {
     color: white;
 }
 
+.checkbox-round {
+    width: 1.1em;
+    height: 1.1em;
+    background-color: transparent;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.checkbox-round:checked {
+    border: none;
+    background-color: #808080;
+}
+
 /*
     https://app.brandmark.io/v3/
 

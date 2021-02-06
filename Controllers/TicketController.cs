@@ -219,7 +219,6 @@ namespace DarnTheLuck.Controllers
             return View(ticketView);
         }
 
-
         /***********************
          * UPDATE Ticket Fields 
          ***********************
@@ -238,7 +237,9 @@ namespace DarnTheLuck.Controllers
             
             bool isTech = await _userManager.IsInRoleAsync(user, "Technician");
 
-            Ticket ticket = await _context.Tickets.FindAsync(Id);
+            Ticket ticket = await _context.Tickets
+                .Include(t => t.TicketStatus)  // grab status names
+                .FirstOrDefaultAsync(t => t.TicketId == Id);
 
             if (ticket != null) // Null check
             {
@@ -258,11 +259,13 @@ namespace DarnTheLuck.Controllers
                             break;
                     }
                 }
-                if (user.Id == ticket.UserId) // User is the Ticket Owner
+                if (user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped") // User is the Ticket Owner && Ticket is not SHIPPED
                 {
                     switch (setField)
                     {
-                        //TODO: User Editable Fields HERE - Don't forget to DISABLE edits on SHIPPED status
+                        case "TicketNotes":
+                            ticket.TicketNotes = setValue;
+                            break;
                         default:
                             break;
                     }
