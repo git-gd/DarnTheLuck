@@ -64,13 +64,13 @@
 <form method="get" asp-controller="Ticket" asp-action="Index" id="navForm" class="form-row pt-2">
     <div class="col-auto">
         <button onclick="document.getElementById('page').value = @(Model.PageIndex - 1);"
-            class="btn btn-default font-weight-bold @prevDisabled">
+            class="btn btn-default font-weight-bold" @prevDisabled>
             Previous
         </button>
     </div>
     <div class="col-auto">
         <button onclick="document.getElementById('page').value = @(Model.PageIndex + 1);"
-            class="btn btn-default font-weight-bold @nextDisabled">
+            class="btn btn-default font-weight-bold" @nextDisabled>
             Next
         </button>
     </div>
@@ -88,8 +88,8 @@
     </div>
     <div class="col-auto pt-1">
         <div class="container-fluid">
-            <label>Search: <input type="text" name="search" value="@ViewBag.search" class="txt ticket-round" /></label>
-            <button class="ticket-round">Search</button>
+            <label>Search: <input type="text" name="search" value="@ViewBag.search" class="txt ticket-round" onchange="document.getElementById('page').value=1;this.form.submit();"/></label>
+            <button class="ticket-round" type="submit">Search</button>
         </div>
         @foreach (string[] column in columns)
         {
@@ -97,3 +97,8 @@
         }
     </div>
 </form>
+<script>
+    function submitOnEnter(e) {
+            if (e.key === 'Enter') { document.getElementById('page').value = 1; this.form.submit(); }
+        }
+</script>
