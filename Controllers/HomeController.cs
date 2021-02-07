@@ -18,6 +18,11 @@ namespace DarnTheLuck.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
+            // Free Chuck Norris Joke API
+            DarnTheLuck.Helpers.Chuck chuck = new DarnTheLuck.Helpers.Chuck();
+
+            ViewBag.Joke = chuck.Joke;
+
             return View();
         }
 

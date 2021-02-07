@@ -7,4 +7,8 @@
     {
         // This was to show off user auth but Ticket Details does that now - okay to remove auth from here
     }
+    @if (!string.IsNullOrEmpty(ViewBag.Joke))
+    {
+        <div>@ViewBag.Joke</div>
+    }
 </div>
