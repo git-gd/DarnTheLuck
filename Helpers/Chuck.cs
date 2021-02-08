@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace DarnTheLuck.Helpers
 {
-    public class Value
+    internal class Value
     {
         public int id { get; set; }
         public string joke { get; set; }
     }
 
-    public class Root
+    internal class Root
     {
         public string type { get; set; }
         public Value value { get; set; }
@@ -38,24 +38,14 @@ namespace DarnTheLuck.Helpers
                     { "accept", "application/json" }
                 },
             };
-            //using (var response = await client.SendAsync(request))
-            //{
-            //    response.EnsureSuccessStatusCode();
-            //    var body = await response.Content.ReadAsStringAsync();
-            //    Console.WriteLine(body);
-            //}
 
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var body = await response.Content.ReadAsStringAsync();
 
-            //JObject joResponse = JObject.Parse(body);
-            //JObject ojObject = (JObject)joResponse["response"];
-            //JArray array = (JArray)ojObject["joke"];
+            Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(body);
 
-            Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(body); 
-
-            return myDeserializedClass.value.joke;
+            return myDeserializedClass.value.joke.Replace("&quot;", "\""); // remove encoding
         }
     }
 }

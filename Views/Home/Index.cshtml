@@ -1,14 +1,28 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
+@*
+    This is how we inject code into the Head section when we are using a parent/master layout
+    The following code replaces "@RenderSection("CustomStyle", false)" in _Layout.cshtml
+*@
+@section CustomStyle
+{
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/homeIndex.css" />
+}
 
 @{ViewData["Title"] = "Home Page";}
-<div class="text-center">
-    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")) // Are we logged in? Are we an Admin (role)?
+<div class="text-center justify-content-between">
+    <div class="backdrop">
+        <p class="cutout">Darn</p>
+        <p class="cutout">The</p>
+        <p class="cutout">Luck</p>
+    </div>
+
+     @if (!string.IsNullOrEmpty(ViewBag.Joke))
     {
-        // This was to show off user auth but Ticket Details does that now - okay to remove auth from here
-    }
-    @if (!string.IsNullOrEmpty(ViewBag.Joke))
-    {
-        <div>@ViewBag.Joke</div>
+    <div class="container">
+        <p style="font-family: 'Love Ya Like A Sister', cursive;">@ViewBag.Joke</p>
+    </div>
     }
 </div>
