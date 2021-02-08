@@ -37,6 +37,10 @@ namespace DarnTheLuck.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateRole()
         {
+            /*
+             * Create the Admin role
+             */
+
             IdentityRole admin = new IdentityRole
             {
                 Name = "Admin"
@@ -57,6 +61,10 @@ namespace DarnTheLuck.Controllers
                     }
                 }
             }
+
+            /*
+             * Create the Technician role
+             */
 
             IdentityRole tech = new IdentityRole
             {
