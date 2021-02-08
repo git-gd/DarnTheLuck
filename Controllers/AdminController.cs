@@ -30,39 +30,46 @@ namespace DarnTheLuck.Controllers
             return View();
         }
 
+        /*
+         * CreateRole will be repurposed to create the Admin and Technician Roles on a first run
+         */
+        [AllowAnonymous]
         [HttpGet]
-        public IActionResult CreateRole()
+        public async Task<IActionResult> CreateRole()
         {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
-        {
-            if (ModelState.IsValid)
+            IdentityRole admin = new IdentityRole
             {
-                // We just need to specify a unique role name to create a new role
-                IdentityRole identityRole = new IdentityRole
-                {
-                    Name = model.RoleName
-                };
+                Name = "Admin"
+            };
 
-                // Saves the role in the underlying AspNetRoles table
-                IdentityResult result = await _roleManager.CreateAsync(identityRole);
+            bool roleExists = await _roleManager.RoleExistsAsync(admin.Name);
+
+            if (!roleExists)
+            {
+                IdentityResult result = await _roleManager.CreateAsync(admin);
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("index", "admin");
-                }
-
-                // check for errors and return the model...
-                foreach (IdentityError error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
+                    IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+                    if (!(await _userManager.IsInRoleAsync(user, admin.Name)))
+                    {
+                        await _userManager.AddToRoleAsync(user, admin.Name);
+                    }
                 }
             }
 
-            return View(model);
+            IdentityRole tech = new IdentityRole
+            {
+                Name = "Technician"
+            };
+
+            roleExists = await _roleManager.RoleExistsAsync(tech.Name);
+            if (!roleExists)
+            {
+                await _roleManager.CreateAsync(admin);
+            }
+
+            return RedirectToAction("index", "admin");
         }
 
         [HttpGet]
