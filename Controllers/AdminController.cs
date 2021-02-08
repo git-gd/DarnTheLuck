@@ -74,7 +74,7 @@ namespace DarnTheLuck.Controllers
             roleExists = await _roleManager.RoleExistsAsync(tech.Name);
             if (!roleExists)
             {
-                await _roleManager.CreateAsync(admin);
+                await _roleManager.CreateAsync(tech);
             }
 
             return RedirectToAction("index", "admin");
