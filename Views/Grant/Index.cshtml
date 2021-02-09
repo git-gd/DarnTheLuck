@@ -14,10 +14,10 @@ else
                 @for (int i = 0; i < Model.Count; i++)
                 {
                     <div class="form-check m-1">
-                        <input type="hidden" asp-for="@Model[i].GrantId" />
+                        <input type="hidden" asp-for="@Model[i].GrantEmail" />
                         <input asp-for="@Model[i].Authorized" class="form-check-input" />
                         <label class="form-check-label" asp-for="@Model[i].Authorized">
-                            @Model[i].GrantId
+                            @Model[i].GrantEmail
                         </label>
                     </div>
                 }

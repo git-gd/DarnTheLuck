@@ -27,26 +27,14 @@ namespace DarnTheLuck.Controllers
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
-            //TODO: redo this to use a join
-
             List<UserGroupViewModel> userList = (
             from Grant in _context.UserGroups
             where Grant.UserId == user.Id
             select new UserGroupViewModel()
             {
-                GrantId = Grant.GrantId,
-                Authorized = Grant.Authorized
+                GrantEmail = Grant.GrantEmail,
+                Authorized = Grant.Authorized,
             }).ToList();
-
-            // replace userId with the user's email address
-            foreach(UserGroupViewModel entry in userList)
-            {
-                user = _context.Users.FirstOrDefault(u => u.Id == entry.GrantId);
-                if (user != null)
-                {
-                    entry.GrantId = user.Email;
-                }
-            }
 
             return View(userList);
         }
@@ -58,7 +46,7 @@ namespace DarnTheLuck.Controllers
 
             foreach (UserGroupViewModel grant in userList)
             {
-                UserGroup userGroup = _context.UserGroups.Find(user.Id, grant.GrantId);
+                UserGroup userGroup = _context.UserGroups.FirstOrDefault(u => u.UserId == user.Id && u.GrantEmail == grant.GrantEmail);
 
                 if (userGroup != null)
                 {
@@ -80,9 +68,56 @@ namespace DarnTheLuck.Controllers
 
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
-            _context.UserGroups.Add(new UserGroup(user.Id, DateTime.Now.ToString("g")));
+            _context.UserGroups.Add(new UserGroup(){
+                UserId = user.Id,
+                UserEmail = user.Email,
+                GrantId = DateTime.Now.ToString("g")
+            });
             _context.SaveChanges();
 
+            return Redirect("Index");
+        }
+
+        [HttpGet]
+        public IActionResult UseCode()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UseCode(UseCodeViewModel code)
+        {
+            if (ModelState.IsValid)
+            {
+                IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+                UserGroup userGroup = _context.UserGroups.FirstOrDefault(u => u.GrantId == code.Value);
+
+                if(userGroup == null)
+                {
+                    ModelState.AddModelError("Value", "CODE NOT FOUND");
+                    return View(code);
+                }
+
+                // because I chose to use a composite key... add a new record, remove the old
+                // TODO: research to see if there is any way to update the value of a composite key
+
+                // TODO: if the UserID of a valid grant is entered this will try to create a new entry... We Don't Want This
+                _context.UserGroups.Add(new UserGroup()
+                {
+                    UserId = userGroup.UserId,
+                    UserEmail = userGroup.UserEmail,
+                    GrantId = user.Id,
+                    GrantEmail = user.Email,
+                    Authorized = userGroup.Authorized
+                });
+                _context.UserGroups.Remove(userGroup);
+                _context.SaveChanges();
+            }
+            else
+            {
+                return View(code);
+            }
             return Redirect("Index");
         }
     }
