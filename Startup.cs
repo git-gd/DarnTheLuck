@@ -23,8 +23,11 @@ namespace DarnTheLuck
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                // We use MySQL
-                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                /*
+                 * We use MySQL
+                 * Configuration.GetConnectionString("DefaultConnection") was replaced with Ring.Database
+                 */
+                options.UseMySql(DarnTheLuck.Helpers.Ring.Database));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 //***** Add Role services to Identity
                 // https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-5.0
