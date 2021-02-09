@@ -120,6 +120,31 @@ namespace DarnTheLuck.Controllers
             }
             return Redirect("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Show()
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            List<string> grantIds = _context.UserGroups
+                .Where(u => u.GrantId == user.Id)
+                .Select(u => u.UserId)
+                .ToList();
+
+            List<TicketListViewModel> tickets = (
+                from Ticket in _context.Tickets
+                where (grantIds.Contains(Ticket.UserId))
+                select new TicketListViewModel()
+                {
+                    TicketId = Ticket.TicketId,
+                    Created = Ticket.Created,
+                    Status = Ticket.TicketStatus.Name,
+                    Model = Ticket.Model,
+                    Serial = Ticket.Serial
+                }).ToList();
+
+            return RedirectToAction("Index", "Ticket", tickets);
+        }
     }
 }
 
