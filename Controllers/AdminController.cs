@@ -107,21 +107,23 @@ namespace DarnTheLuck.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model, string roleId)
+        public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> models, string roleId)
         {
             var role = await _roleManager.FindByIdAsync(roleId);
 
-            for (int i = 0; i < model.Count; i++) // Loop through the list
+            foreach (UserRoleViewModel model in models) // Loop through the list
             {
-                var user = await _userManager.FindByIdAsync(model[i].UserId); // Pull the User info
+                var user = await _userManager.FindByIdAsync(model.UserId); // Pull the User info
+
+                bool isInRole = await _userManager.IsInRoleAsync(user, role.Name);
 
                 // if checked and the user is NOT in the role, add them
-                if (model[i].IsSelected && !(await _userManager.IsInRoleAsync(user, role.Name)))
+                if (model.IsSelected && !isInRole)
                 {
                     await _userManager.AddToRoleAsync(user, role.Name);
                 }
                 // if NOT checked and the user was in the role, remove them
-                else if (!model[i].IsSelected && await _userManager.IsInRoleAsync(user, role.Name))
+                else if (!model.IsSelected && isInRole)
                 {
                     await _userManager.RemoveFromRoleAsync(user, role.Name);
                 }
