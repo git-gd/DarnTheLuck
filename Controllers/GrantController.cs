@@ -105,6 +105,13 @@ namespace DarnTheLuck.Controllers
                 }
                 else
                 {
+                    // Did the user try to consume their own code?
+                    if(userGroup.UserId == user.Id)
+                    {
+                        ModelState.AddModelError("Value", "YOU CAN'T CONSUME YOUR OWN CODE. (SHARE THIS CODE WITH SOMEONE ELSE)");
+                        return View(code);
+                    }
+
                     // Does the user already have a table entry?
                     UserGroup alreadyExists = await _context.UserGroups.FindAsync(userGroup.UserId, user.Id);
 
