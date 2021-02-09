@@ -131,9 +131,12 @@ namespace DarnTheLuck.Controllers
                     }
                 }
 
-                // because I chose to use a composite key... add a new record, remove the old
-                // TODO: research to see if there is any way to update the value of a composite key
-
+                /*
+                 * EF gets ANGRY if you try to update the value of a Key!
+                 * We're using a Composite Key that is made up of two user Id strings.
+                 * In order to update this Composite Key with the Id of the user that
+                 * consumed the code we delete the old entry and create a new one.
+                 */
                 _context.UserGroups.Add(new UserGroup()
                 {
                     UserId = userGroup.UserId,
