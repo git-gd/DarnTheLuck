@@ -139,6 +139,22 @@ body {
     background-color: #808080;
 }
 
+.checkbox-rnd-dgr {
+    width: 1.1em;
+    height: 1.1em;
+    background-color: transparent;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.checkbox-rnd-dgr:checked {
+    border: none;
+    background-color: #990000;
+}
 /*
     https://app.brandmark.io/v3/
 

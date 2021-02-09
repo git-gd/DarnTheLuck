@@ -124,6 +124,44 @@ namespace DarnTheLuck.Controllers
             }
             return Redirect("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete()
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            List<DeleteGroupViewModel> userList = (
+            from Grant in _context.UserGroups
+            where Grant.UserId == user.Id
+            select new DeleteGroupViewModel()
+            {
+                GrantEmail = Grant.GrantEmail,
+                Delete = false
+            }).ToList();
+
+            return View(userList);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(List<DeleteGroupViewModel> userList)
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            foreach (DeleteGroupViewModel grant in userList)
+            {
+                if (grant.Delete) {
+                    UserGroup userGroup = _context.UserGroups.FirstOrDefault(u => u.UserId == user.Id && u.GrantEmail == grant.GrantEmail);
+
+                    if (userGroup != null)
+                    {
+                        _context.UserGroups.Remove(userGroup);
+                    }
+                }
+            }
+            _context.SaveChanges();
+
+            return Redirect("Index");
+        }
     }
 }
 
