@@ -1,15 +1,11 @@
 ﻿@model DarnTheLuck.ViewModels.UseCodeViewModel
-<form method="post" asp-action="UseCode">
-    <div class="row">
-        <div class="col d-flex justify-content-center p-4">
+    <form method="post" asp-action="UseCode">
+        <div class="d-flex justify-content-center">
             <span class="o-txt text-danger" asp-validation-for="Value"></span>
         </div>
-    </div>
-    <div class="row">
-        <div class="col d-inline-flex justify-content-center p-4">
-            <label class="o-txt">Access Code :</label>
-            <input class="o-txt rounded" asp-for="Value" />
-            <input type="submit" value="Submit" class="o-txt btn btn-dark" />
+        <div class="d-flex justify-content-center">
+            <label class="o-txt p-1">Access Code :</label>
+            <input class="o-txt p-1 rounded" asp-for="Value" />
+            <input type="submit" value="Submit" class="o-txt p-1 btn btn-dark" />
         </div>
-    </div>
-</form>
+    </form>
