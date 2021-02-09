@@ -95,7 +95,16 @@ namespace DarnTheLuck.Controllers
             {
                 IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
-                UserGroup userGroup = _context.UserGroups.FirstOrDefault(u => u.GrantId == code.Value.Trim());
+                string trimmedCode = code.Value.Trim();
+
+                /*
+                 * IMPORTANT:
+                 * To prevent being able to enter the Id of a verified user as a code and hijack their permission
+                 * We check against both GrantId AND GrantEmail.
+                 * Both Id and Email fields are set to the permission code before a code is consumed
+                 * The only time Id and Email will be the same is when a code has not been consumed
+                 */
+                UserGroup userGroup = _context.UserGroups.FirstOrDefault(u => u.GrantId == trimmedCode && u.GrantEmail == trimmedCode);
 
                 // Code wasn't found
                 if (userGroup == null)
@@ -125,7 +134,6 @@ namespace DarnTheLuck.Controllers
                 // because I chose to use a composite key... add a new record, remove the old
                 // TODO: research to see if there is any way to update the value of a composite key
 
-                // TODO: if the UserID of a valid grant is entered this will try to create a new entry... We Don't Want This
                 _context.UserGroups.Add(new UserGroup()
                 {
                     UserId = userGroup.UserId,
