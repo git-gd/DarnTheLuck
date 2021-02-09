@@ -95,7 +95,7 @@ namespace DarnTheLuck.Controllers
             {
                 IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
-                UserGroup userGroup = _context.UserGroups.FirstOrDefault(u => u.GrantId == code.Value);
+                UserGroup userGroup = _context.UserGroups.FirstOrDefault(u => u.GrantId == code.Value.Trim());
 
                 // Code wasn't found
                 if (userGroup == null)
