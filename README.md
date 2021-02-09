@@ -13,8 +13,8 @@ DarnTheLuck uses:
 * BootStrap / CSS
 
 SETUP:
-Create a MySQL Schema
-Update appsettings.json DefaultConnection to match the schema settings
-Run dotnet ef migrations add Initial / dotnet ef database update
-Register a user
-The first user to run Admin/CreateRole is assigned to the Admin role
+* Create a MySQL Schema
+* Update appsettings.json DefaultConnection to match the schema settings
+* Run dotnet ef migrations add Initial / dotnet ef database update
+* Register a user
+* The first user to run Admin/CreateRole is assigned to the Admin role
