@@ -97,10 +97,22 @@ namespace DarnTheLuck.Controllers
 
                 UserGroup userGroup = _context.UserGroups.FirstOrDefault(u => u.GrantId == code.Value);
 
-                if(userGroup == null)
+                // Code wasn't found
+                if (userGroup == null)
                 {
                     ModelState.AddModelError("Value", "CODE NOT FOUND");
                     return View(code);
+                }
+                else
+                {
+                    // Does the user already have a table entry?
+                    UserGroup alreadyExists = await _context.UserGroups.FindAsync(userGroup.UserId, user.Id);
+
+                    if (alreadyExists != null)
+                    {
+                        ModelState.AddModelError("Value", "YOU HAVE ALREADY CONSUMED A CODE FROM THIS PROVIDER.");
+                        return View(code);
+                    }
                 }
 
                 // because I chose to use a composite key... add a new record, remove the old
@@ -122,7 +134,7 @@ namespace DarnTheLuck.Controllers
             {
                 return View(code);
             }
-            return Redirect("Index");
+            return View("CodeSuccess");
         }
 
         [HttpGet]
