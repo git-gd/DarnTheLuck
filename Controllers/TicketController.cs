@@ -60,6 +60,15 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
+            /*
+             * users grant VIEW access to other users...
+             * we store an entry in a table that is similar to Roles
+             * userId = current userId, grantedId = granted user's userId
+             * then all we have to do is build a List<string> of grantedId
+             * where userId = current userId and Intersect them with the
+             * Ticket.UserId below
+             */
+
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
                 where (Ticket.UserId == user.Id || isElevated)
