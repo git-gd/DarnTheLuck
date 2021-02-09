@@ -61,17 +61,21 @@ namespace DarnTheLuck.Controllers
         // Create shareable code/link
         public async Task<IActionResult> CreateCode()
         {
-            //TODO: Generate Code
-            /*
-             * TEMPORARY - Getting this code working, will decide on how to do real codes
-             */
-
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            /*
+             * This is not meant to be a strong code.
+             * Each code can be used once and is then replaced.
+             * Using a code adds the current User's Id to the access table
+             * The access bool is defaulted to false requiring the user to enable it
+             */
+            string accessCode = User.Identity.Name.Substring(0,3) + DateTime.Now.Ticks.ToString("X");
 
             _context.UserGroups.Add(new UserGroup(){
                 UserId = user.Id,
                 UserEmail = user.Email,
-                GrantId = DateTime.Now.ToString("g")
+                GrantId = accessCode,
+                GrantEmail = accessCode
             });
             _context.SaveChanges();
 
@@ -119,31 +123,6 @@ namespace DarnTheLuck.Controllers
                 return View(code);
             }
             return Redirect("Index");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Show()
-        {
-            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
-
-            List<string> grantIds = _context.UserGroups
-                .Where(u => u.GrantId == user.Id)
-                .Select(u => u.UserId)
-                .ToList();
-
-            List<TicketListViewModel> tickets = (
-                from Ticket in _context.Tickets
-                where (grantIds.Contains(Ticket.UserId))
-                select new TicketListViewModel()
-                {
-                    TicketId = Ticket.TicketId,
-                    Created = Ticket.Created,
-                    Status = Ticket.TicketStatus.Name,
-                    Model = Ticket.Model,
-                    Serial = Ticket.Serial
-                }).ToList();
-
-            return RedirectToAction("Index", "Ticket", tickets);
         }
     }
 }
