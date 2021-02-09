@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DarnTheLuck.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +10,23 @@ namespace DarnTheLuck.Controllers
 {
     public class GrantController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public GrantController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        // Index will list authorized users, unauthorized users and unused codes
         public IActionResult Index()
+        {
+            return View();
+        }
+        
+        // Create shareable code/link
+        public IActionResult CreateCode()
         {
             return View();
         }
