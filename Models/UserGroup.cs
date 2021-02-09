@@ -4,7 +4,12 @@
     {
         public string UserId { get; set; }
         public string GrantId { get; set; }
-
-        public UserGroup() { }
+        public bool Authorized { get; set; }
+        public UserGroup(string userId, string grantId) 
+        {
+            UserId = userId;
+            GrantId = grantId;
+            Authorized = false;
+        }
     }
 }
