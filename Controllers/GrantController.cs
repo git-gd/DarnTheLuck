@@ -185,24 +185,24 @@ namespace DarnTheLuck.Controllers
 }
 
 /*
- * A user wants to allow others to view their ticket
+ * A user wants to allow others to view their ticket ✔
  * 
- * A user clicks a link (Create Share Link) to create a shareable code/link
+ * A user clicks a link (Create Share Link) to create a shareable code/link ✔
  * 
- * We create a new entry in our UserGroups Table of UserGroup: UserId/code/false
+ * We create a new entry in our UserGroups Table of UserGroup: UserId/code/false ✔
  * 
- * The link is passed to another user (text/email???) - we will not code this part
+ * The link is passed to another user (text/email???) - we will not code this part ✔
  * 
- * A user consumes/uses a shared code/link and their UserId replaces the code
+ * A user consumes/uses a shared code/link and their UserId replaces the code ✔
  * 
- * The creator of the share code/link can view a list of users/codes
+ * The creator of the share code/link can view a list of users/codes ✔
  * 
- * The creator of the share code/link can authroize/deauthorize confirmed users
+ * The creator of the share code/link can authroize/deauthorize confirmed users ✔
  * 
- * The creator of the share code/link can delete users/codes
+ * The creator of the share code/link can delete users/codes ✔
  * 
  * Users will want to be able to selectively view other users' tickets
- * - add the option to the ticket list?
- * - view from the grant controller?
+ * - add the option to the ticket list? 💤 - additional filtering can be added
+ * - view from the grant controller?    ❌ - this needs to be in the ticket controller
  * 
  */
