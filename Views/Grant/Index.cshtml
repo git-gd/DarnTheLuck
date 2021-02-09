@@ -1,5 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model List<DarnTheLuck.ViewModels.UserGroupViewModel>
+@if (Model == null)
+{
+    <h2>No Authorized Users Or Unclaimed Codes</h2>
+}
+else
+{
+    <form method="post">
+        <div class="card">
+            <div class="card-header">
+                <h2>Add or remove authorized users or codes</h2>
+            </div>
+            <div class="card-body">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <div class="form-check m-1">
+                        <input type="hidden" asp-for="@Model[i].GrantId" />
+                        <input asp-for="@Model[i].Authorized" class="form-check-input" />
+                        <label class="form-check-label" asp-for="@Model[i].Authorized">
+                            @Model[i].GrantId
+                        </label>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                <input type="submit" value="Update" class="btn btn-primary" style="width:auto" />
+                <a asp-controller="Grant" asp-action="Index"
+                   class="btn btn-primary" style="width:auto">Cancel</a>
+            </div>
+        </div>
+    </form>
 }

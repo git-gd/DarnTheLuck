@@ -1,4 +1,5 @@
 ﻿using DarnTheLuck.Data;
+using DarnTheLuck.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,11 +21,36 @@ namespace DarnTheLuck.Controllers
         }
 
         // Index will list authorized users, unauthorized users and unused codes
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            /*
+             * Oof! Joins! What are they good for?
+             * I'm using a Join to pull the email address from the Users table
+             * If there's no match then it should be a code, so we display it
+             */
+
+            List<UserGroupViewModel> userList = (
+            from Grant in _context.UserGroups
+            join U1 in _context.Users on Grant.GrantId equals U1.Id
+            where Grant.UserId == user.Id
+            select new UserGroupViewModel()
+            {
+                GrantId = string.IsNullOrEmpty(U1.Email)?Grant.GrantId:U1.Email,
+                Authorized = Grant.Authorized
+            }).ToList();
+
+            return View(userList);
         }
-        
+
+        [HttpPost]
+        public IActionResult Index(List<UserGroupViewModel> userList)
+        {
+            return View(userList);
+        }
+
         // Create shareable code/link
         public IActionResult CreateCode()
         {
@@ -49,4 +75,9 @@ namespace DarnTheLuck.Controllers
  * The creator of the share code/link can authroize/deauthorize confirmed users
  * 
  * The creator of the share code/link can delete users/codes
+ * 
+ * Users will want to be able to selectively view other users' tickets
+ * - add the option to the ticket list?
+ * - view from the grant controller?
+ * 
  */
