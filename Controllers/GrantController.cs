@@ -108,7 +108,7 @@ namespace DarnTheLuck.Controllers
                     // Did the user try to consume their own code?
                     if(userGroup.UserId == user.Id)
                     {
-                        ModelState.AddModelError("Value", "YOU CAN'T CONSUME YOUR OWN CODE. (SHARE THIS CODE WITH SOMEONE ELSE)");
+                        ModelState.AddModelError("Value", "YOU CAN'T CONSUME YOUR OWN CODE.");
                         return View(code);
                     }
 
