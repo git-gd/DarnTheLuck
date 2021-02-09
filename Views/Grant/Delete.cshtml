@@ -1,0 +1,32 @@
+﻿@model List<DarnTheLuck.ViewModels.DeleteGroupViewModel>
+@if (Model == null)
+{
+    <h2>No Authorized Users Or Unclaimed Codes</h2>
+}
+else
+{
+    <form method="post">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-danger">Remove Users:</h2>
+            </div>
+            <div class="card-body">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <div class="form-check m-1">
+                        <input type="hidden" asp-for="@Model[i].GrantEmail" />
+                        <input asp-for="@Model[i].Delete" class="form-check-input checkbox-rnd-dgr" />
+                        <label class="form-check-label" asp-for="@Model[i].Delete">
+                            @Model[i].GrantEmail
+                        </label>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                <input type="submit" value="Delete" class="btn btn-danger" style="width:auto" />
+                <a asp-controller="Grant" asp-action="Index"
+                    class="btn btn-dark" style="width:auto" disabled>Cancel</a>
+            </div>
+        </div>
+    </form>
+}

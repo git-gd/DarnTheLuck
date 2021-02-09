@@ -14,9 +14,19 @@ namespace DarnTheLuck.Data
          */
         public DbSet<TicketStatus> TicketStatuses { get; set; }
 
+        public DbSet<UserGroup> UserGroups { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserGroup>()
+                .HasKey(u => new { u.UserId, u.GrantId });
         }
     }
 }

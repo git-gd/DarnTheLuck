@@ -76,7 +76,7 @@ else
     </div>
     <div class="form-inline d-txt font-weight-bold">
         Technician:@if (Model.IsTech)
-        {<form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-setField="Tech" asp-route-Id="@Model.TicketId"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></form>}
+        {<form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-setField="Tech" asp-route-Id="@Model.TicketId"><div class="col d-txt"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></div></form>}
     </div>
     <div class="container-fluid overflow-auto">
         <div class="row ticket-round border border-dark">

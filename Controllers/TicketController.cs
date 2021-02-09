@@ -60,9 +60,23 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
+            /*
+             * users grant VIEW access to other users...
+             * we store an entry in a table that is similar to Roles
+             * userId = current userId, grantedId = granted user's userId
+             * then all we have to do is build a List<string> of grantedId
+             * where userId = current userId and Intersect them with the
+             * Ticket.UserId below
+             */
+
+            List<string> grantIds = _context.UserGroups
+                .Where(u => u.GrantId == user.Id && u.Authorized)
+                .Select(u => u.UserId)
+                .ToList();
+
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
-                where (Ticket.UserId == user.Id || isElevated)
+                where (Ticket.UserId == user.Id || isElevated || grantIds.Contains(Ticket.UserId))
                 select new TicketListViewModel()
                 {
                     TicketId = Ticket.TicketId,
@@ -194,11 +208,17 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = isAdmin || isTech;
 
+            List<string> grantIds = _context.UserGroups
+                .Where(u => u.GrantId == user.Id && u.Authorized)
+                .Select(u => u.UserId)
+                .ToList();
+
             Ticket ticket = _context.Tickets
                 .Include(t => t.TicketStatus)  // so we can access the Name string in the related table
                 .FirstOrDefault(t =>
                     (  t.UserId == user.Id ||  // match UserId - individuals can access their ticket details
-                       isElevated)             // allow Elevated users (Admin, Tech) to view details
+                       isElevated ||           // allow Elevated users (Admin, Tech) to view details
+                       grantIds.Contains(t.UserId)) // allow users who have been granted access to view details
                     && t.TicketId == Id);
 
             TicketViewModel ticketView;
