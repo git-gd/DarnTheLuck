@@ -1,4 +1,5 @@
 ﻿using DarnTheLuck.Data;
+using DarnTheLuck.Models;
 using DarnTheLuck.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -26,35 +27,63 @@ namespace DarnTheLuck.Controllers
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
-            /*
-             * Oof! Joins! What are they good for?
-             * I'm using a Join to pull the email address from the Users table
-             * If there's no match then it should be a code, so we display it
-             */
+            //TODO: redo this to use a join
 
             List<UserGroupViewModel> userList = (
             from Grant in _context.UserGroups
-            join U1 in _context.Users on Grant.GrantId equals U1.Id
             where Grant.UserId == user.Id
             select new UserGroupViewModel()
             {
-                GrantId = string.IsNullOrEmpty(U1.Email)?Grant.GrantId:U1.Email,
+                GrantId = Grant.GrantId,
                 Authorized = Grant.Authorized
             }).ToList();
+
+            // replace userId with the user's email address
+            foreach(UserGroupViewModel entry in userList)
+            {
+                user = _context.Users.FirstOrDefault(u => u.Id == entry.GrantId);
+                if (user != null)
+                {
+                    entry.GrantId = user.Email;
+                }
+            }
 
             return View(userList);
         }
 
         [HttpPost]
-        public IActionResult Index(List<UserGroupViewModel> userList)
+        public async Task<IActionResult> Index(List<UserGroupViewModel> userList)
         {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            foreach (UserGroupViewModel grant in userList)
+            {
+                UserGroup userGroup = _context.UserGroups.Find(user.Id, grant.GrantId);
+
+                if (userGroup != null)
+                {
+                    userGroup.Authorized = grant.Authorized;
+                }
+            }
+            _context.SaveChanges();
+
             return View(userList);
         }
 
         // Create shareable code/link
-        public IActionResult CreateCode()
+        public async Task<IActionResult> CreateCode()
         {
-            return View();
+            //TODO: Generate Code
+            /*
+             * TEMPORARY - Getting this code working, will decide on how to do real codes
+             */
+
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            _context.UserGroups.Add(new UserGroup(user.Id, DateTime.Now.ToString("g")));
+            _context.SaveChanges();
+
+            return Redirect("Index");
         }
     }
 }
