@@ -1,10 +1,10 @@
-DarnTheLuck is a simulated computer repair shop ticketing system.
+DarnTheLuck is a demo computer repair shop ticket system.
 * Users are authenticated.
-* Customers can create and view their own repair tickets. 
-* Technicians can view and update customer tickets.
-* Admins will be able to create, read, update and delete all tickets.
+* Customers can create and view their own repair tickets as well as edit Ticket Notes. 
+* Technician can view and update customer Ticket Statuses.
+* Admin can create, read, update and delete all tickets.
 
-DarnTheLuck will use:
+DarnTheLuck uses:
 * C#
 * JavaScript
 * ASP.NET CORE / MVC
@@ -12,5 +12,9 @@ DarnTheLuck will use:
 * MySQL
 * BootStrap / CSS
 
-Public Domain Art:
-https://publicdomainvectors.org/en/free-clipart/Bad-bug-icon/82925.html
+SETUP:
+Create a MySQL Schema
+Update appsettings.json DefaultConnection to match the schema settings
+Run dotnet ef migrations add Initial / dotnet ef database update
+Register a user
+The first user to run Admin/CreateRole is assigned to the Admin role
