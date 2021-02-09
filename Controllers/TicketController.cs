@@ -136,24 +136,31 @@ namespace DarnTheLuck.Controllers
             {
                 /*
                  * Every ticket MUST have a status
-                 * If there are no valid ticket statuses, create one
+                 * If there are no valid ticket statuses, create them
                  */
-                //TODO: Admin Create/Edit Ticket Statuses
 
-                TicketStatus ticketStatus = _context.TicketStatuses.FirstOrDefault();
+                TicketStatus ticketStatus = _context.TicketStatuses.FirstOrDefault(ts => ts.Name == "Created");
 
                 if (ticketStatus == null)
                 {
-                    ticketStatus = new TicketStatus()
+                    string[] statuses =
                     {
-                        /*
-                         * MySQL can set the Id but I chose to hard-code these values on initialization
-                         */
-                        Id = 1,
-                        Name = "Created"
+                        "Created",
+                        "Limbo",
+                        "Ready",
+                        "Shipped"
                     };
-                    _context.TicketStatuses.Add(ticketStatus);
-                    _context.SaveChanges();
+
+                    foreach (string status in statuses)
+                    {
+                        ticketStatus = new TicketStatus()
+                        {
+                            Name = status
+                        };
+                        _context.TicketStatuses.Add(ticketStatus);
+                    }
+
+                    _context.SaveChanges(); // if > 0 success...
                 }
 
                 /*

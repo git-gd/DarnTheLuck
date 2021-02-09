@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
 
 namespace DarnTheLuck.Migrations
 {
@@ -178,7 +178,11 @@ namespace DarnTheLuck.Migrations
                     ContactPhone = table.Column<string>(nullable: true),
                     ContactEmail = table.Column<string>(nullable: true),
                     TicketNotes = table.Column<string>(nullable: true),
-                    TicketStatusId = table.Column<int>(nullable: false)
+                    TicketStatusId = table.Column<int>(nullable: false),
+                    Model = table.Column<string>(nullable: true),
+                    Serial = table.Column<string>(nullable: true),
+                    TechName = table.Column<string>(nullable: true),
+                    TechEmail = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
