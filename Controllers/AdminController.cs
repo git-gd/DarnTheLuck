@@ -1,6 +1,4 @@
-﻿using DarnTheLuck.Data;
-using DarnTheLuck.Models;
-using DarnTheLuck.ViewModels;
+﻿using DarnTheLuck.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
