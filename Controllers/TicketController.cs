@@ -27,6 +27,13 @@ namespace DarnTheLuck.Controllers
         *************************************
         * 
         * We include all Tickets in our database results if the current user is an Admin or Tech
+        * 
+        * *****************
+        * PERMISSION GRANTS
+        * *****************
+        * Users can create a code that can be shared with other users. Once a code has been created, shared and consumed the
+        * user that consumes the code can view (but not change) the creator's tickets.
+        * 
         */
 
 
