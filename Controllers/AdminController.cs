@@ -1,4 +1,6 @@
-﻿using DarnTheLuck.ViewModels;
+﻿using DarnTheLuck.Data;
+using DarnTheLuck.Models;
+using DarnTheLuck.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +15,13 @@ namespace DarnTheLuck.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -125,6 +129,67 @@ namespace DarnTheLuck.Controllers
                 }
             }
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult ListAllUsers()
+        {
+            List<ListAllUsersViewModel> users = (
+                    from User in _userManager.Users
+                    select new ListAllUsersViewModel()
+                    {
+                        Email = User.Email,
+                        Delete = false
+                    }).ToList();
+
+            return View(users);
+        }
+
+        // Delete Users
+        // TODO: confirmation
+        [HttpPost]
+        public async Task<ActionResult> ListAllUsers(List<ListAllUsersViewModel> users)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(users);
+            }
+
+            foreach(ListAllUsersViewModel user in users)
+            {
+                if (user.Delete)
+                {
+                    IdentityUser target = await _userManager.FindByEmailAsync(user.Email);
+                    bool isAdmin = await _userManager.IsInRoleAsync(target, "Admin"); // don't delete Admin
+                    if(!isAdmin)
+                    {
+                        // remove all usergroups that contain the user to be deleted
+                        List<UserGroup> userGroups = _context.UserGroups
+                            .Where(u => u.UserId == target.Id ||
+                                        u.GrantId == target.Id)
+                            .ToList();
+                        foreach(UserGroup group in userGroups)
+                        {
+                            _context.UserGroups.Remove(group);
+                        }
+
+                        // remove all of their tickets before removing the user
+                        List<Ticket> tickets = _context.Tickets
+                            .Where(t => t.UserId == target.Id)
+                            .ToList();
+
+                        foreach(Ticket ticket in tickets)
+                        {
+                            _context.Remove(ticket);
+                        }
+                        await _context.SaveChangesAsync();
+
+                        await _userManager.DeleteAsync(target);
+                    }
+                }
+            }
+
+            return Redirect("ListAllUsers");
         }
     }
 }
