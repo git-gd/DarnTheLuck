@@ -17,4 +17,4 @@ SETUP:
 * Update Startup.cs options.UseMySql(CONNECTION) to use a valid MySQL connection string
 * Run dotnet ef migrations add Initial / dotnet ef database update
 * Register a user
-* The first user to run Admin/CreateRole is assigned to the Admin role
+* The first user to run /Config is assigned to the Admin role
