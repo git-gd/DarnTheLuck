@@ -30,56 +30,6 @@ namespace DarnTheLuck.Controllers
             return View();
         }
 
-        /*
-         * CreateRole will be repurposed to create the Admin and Technician Roles on a first run
-         */
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> CreateRole()
-        {
-            /*
-             * Create the Admin role
-             */
-
-            IdentityRole admin = new IdentityRole
-            {
-                Name = "Admin"
-            };
-
-            bool roleExists = await _roleManager.RoleExistsAsync(admin.Name);
-
-            if (!roleExists)
-            {
-                IdentityResult result = await _roleManager.CreateAsync(admin);
-
-                if (result.Succeeded)
-                {
-                    IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
-                    if (!(await _userManager.IsInRoleAsync(user, admin.Name)))
-                    {
-                        await _userManager.AddToRoleAsync(user, admin.Name);
-                    }
-                }
-            }
-
-            /*
-             * Create the Technician role
-             */
-
-            IdentityRole tech = new IdentityRole
-            {
-                Name = "Technician"
-            };
-
-            roleExists = await _roleManager.RoleExistsAsync(tech.Name);
-            if (!roleExists)
-            {
-                await _roleManager.CreateAsync(tech);
-            }
-
-            return RedirectToAction("index", "admin");
-        }
-
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {

@@ -8,11 +8,8 @@ namespace DarnTheLuck.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public HomeController(ApplicationDbContext context)
+        public HomeController()
         {
-            _context = context;
         }
 
         [AllowAnonymous]
