@@ -109,7 +109,7 @@ namespace DarnTheLuck.Controllers
                 // Code wasn't found
                 if (userGroup == null)
                 {
-                    ModelState.AddModelError("Value", "CODE NOT FOUND");
+                    ModelState.AddModelError("Value", "INVALID CODE");
                     return View(code);
                 }
                 else
@@ -137,7 +137,7 @@ namespace DarnTheLuck.Controllers
                  * In order to update this Composite Key with the Id of the user that
                  * consumed the code we delete the old entry and create a new one.
                  */
-                _context.UserGroups.Add(new UserGroup()
+                _ = await _context.UserGroups.AddAsync(new UserGroup()
                 {
                     UserId = userGroup.UserId,
                     UserEmail = userGroup.UserEmail,
@@ -146,7 +146,7 @@ namespace DarnTheLuck.Controllers
                     Authorized = userGroup.Authorized
                 });
                 _context.UserGroups.Remove(userGroup);
-                _context.SaveChanges();
+                _ = await _context.SaveChangesAsync();
             }
             else
             {
