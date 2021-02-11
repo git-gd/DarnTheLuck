@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DarnTheLuck.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210208235212_initial")]
+    [Migration("20210211022833_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,6 +79,28 @@ namespace DarnTheLuck.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TicketStatuses");
+                });
+
+            modelBuilder.Entity("DarnTheLuck.Models.UserGroup", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("GrantId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("Authorized")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("GrantEmail")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("UserId", "GrantId");
+
+                    b.ToTable("UserGroups");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

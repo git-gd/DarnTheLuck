@@ -61,6 +61,21 @@ namespace DarnTheLuck.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserGroups",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    GrantId = table.Column<string>(nullable: false),
+                    UserEmail = table.Column<string>(nullable: true),
+                    GrantEmail = table.Column<string>(nullable: true),
+                    Authorized = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserGroups", x => new { x.UserId, x.GrantId });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -268,6 +283,9 @@ namespace DarnTheLuck.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tickets");
+
+            migrationBuilder.DropTable(
+                name: "UserGroups");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
