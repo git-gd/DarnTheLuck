@@ -48,6 +48,12 @@ namespace DarnTheLuck.Controllers
             _userManager = userManager;
         }
 
+        //TODO: clean up this mess
+        // make a new view model called SearchViewModel
+        // move TicketListViewModel to a regular model
+        // include a paginatedlist of ticketlistviewmodel in searchviewmodel
+        // move all of the other variables into searchviewmodel
+
         public async Task<IActionResult> Index(string sort, string sortDir, string search, List<string> sbox, int page = 1, int pageSize = 3)
         {
             if (page < 1) { page = 1; }
@@ -228,7 +234,14 @@ namespace DarnTheLuck.Controllers
                        grantIds.Contains(t.UserId)) // allow users who have been granted access to view details
                     && t.TicketId == Id);
 
-            TicketViewModel ticketView;
+            TicketViewModel ticketView = ticket is null
+                ? null
+                : new TicketViewModel(ticket)
+                {
+                    IsAdmin = isAdmin,
+                    IsTech = isTech,
+                    IsOwner = ticket.UserId == user.Id
+                };
 
             /*
              * Below is one way to test Roles, another is to inject AuthorizationService into the page (Home/Index does this).
@@ -236,16 +249,6 @@ namespace DarnTheLuck.Controllers
              * Another possibile way to do this would be create an Elevated controller and do our Role checks there
             */
 
-            if (ticket is null){
-                ticketView = null;
-            } else {
-                ticketView = new TicketViewModel(ticket)
-                {
-                    IsAdmin = isAdmin,
-                    IsTech = isTech,
-                    IsOwner = ticket.UserId == user.Id
-                };
-            }
 
             if (isTech) // Intentionally leaving Admins out here, only Technicians can change Ticket Status (for demonstration)
             {
@@ -254,6 +257,11 @@ namespace DarnTheLuck.Controllers
 
             return View(ticketView);
         }
+
+        // TODO: Clean UpdateStatus Up...
+        // [Authorize(Role="Technician")] ...
+        // It may be time to research partial pages https://www.learnrazorpages.com/razor-pages/partial-pages
+        // UpdateStatus needs to be split into 2
 
         /***********************
          * UPDATE Ticket Fields 
