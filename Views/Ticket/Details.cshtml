@@ -45,9 +45,8 @@ else
                 @if (Model.IsOwner && Model.Status != "Shipped")
                 {
                     <div class="col">
-                        <form method="post" id="statFrm" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-Id="@Model.TicketId">
-                            <input type="hidden" name="setField" value="TicketNotes" />
-                            <textarea class="form-control border-0 o-txt" name="setValue" onchange="document.getElementById('statFrm').submit();">@Model.TicketNotes</textarea>
+                        <form method="post" id="statFrm" asp-controller="Ticket" asp-action="UpdateTicket" asp-route-Id="@Model.TicketId">
+                            <textarea class="form-control border-0 o-txt" name="notes" onchange="document.getElementById('statFrm').submit();">@Model.TicketNotes</textarea>
                         </form>
                     </div>
                 }

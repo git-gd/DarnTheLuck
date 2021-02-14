@@ -275,21 +275,24 @@ namespace DarnTheLuck.Controllers
          * 
          */
 
+        /*
+         *  Notes has been split...
+         *  redo updatestatus to only be for ticket status
+         * 
+         */
+
         [HttpPost]
         public async Task<IActionResult> UpdateStatus(string setField, string setValue, int Id)
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
             List<int> validStatus = await _context.TicketStatuses.Select(ts => ts.Id).ToListAsync();
-            
-            bool isTech = await _userManager.IsInRoleAsync(user, "Technician");
 
             Ticket ticket = await _context.Tickets
-                .Include(t => t.TicketStatus)  // grab status names
                 .FirstOrDefaultAsync(t => t.TicketId == Id);
 
             if (ticket != null) // Null check
             {
-                if (isTech)
+                if (User.IsInRole("Technician"))
                 {
                     switch (setField)
                     {
@@ -319,6 +322,26 @@ namespace DarnTheLuck.Controllers
 
                 _context.SaveChanges();
             }
+            return Redirect("/ticket/details/" + Id);
+        }
+
+        /*
+         * Currently only allows Ticket Owners to update Ticket Notes if the Ticket Status is not Shipped
+         */
+        [HttpPost]
+        public async Task<IActionResult> UpdateTicket(string notes, int Id)
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+            Ticket ticket = await _context.Tickets
+                .Include(t => t.TicketStatus)
+                .FirstOrDefaultAsync(t => t.TicketId == Id);
+
+            if (user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped")
+            {
+                ticket.TicketNotes = notes;
+                _context.SaveChanges();
+            }
+
             return Redirect("/ticket/details/" + Id);
         }
         
