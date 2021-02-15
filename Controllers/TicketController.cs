@@ -66,8 +66,8 @@ namespace DarnTheLuck.Controllers
                 where ((Ticket.UserId == user.Id ||
                         isElevated ||
                         grantIds.Contains(Ticket.UserId)) &&
-                        (string.IsNullOrEmpty(tIViewModel.Search) || (
-                            (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search))) ||
+                        (string.IsNullOrEmpty(tIViewModel.Search) || 
+                            (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search)) ||
                             (tIViewModel.Sbox.Contains("created") && Ticket.Created.Date.ToString().Contains(tIViewModel.Search)) ||
                             (tIViewModel.Sbox.Contains("status") && Ticket.TicketStatus.Name.Contains(tIViewModel.Search)) ||
                             (tIViewModel.Sbox.Contains("model") && Ticket.Model.Contains(tIViewModel.Search)) ||
@@ -262,13 +262,10 @@ namespace DarnTheLuck.Controllers
                 .Include(t => t.TicketStatus)
                 .FirstOrDefaultAsync(t => t.TicketId == Id);
 
-            if (ticket != null)
+            if (ticket != null && user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped")
             {
-                if (user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped")
-                {
-                    ticket.TicketNotes = notes;
-                    await _context.SaveChangesAsync();
-                }
+                ticket.TicketNotes = notes;
+                await _context.SaveChangesAsync();
             }
 
             return Redirect("/ticket/details/" + Id);
@@ -292,5 +289,5 @@ namespace DarnTheLuck.Controllers
 
             return Redirect("/ticket/details/" + Id);
         }
-    }       //TODO: Info Pages - (i)Show code snippets, how the page works, what the features are
+    }
 }
