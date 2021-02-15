@@ -69,7 +69,7 @@ namespace DarnTheLuck.Controllers
                         grantIds.Contains(Ticket.UserId)) &&
                         (string.IsNullOrEmpty(tIViewModel.Search) || (
                             (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search))) ||
-                            (tIViewModel.Sbox.Contains("created") && Ticket.Created.ToString().Contains(tIViewModel.Search)) ||
+                            (tIViewModel.Sbox.Contains("created") && Ticket.Created.Date.ToString().Contains(tIViewModel.Search)) ||
                             (tIViewModel.Sbox.Contains("status") && Ticket.TicketStatus.Name.Contains(tIViewModel.Search)) ||
                             (tIViewModel.Sbox.Contains("model") && Ticket.Model.Contains(tIViewModel.Search)) ||
                             (tIViewModel.Sbox.Contains("serial") && Ticket.Serial.Contains(tIViewModel.Search))
