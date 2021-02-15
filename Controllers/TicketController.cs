@@ -176,10 +176,7 @@ namespace DarnTheLuck.Controllers
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
 
-            bool isAdmin = currentUserRoles.Contains("Admin");
-            bool isTech  = currentUserRoles.Contains("Technician");
-
-            bool isElevated = isAdmin || isTech;
+            bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
             List<string> grantIds = await _context.UserGroups
                 .Where(u => u.GrantId == user.Id && u.Authorized)
@@ -198,13 +195,10 @@ namespace DarnTheLuck.Controllers
                 ? null
                 : new TicketViewModel(ticket)
                 {
-                    IsAdmin = isAdmin,
-                    IsTech = isTech,
                     IsOwner = ticket.UserId == user.Id
                 };
 
-
-            if (isTech) // Intentionally leaving Admins out here, only Technicians can change Ticket Status (for demonstration)
+            if (User.IsInRole("Technician")) // Intentionally leaving Admins out here, only Technicians can change Ticket Status
             {
                 ViewBag.ticketStatusList = await _context.TicketStatuses.ToListAsync();
             }

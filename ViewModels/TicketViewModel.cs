@@ -1,18 +1,13 @@
 ﻿using DarnTheLuck.Models;
-using System;
 
 namespace DarnTheLuck.ViewModels
 {
     public class TicketViewModel
     {
-        //***
-        public bool IsAdmin { get; set; } = false;
-        public bool IsTech { get; set; } = false;
         public bool IsOwner { get; set; } = false;
-        //***
 
         public int TicketId { get; set; }
-        public DateTime Created { get; set; }
+        public string Created { get; set; }
         public string ContactName { get; set; }
         public string ContactPhone { get; set; }
         public string ContactEmail { get; set; }
@@ -26,7 +21,7 @@ namespace DarnTheLuck.ViewModels
         public TicketViewModel(Ticket ticket)
         {
             TicketId = ticket.TicketId;
-            Created = ticket.Created;
+            Created = ticket.Created.ToString("yyyy-MM-dd");
             ContactName = ticket.ContactName;
             ContactPhone = ticket.ContactPhone;
             ContactEmail = ticket.ContactEmail;

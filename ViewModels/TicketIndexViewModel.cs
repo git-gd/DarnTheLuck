@@ -1,10 +1,5 @@
-﻿using DarnTheLuck.Data;
-using DarnTheLuck.Helpers;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using DarnTheLuck.Helpers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DarnTheLuck.ViewModels
 {

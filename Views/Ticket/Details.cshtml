@@ -15,7 +15,7 @@ else
         <div class="card-body">
             <div class="row ticket-round border border-dark t-@Model.Status">
                 <div class="col-2 d-txt">Status</div>
-                @if (Model.IsTech)
+                @if (User.IsInRole("Technician"))
                 {
                     <div class="col-2 d-txt">
                         <form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-Id="@Model.TicketId">
@@ -33,7 +33,7 @@ else
                 }
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Date</div><div class="col d-txt">@Model.Created.ToString("MM/dd/yy")</div>
+                <div class="col-2 d-txt">Date</div><div class="col d-txt">@Model.Created</div>
             </div>
             <div class="row ticket-round border border-dark">
                 <div class="col-2 d-txt">Ticket #</div><div class="col d-txt">@Model.TicketId</div>
@@ -81,7 +81,7 @@ else
         </div>
         <div class="card-header bg-dark text-white">
             <div class="form-inline d-txt font-weight-bold">
-                Technician:@if (Model.IsTech)
+                Technician:@if (User.IsInRole("Technician"))
                 {<form method="post" asp-controller="Ticket" asp-action="UpdateTech" asp-route-Id="@Model.TicketId"><div class="col d-txt"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></div></form>}
             </div>
         </div>
@@ -93,7 +93,7 @@ else
                 <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.TechEmail</div>
             </div>
         </div>
-        @if (Model.IsAdmin)
+        @if (User.IsInRole("Admin"))
         {<div class="container-fluid overflow-auto">
                 <div class="row">
                     <form method="post" asp-controller="Ticket" asp-action="DeleteTicket" onsubmit="return document.getElementById('Id').value == document.getElementById('confirm').value">
