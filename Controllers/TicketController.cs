@@ -82,10 +82,10 @@ namespace DarnTheLuck.Controllers
              * Ticket.UserId below
              */
 
-            List<string> grantIds = _context.UserGroups
+            List<string> grantIds = await _context.UserGroups
                 .Where(u => u.GrantId == user.Id && u.Authorized)
                 .Select(u => u.UserId)
-                .ToList();
+                .ToListAsync();
 
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
@@ -221,14 +221,14 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = isAdmin || isTech;
 
-            List<string> grantIds = _context.UserGroups
+            List<string> grantIds = await _context.UserGroups
                 .Where(u => u.GrantId == user.Id && u.Authorized)
                 .Select(u => u.UserId)
-                .ToList();
+                .ToListAsync();
 
-            Ticket ticket = _context.Tickets
+            Ticket ticket = await _context.Tickets
                 .Include(t => t.TicketStatus)  // so we can access the Name string in the related table
-                .FirstOrDefault(t =>
+                .FirstOrDefaultAsync(t =>
                     (  t.UserId == user.Id ||  // match UserId - individuals can access their ticket details
                        isElevated ||           // allow Elevated users (Admin, Tech) to view details
                        grantIds.Contains(t.UserId)) // allow users who have been granted access to view details
@@ -243,12 +243,6 @@ namespace DarnTheLuck.Controllers
                     IsOwner = ticket.UserId == user.Id
                 };
 
-            /*
-             * Below is one way to test Roles, another is to inject AuthorizationService into the page (Home/Index does this).
-             * 
-             * Another possibile way to do this would be create an Elevated controller and do our Role checks there
-            */
-
 
             if (isTech) // Intentionally leaving Admins out here, only Technicians can change Ticket Status (for demonstration)
             {
@@ -258,69 +252,48 @@ namespace DarnTheLuck.Controllers
             return View(ticketView);
         }
 
-        // TODO: Clean UpdateStatus Up...
-        // [Authorize(Role="Technician")] ...
-        // It may be time to research partial pages https://www.learnrazorpages.com/razor-pages/partial-pages
-        // UpdateStatus needs to be split into 2
-
-        /***********************
-         * UPDATE Ticket Fields 
-         ***********************
-         *
-         * The way this should be done is with a separate Technician controller and appropriate ViewModels
-         * 
-         * Clumping this all together in a single View/Controller allows for "interesting" albeit janky solutions
-         * 
-         * setField is compared and the corresponding field is set to setProperty
-         * 
-         */
-
         /*
-         *  Notes has been split...
-         *  redo updatestatus to only be for ticket status
-         * 
+         * Technicians can update the Ticket Tech fields
          */
 
+        [Authorize(Roles = "Technician")]
         [HttpPost]
-        public async Task<IActionResult> UpdateStatus(string setField, string setValue, int Id)
+        public async Task<IActionResult> UpdateTech(int Id)
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
-            List<int> validStatus = await _context.TicketStatuses.Select(ts => ts.Id).ToListAsync();
 
             Ticket ticket = await _context.Tickets
                 .FirstOrDefaultAsync(t => t.TicketId == Id);
 
-            if (ticket != null) // Null check
-            {
-                if (User.IsInRole("Technician"))
-                {
-                    switch (setField)
-                    {
-                        case "Tech":
-                            ticket.TechName = user.UserName;
-                            ticket.TechEmail = user.Email;
-                            break;
-                        case "Status":
-                            if (System.Int32.TryParse(setValue, out int value) && validStatus.Contains(value))
-                            {
-                                ticket.TicketStatusId = value;
-                            }
-                            break;
-                    }
-                }
-                if (user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped") // User is the Ticket Owner && Ticket is not SHIPPED
-                {
-                    switch (setField)
-                    {
-                        case "TicketNotes":
-                            ticket.TicketNotes = setValue;
-                            break;
-                        default:
-                            break;
-                    }
-                }
+            if (ticket != null)
+            {               
+                ticket.TechName = user.UserName;
+                ticket.TechEmail = user.Email;
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+            }
+            return Redirect("/ticket/details/" + Id);
+        }
+
+        /*
+         * Technicians can change the Ticket Status
+         */
+
+        [Authorize(Roles ="Technician")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatus(int status, int Id)
+        {
+            bool validStatus = await _context.TicketStatuses.Select(ts => ts.Id).ContainsAsync(status);
+
+            Ticket ticket = await _context.Tickets
+                .FirstOrDefaultAsync(t => t.TicketId == Id);
+
+
+            if (ticket != null && validStatus)
+            {
+                ticket.TicketStatusId = status;
+
+                await _context.SaveChangesAsync();
             }
             return Redirect("/ticket/details/" + Id);
         }
@@ -336,10 +309,13 @@ namespace DarnTheLuck.Controllers
                 .Include(t => t.TicketStatus)
                 .FirstOrDefaultAsync(t => t.TicketId == Id);
 
-            if (user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped")
+            if (ticket != null)
             {
-                ticket.TicketNotes = notes;
-                _context.SaveChanges();
+                if (user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped")
+                {
+                    ticket.TicketNotes = notes;
+                    await _context.SaveChangesAsync();
+                }
             }
 
             return Redirect("/ticket/details/" + Id);

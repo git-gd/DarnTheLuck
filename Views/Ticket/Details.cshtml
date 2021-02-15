@@ -18,10 +18,8 @@ else
                 @if (Model.IsTech)
                 {
                     <div class="col-2 d-txt">
-                        <form method="post" asp-controller="Ticket" asp-action="UpdateStatus">
-                            <input type="hidden" name="Id" value="@Model.TicketId" />
-                            <input type="hidden" name="setField" value="Status" />
-                            <select name="setValue" id="setValue" onchange="this.form.submit()" class="bg-transparent border-0 font-weight-bold">
+                        <form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-Id="@Model.TicketId">
+                            <select name="status" onchange="this.form.submit()" class="bg-transparent border-0 font-weight-bold">
                                 @foreach (TicketStatus status in ViewBag.ticketStatusList)
                                 {
                                     <option value="@status.Id" selected="@(Model.Status == status.Name)">@status.Name</option>
@@ -84,7 +82,7 @@ else
         <div class="card-header bg-dark text-white">
             <div class="form-inline d-txt font-weight-bold">
                 Technician:@if (Model.IsTech)
-                {<form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-setField="Tech" asp-route-Id="@Model.TicketId"><div class="col d-txt"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></div></form>}
+                {<form method="post" asp-controller="Ticket" asp-action="UpdateTech" asp-route-Id="@Model.TicketId"><div class="col d-txt"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></div></form>}
             </div>
         </div>
         <div class="card-body">
