@@ -48,13 +48,13 @@ namespace DarnTheLuck.Controllers
             _context = context;
             _userManager = userManager;
         }
-      
+
         public async Task<IActionResult> Index(TicketIndexViewModel tIViewModel)
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
-            
+
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
-          
+
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
             List<string> grantIds = await _context.UserGroups
@@ -64,8 +64,8 @@ namespace DarnTheLuck.Controllers
 
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
-                where (( Ticket.UserId == user.Id ||
-                        isElevated || 
+                where ((Ticket.UserId == user.Id ||
+                        isElevated ||
                         grantIds.Contains(Ticket.UserId)) &&
                         (string.IsNullOrEmpty(tIViewModel.Search) || (
                             (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search))) ||
@@ -84,12 +84,20 @@ namespace DarnTheLuck.Controllers
                     Serial = Ticket.Serial
                 });
 
+            /*
+             * Fixing search broke sort... the orderby needs to be done before the select that converts the DateTime to a string...
+             * but the orderby statement doesn't seem to allow the same flexibility as using a lambda
+             */
+
+            // TODO: either redo this code to use lambda expressions or accept the fact that as long as ticket id increments
+            // sorting by created and ticket id is essentially the same thing
+
             // set sort method
             ticketListQuery = tIViewModel.SortDir == "descending"
                 ? (tIViewModel.Sort switch
                 {
                     "status" => ticketListQuery.OrderByDescending(t => t.Status),
-                    "created" => ticketListQuery.OrderByDescending(t => t.Created),
+                    //"created" => ticketListQuery.OrderByDescending(t => t.Created),
                     "model" => ticketListQuery.OrderByDescending(t => t.Model),
                     "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
                     _ => ticketListQuery.OrderByDescending(t => t.TicketId),
@@ -97,7 +105,7 @@ namespace DarnTheLuck.Controllers
                 : (tIViewModel.Sort switch
                 {
                     "status" => ticketListQuery.OrderBy(t => t.Status),
-                    "created" => ticketListQuery.OrderBy(t => t.Created),
+                    //"created" => ticketListQuery.OrderBy(t => t.Created),
                     "model" => ticketListQuery.OrderBy(t => t.Model),
                     "serial" => ticketListQuery.OrderBy(t => t.Serial),
                     _ => ticketListQuery.OrderBy(t => t.TicketId),
