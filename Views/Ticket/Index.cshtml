@@ -48,7 +48,7 @@
         <a asp-controller="Ticket" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
             <div class="row text-center ticket-round border border-dark t-@ticket.Status">
                 <div class="col d-txt" @(Model.Sbox.Contains("status")?@highlight(ticket.Status):"")>@ticket.Status</div>
-                <div class="col d-txt" @(Model.Sbox.Contains("created")?@highlight(ticket.Created):"")>@ticket.Created</div>
+                <div class="col d-txt" @(Model.Sbox.Contains("created")?@highlight(ticket.CreatedString):"")>@ticket.CreatedString</div>
                 <div class="col d-txt" @(Model.Sbox.Contains("model")?@highlight(ticket.Model):"")>@ticket.Model</div>
                 <div class="col d-txt" @(Model.Sbox.Contains("serial")?@highlight(ticket.Serial):"")>@ticket.Serial</div>
                 <div class="col d-txt" @(Model.Sbox.Contains("ticket")?@highlight(ticket.TicketId.ToString()):"")>@ticket.TicketId</div>

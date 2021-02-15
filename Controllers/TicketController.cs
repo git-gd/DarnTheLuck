@@ -78,38 +78,30 @@ namespace DarnTheLuck.Controllers
                 select new TicketListViewModel()
                 {
                     TicketId = Ticket.TicketId,
-                    Created = Ticket.Created.ToString("yyyy-MM-dd"), // use the MySQL date format to match search strings
+                    Created = Ticket.Created,
                     Status = Ticket.TicketStatus.Name,
                     Model = Ticket.Model,
                     Serial = Ticket.Serial
                 });
 
-            /*
-             * Fixing search broke sort... the orderby needs to be done before the select that converts the DateTime to a string...
-             * but the orderby statement doesn't seem to allow the same flexibility as using a lambda
-             */
-
-            // TODO: either redo this code to use lambda expressions or accept the fact that as long as ticket id increments
-            // sorting by created and ticket id is essentially the same thing
-
-            // set sort method
-            ticketListQuery = tIViewModel.SortDir == "descending"
-                ? (tIViewModel.Sort switch
-                {
-                    "status" => ticketListQuery.OrderByDescending(t => t.Status),
-                    //"created" => ticketListQuery.OrderByDescending(t => t.Created),
+            //set sort method
+           ticketListQuery = tIViewModel.SortDir == "descending"
+               ? (tIViewModel.Sort switch
+               {
+                   "status" => ticketListQuery.OrderByDescending(t => t.Status),
+                    "created" => ticketListQuery.OrderByDescending(t => t.Created),
                     "model" => ticketListQuery.OrderByDescending(t => t.Model),
-                    "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
-                    _ => ticketListQuery.OrderByDescending(t => t.TicketId),
-                })
-                : (tIViewModel.Sort switch
-                {
-                    "status" => ticketListQuery.OrderBy(t => t.Status),
-                    //"created" => ticketListQuery.OrderBy(t => t.Created),
+                   "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
+                   _ => ticketListQuery.OrderByDescending(t => t.TicketId),
+               })
+               : (tIViewModel.Sort switch
+               {
+                   "status" => ticketListQuery.OrderBy(t => t.Status),
+                    "created" => ticketListQuery.OrderBy(t => t.Created),
                     "model" => ticketListQuery.OrderBy(t => t.Model),
-                    "serial" => ticketListQuery.OrderBy(t => t.Serial),
-                    _ => ticketListQuery.OrderBy(t => t.TicketId),
-                });
+                   "serial" => ticketListQuery.OrderBy(t => t.Serial),
+                   _ => ticketListQuery.OrderBy(t => t.TicketId),
+               });
 
             tIViewModel.TicketList = await PaginatedList<TicketListViewModel>.CreateAsync(ticketListQuery, tIViewModel.Page, tIViewModel.PageSize);
 
@@ -129,7 +121,7 @@ namespace DarnTheLuck.Controllers
 
         [HttpPost]
         [ActionName("Create")]
-        public IActionResult SaveTicket(CreateTicketViewModel ticketModel)
+        public async Task<IActionResult> SaveTicket(CreateTicketViewModel ticketModel)
         {
             if (ModelState.IsValid)
             {
@@ -138,7 +130,7 @@ namespace DarnTheLuck.Controllers
                  * If there are no valid ticket statuses, create them
                  */
 
-                TicketStatus ticketStatus = _context.TicketStatuses.FirstOrDefault(ts => ts.Name == "Created");
+                TicketStatus ticketStatus = await _context.TicketStatuses.FirstOrDefaultAsync(ts => ts.Name == "Created");
 
                 if (ticketStatus == null)
                 {
@@ -156,22 +148,18 @@ namespace DarnTheLuck.Controllers
                         {
                             Name = status
                         };
-                        _context.TicketStatuses.Add(ticketStatus);
+                        await _context.TicketStatuses.AddAsync(ticketStatus);
                     }
 
-                    _context.SaveChanges(); // if > 0 success...
+                    await _context.SaveChangesAsync();
                 }
-
-                /*
-                 * TODO: Query Past User Tickets To Pull Contact Info Or Table Link?
-                 */
 
                 string userId = _userManager.GetUserId(HttpContext.User);
 
                 Ticket newTicket = new Ticket(ticketModel, userId);
 
-                _context.Tickets.Add(newTicket);
-                _context.SaveChanges();
+                await _context.Tickets.AddAsync(newTicket);
+                await _context.SaveChangesAsync();
 
                 TicketViewModel ticketView = new TicketViewModel(newTicket);
 
@@ -199,10 +187,10 @@ namespace DarnTheLuck.Controllers
                 .ToListAsync();
 
             Ticket ticket = await _context.Tickets
-                .Include(t => t.TicketStatus)  // so we can access the Name string in the related table
+                .Include(t => t.TicketStatus)       // so we can access the Name string in the related table
                 .FirstOrDefaultAsync(t =>
-                    (  t.UserId == user.Id ||  // match UserId - individuals can access their ticket details
-                       isElevated ||           // allow Elevated users (Admin, Tech) to view details
+                    (  t.UserId == user.Id ||       // match UserId - individuals can access their ticket details
+                       isElevated ||                // allow Elevated users (Admin, Tech) to view details
                        grantIds.Contains(t.UserId)) // allow users who have been granted access to view details
                     && t.TicketId == Id);
 
