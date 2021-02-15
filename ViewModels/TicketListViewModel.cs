@@ -1,5 +1,4 @@
-﻿using DarnTheLuck.Models;
-using System;
+﻿using System;
 
 namespace DarnTheLuck.ViewModels
 {
@@ -11,6 +10,7 @@ namespace DarnTheLuck.ViewModels
         public string Model { get; set; }
         public string Serial { get; set; }
 
+        public string CreatedString { get { return Created.ToString("yyyy-MM-dd"); } }
         public TicketListViewModel() { }
     }
 }

@@ -48,48 +48,32 @@ namespace DarnTheLuck.Controllers
             _userManager = userManager;
         }
 
-        //TODO: clean up this mess
-        // make a new view model called SearchViewModel
-        // move TicketListViewModel to a regular model
-        // include a paginatedlist of ticketlistviewmodel in searchviewmodel
-        // move all of the other variables into searchviewmodel
-
-        public async Task<IActionResult> Index(string sort, string sortDir, string search, List<string> sbox, int page = 1, int pageSize = 3)
+        public async Task<IActionResult> Index(TicketIndexViewModel tIViewModel)
         {
-            if (page < 1) { page = 1; }
-
-            // set default search values
-            if (sbox.Count < 1) { sbox.AddRange(new string[] { "ticket", "status", "model", "serial" }); }
-
-            ViewBag.sort = string.IsNullOrEmpty(sort) ? "ticket" : sort;
-            ViewBag.sortDir = sortDir;
-            ViewBag.pageSize = pageSize;
-            ViewBag.search = search;
-            ViewBag.sbox = sbox;
-
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
 
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
-            /*
-             * users grant VIEW access to other users...
-             * we store an entry in a table that is similar to Roles
-             * userId = current userId, grantedId = granted user's userId
-             * then all we have to do is build a List<string> of grantedId
-             * where userId = current userId and Intersect them with the
-             * Ticket.UserId below
-             */
-
-            List<string> grantIds = _context.UserGroups
+            List<string> grantIds = await _context.UserGroups
                 .Where(u => u.GrantId == user.Id && u.Authorized)
                 .Select(u => u.UserId)
-                .ToList();
+                .ToListAsync();
 
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
-                where (Ticket.UserId == user.Id || isElevated || grantIds.Contains(Ticket.UserId))
+                where ((Ticket.UserId == user.Id ||
+                        isElevated ||
+                        grantIds.Contains(Ticket.UserId)) &&
+                        (string.IsNullOrEmpty(tIViewModel.Search) || (
+                            (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search))) ||
+                            (tIViewModel.Sbox.Contains("created") && Ticket.Created.Date.ToString().Contains(tIViewModel.Search)) ||
+                            (tIViewModel.Sbox.Contains("status") && Ticket.TicketStatus.Name.Contains(tIViewModel.Search)) ||
+                            (tIViewModel.Sbox.Contains("model") && Ticket.Model.Contains(tIViewModel.Search)) ||
+                            (tIViewModel.Sbox.Contains("serial") && Ticket.Serial.Contains(tIViewModel.Search))
+                        )
+                )
                 select new TicketListViewModel()
                 {
                     TicketId = Ticket.TicketId,
@@ -99,49 +83,28 @@ namespace DarnTheLuck.Controllers
                     Serial = Ticket.Serial
                 });
 
-            /**************************************************
-             * NOTE: The Where Query BELOW is case INSENSITIVE
-             * This is a LIKELY source of future bugs
-             * 
-             * ALSO: created is a DATE which causes odd behavior
-             * You can search on numeric values but you cannot
-             * include format characters.. and some search terms
-             * cause incorrect results
-             **************************************************/
-            // set search value
-            if (search != null && sbox.Count > 0)
-            {
-                ticketListQuery = ticketListQuery.Where(q =>
-                    (sbox.Contains("ticket") && q.TicketId.ToString().Contains(search)) ||
-                    (sbox.Contains("created") && q.Created.Date.ToString().Contains(search)) || // Date so we don't get time values
-                    (sbox.Contains("status") && q.Status.Contains(search)) ||
-                    (sbox.Contains("model") && q.Model.Contains(search)) ||
-                    (sbox.Contains("serial") && q.Serial.Contains(search)) 
-                );
-            }
-
-            // set sort method
-            ticketListQuery = sortDir == "descending"
-                ? (sort switch
-                {
-                    "status" => ticketListQuery.OrderByDescending(t => t.Status),
+            //set sort method
+           ticketListQuery = tIViewModel.SortDir == "descending"
+               ? (tIViewModel.Sort switch
+               {
+                   "status" => ticketListQuery.OrderByDescending(t => t.Status),
                     "created" => ticketListQuery.OrderByDescending(t => t.Created),
                     "model" => ticketListQuery.OrderByDescending(t => t.Model),
-                    "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
-                    _ => ticketListQuery.OrderByDescending(t => t.TicketId),
-                })
-                : (sort switch
-                {
-                    "status" => ticketListQuery.OrderBy(t => t.Status),
+                   "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
+                   _ => ticketListQuery.OrderByDescending(t => t.TicketId),
+               })
+               : (tIViewModel.Sort switch
+               {
+                   "status" => ticketListQuery.OrderBy(t => t.Status),
                     "created" => ticketListQuery.OrderBy(t => t.Created),
                     "model" => ticketListQuery.OrderBy(t => t.Model),
-                    "serial" => ticketListQuery.OrderBy(t => t.Serial),
-                    _ => ticketListQuery.OrderBy(t => t.TicketId),
-                });
+                   "serial" => ticketListQuery.OrderBy(t => t.Serial),
+                   _ => ticketListQuery.OrderBy(t => t.TicketId),
+               });
 
-            PaginatedList<TicketListViewModel> ticketList = await PaginatedList<TicketListViewModel>.CreateAsync(ticketListQuery, page, pageSize);
+            tIViewModel.TicketList = await PaginatedList<TicketListViewModel>.CreateAsync(ticketListQuery, tIViewModel.Page, tIViewModel.PageSize);
 
-            return View(ticketList);
+            return View(tIViewModel);
         }
 
         [HttpGet]
@@ -157,7 +120,7 @@ namespace DarnTheLuck.Controllers
 
         [HttpPost]
         [ActionName("Create")]
-        public IActionResult SaveTicket(CreateTicketViewModel ticketModel)
+        public async Task<IActionResult> SaveTicket(CreateTicketViewModel ticketModel)
         {
             if (ModelState.IsValid)
             {
@@ -166,7 +129,7 @@ namespace DarnTheLuck.Controllers
                  * If there are no valid ticket statuses, create them
                  */
 
-                TicketStatus ticketStatus = _context.TicketStatuses.FirstOrDefault(ts => ts.Name == "Created");
+                TicketStatus ticketStatus = await _context.TicketStatuses.FirstOrDefaultAsync(ts => ts.Name == "Created");
 
                 if (ticketStatus == null)
                 {
@@ -184,22 +147,18 @@ namespace DarnTheLuck.Controllers
                         {
                             Name = status
                         };
-                        _context.TicketStatuses.Add(ticketStatus);
+                        await _context.TicketStatuses.AddAsync(ticketStatus);
                     }
 
-                    _context.SaveChanges(); // if > 0 success...
+                    await _context.SaveChangesAsync();
                 }
-
-                /*
-                 * TODO: Query Past User Tickets To Pull Contact Info Or Table Link?
-                 */
 
                 string userId = _userManager.GetUserId(HttpContext.User);
 
                 Ticket newTicket = new Ticket(ticketModel, userId);
 
-                _context.Tickets.Add(newTicket);
-                _context.SaveChanges();
+                await _context.Tickets.AddAsync(newTicket);
+                await _context.SaveChangesAsync();
 
                 TicketViewModel ticketView = new TicketViewModel(newTicket);
 
@@ -216,21 +175,18 @@ namespace DarnTheLuck.Controllers
 
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
 
-            bool isAdmin = currentUserRoles.Contains("Admin");
-            bool isTech  = currentUserRoles.Contains("Technician");
+            bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
-            bool isElevated = isAdmin || isTech;
-
-            List<string> grantIds = _context.UserGroups
+            List<string> grantIds = await _context.UserGroups
                 .Where(u => u.GrantId == user.Id && u.Authorized)
                 .Select(u => u.UserId)
-                .ToList();
+                .ToListAsync();
 
-            Ticket ticket = _context.Tickets
-                .Include(t => t.TicketStatus)  // so we can access the Name string in the related table
-                .FirstOrDefault(t =>
-                    (  t.UserId == user.Id ||  // match UserId - individuals can access their ticket details
-                       isElevated ||           // allow Elevated users (Admin, Tech) to view details
+            Ticket ticket = await _context.Tickets
+                .Include(t => t.TicketStatus)       // so we can access the Name string in the related table
+                .FirstOrDefaultAsync(t =>
+                    (  t.UserId == user.Id ||       // match UserId - individuals can access their ticket details
+                       isElevated ||                // allow Elevated users (Admin, Tech) to view details
                        grantIds.Contains(t.UserId)) // allow users who have been granted access to view details
                     && t.TicketId == Id);
 
@@ -238,19 +194,10 @@ namespace DarnTheLuck.Controllers
                 ? null
                 : new TicketViewModel(ticket)
                 {
-                    IsAdmin = isAdmin,
-                    IsTech = isTech,
                     IsOwner = ticket.UserId == user.Id
                 };
 
-            /*
-             * Below is one way to test Roles, another is to inject AuthorizationService into the page (Home/Index does this).
-             * 
-             * Another possibile way to do this would be create an Elevated controller and do our Role checks there
-            */
-
-
-            if (isTech) // Intentionally leaving Admins out here, only Technicians can change Ticket Status (for demonstration)
+            if (User.IsInRole("Technician")) // Intentionally leaving Admins out here, only Technicians can change Ticket Status
             {
                 ViewBag.ticketStatusList = await _context.TicketStatuses.ToListAsync();
             }
@@ -258,67 +205,72 @@ namespace DarnTheLuck.Controllers
             return View(ticketView);
         }
 
-        // TODO: Clean UpdateStatus Up...
-        // [Authorize(Role="Technician")] ...
-        // It may be time to research partial pages https://www.learnrazorpages.com/razor-pages/partial-pages
-        // UpdateStatus needs to be split into 2
-
-        /***********************
-         * UPDATE Ticket Fields 
-         ***********************
-         *
-         * The way this should be done is with a separate Technician controller and appropriate ViewModels
-         * 
-         * Clumping this all together in a single View/Controller allows for "interesting" albeit janky solutions
-         * 
-         * setField is compared and the corresponding field is set to setProperty
-         * 
+        /*
+         * Technicians can update the Ticket Tech fields
          */
 
+        [Authorize(Roles = "Technician")]
         [HttpPost]
-        public async Task<IActionResult> UpdateStatus(string setField, string setValue, int Id)
+        public async Task<IActionResult> UpdateTech(int Id)
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
-            List<int> validStatus = await _context.TicketStatuses.Select(ts => ts.Id).ToListAsync();
-            
-            bool isTech = await _userManager.IsInRoleAsync(user, "Technician");
 
             Ticket ticket = await _context.Tickets
-                .Include(t => t.TicketStatus)  // grab status names
                 .FirstOrDefaultAsync(t => t.TicketId == Id);
 
-            if (ticket != null) // Null check
-            {
-                if (isTech)
-                {
-                    switch (setField)
-                    {
-                        case "Tech":
-                            ticket.TechName = user.UserName;
-                            ticket.TechEmail = user.Email;
-                            break;
-                        case "Status":
-                            if (System.Int32.TryParse(setValue, out int value) && validStatus.Contains(value))
-                            {
-                                ticket.TicketStatusId = value;
-                            }
-                            break;
-                    }
-                }
-                if (user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped") // User is the Ticket Owner && Ticket is not SHIPPED
-                {
-                    switch (setField)
-                    {
-                        case "TicketNotes":
-                            ticket.TicketNotes = setValue;
-                            break;
-                        default:
-                            break;
-                    }
-                }
+            if (ticket != null)
+            {               
+                ticket.TechName = user.UserName;
+                ticket.TechEmail = user.Email;
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
+            return Redirect("/ticket/details/" + Id);
+        }
+
+        /*
+         * Technicians can change the Ticket Status
+         */
+
+        [Authorize(Roles ="Technician")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatus(int status, int Id)
+        {
+            bool validStatus = await _context.TicketStatuses.Select(ts => ts.Id).ContainsAsync(status);
+
+            Ticket ticket = await _context.Tickets
+                .FirstOrDefaultAsync(t => t.TicketId == Id);
+
+
+            if (ticket != null && validStatus)
+            {
+                ticket.TicketStatusId = status;
+
+                await _context.SaveChangesAsync();
+            }
+            return Redirect("/ticket/details/" + Id);
+        }
+
+        /*
+         * Currently only allows Ticket Owners to update Ticket Notes if the Ticket Status is not Shipped
+         */
+        [HttpPost]
+        public async Task<IActionResult> UpdateTicket(string notes, int Id)
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+            Ticket ticket = await _context.Tickets
+                .Include(t => t.TicketStatus)
+                .FirstOrDefaultAsync(t => t.TicketId == Id);
+
+            if (ticket != null)
+            {
+                if (user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped")
+                {
+                    ticket.TicketNotes = notes;
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             return Redirect("/ticket/details/" + Id);
         }
         

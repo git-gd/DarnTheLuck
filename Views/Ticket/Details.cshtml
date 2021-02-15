@@ -10,18 +10,28 @@ else
     <div class="container ticket-round border bg-light shadow">
 
         <div class="card-header bg-dark text-white mt-3">
-            <div class="d-txt font-weight-bold">Ticket:</div>
+            <div class="row">
+                <div class="col-2 d-txt font-weight-bold">Ticket:</div>
+                @if (User.IsInRole("Admin"))
+                {
+                <div class="col-2">
+                    <form method="post" asp-controller="Ticket" asp-action="DeleteTicket" onsubmit="return document.getElementById('Id').value == document.getElementById('confirm').value">
+                        <input type="hidden" name="Id" id="Id" value="@Model.TicketId" />
+                        <input type="hidden" name="confirm" id="confirm" value="0" />
+                        <button class="ticket-round btn-danger d-txt" onclick="document.getElementById('confirm').value = prompt('Confirm the Ticket Number to DELETE: ')">Delete Ticket @Model.TicketId</button>
+                    </form>
+                </div>
+                }
+            </div>
         </div>
         <div class="card-body">
             <div class="row ticket-round border border-dark t-@Model.Status">
                 <div class="col-2 d-txt">Status</div>
-                @if (Model.IsTech)
+                @if (User.IsInRole("Technician"))
                 {
                     <div class="col-2 d-txt">
-                        <form method="post" asp-controller="Ticket" asp-action="UpdateStatus">
-                            <input type="hidden" name="Id" value="@Model.TicketId" />
-                            <input type="hidden" name="setField" value="Status" />
-                            <select name="setValue" id="setValue" onchange="this.form.submit()" class="bg-transparent border-0 font-weight-bold">
+                        <form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-Id="@Model.TicketId">
+                            <select name="status" onchange="this.form.submit()" class="bg-transparent border-0 font-weight-bold">
                                 @foreach (TicketStatus status in ViewBag.ticketStatusList)
                                 {
                                     <option value="@status.Id" selected="@(Model.Status == status.Name)">@status.Name</option>
@@ -35,7 +45,7 @@ else
                 }
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Date</div><div class="col d-txt">@Model.Created.ToString("MM/dd/yy")</div>
+                <div class="col-2 d-txt">Date</div><div class="col d-txt">@Model.Created</div>
             </div>
             <div class="row ticket-round border border-dark">
                 <div class="col-2 d-txt">Ticket #</div><div class="col d-txt">@Model.TicketId</div>
@@ -45,9 +55,8 @@ else
                 @if (Model.IsOwner && Model.Status != "Shipped")
                 {
                     <div class="col">
-                        <form method="post" id="statFrm" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-Id="@Model.TicketId">
-                            <input type="hidden" name="setField" value="TicketNotes" />
-                            <textarea class="form-control border-0 o-txt" name="setValue" onchange="document.getElementById('statFrm').submit();">@Model.TicketNotes</textarea>
+                        <form method="post" id="statFrm" asp-controller="Ticket" asp-action="UpdateTicket" asp-route-Id="@Model.TicketId">
+                            <textarea class="form-control border-0 o-txt" name="notes" onchange="document.getElementById('statFrm').submit();">@Model.TicketNotes</textarea>
                         </form>
                     </div>
                 }
@@ -84,8 +93,8 @@ else
         </div>
         <div class="card-header bg-dark text-white">
             <div class="form-inline d-txt font-weight-bold">
-                Technician:@if (Model.IsTech)
-                {<form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-setField="Tech" asp-route-Id="@Model.TicketId"><div class="col d-txt"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></div></form>}
+                Technician:@if (User.IsInRole("Technician"))
+                {<form method="post" asp-controller="Ticket" asp-action="UpdateTech" asp-route-Id="@Model.TicketId"><div class="col d-txt"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></div></form>}
             </div>
         </div>
         <div class="card-body">
@@ -96,17 +105,5 @@ else
                 <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.TechEmail</div>
             </div>
         </div>
-        @if (Model.IsAdmin)
-        {<div class="container-fluid overflow-auto">
-                <div class="row">
-                    <form method="post" asp-controller="Ticket" asp-action="DeleteTicket" onsubmit="return document.getElementById('Id').value == document.getElementById('confirm').value">
-                        <input type="hidden" name="Id" id="Id" value="@Model.TicketId" />
-                        <input type="hidden" name="confirm" id="confirm" value="0" />
-                        <button class="ticket-round btn-danger d-txt" onclick="document.getElementById('confirm').value = prompt('Confirm the Ticket Number to DELETE: ')">Delete Ticket @Model.TicketId</button>
-                    </form>
-                </div>
-            </div>
-        }
-
     </div>
 }
