@@ -64,31 +64,25 @@ namespace DarnTheLuck.Controllers
 
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
-                where (Ticket.UserId == user.Id || isElevated || grantIds.Contains(Ticket.UserId))
+                where (( Ticket.UserId == user.Id ||
+                        isElevated || 
+                        grantIds.Contains(Ticket.UserId)) &&
+                        (string.IsNullOrEmpty(tIViewModel.Search) || (
+                            (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search))) ||
+                            (tIViewModel.Sbox.Contains("created") && Ticket.Created.ToString().Contains(tIViewModel.Search)) ||
+                            (tIViewModel.Sbox.Contains("status") && Ticket.TicketStatus.Name.Contains(tIViewModel.Search)) ||
+                            (tIViewModel.Sbox.Contains("model") && Ticket.Model.Contains(tIViewModel.Search)) ||
+                            (tIViewModel.Sbox.Contains("serial") && Ticket.Serial.Contains(tIViewModel.Search))
+                        )
+                )
                 select new TicketListViewModel()
                 {
                     TicketId = Ticket.TicketId,
-                    Created = Ticket.Created.ToString(), //.ToShortDateString(),
+                    Created = Ticket.Created.ToString("yyyy-MM-dd"), // use the MySQL date format to match search strings
                     Status = Ticket.TicketStatus.Name,
                     Model = Ticket.Model,
                     Serial = Ticket.Serial
                 });
-
-            /**************************************************
-             * NOTE: The Where Query BELOW is case INSENSITIVE
-             * This is a LIKELY source of future bugs
-             **************************************************/
-            // set search value
-            if (tIViewModel.Search != null && tIViewModel.Sbox.Count > 0)
-            {
-                ticketListQuery = ticketListQuery.Where(q =>
-                    (tIViewModel.Sbox.Contains("ticket") && q.TicketId.ToString().Contains(tIViewModel.Search)) ||
-                    (tIViewModel.Sbox.Contains("created") && q.Created.Contains(tIViewModel.Search)) ||
-                    (tIViewModel.Sbox.Contains("status") && q.Status.Contains(tIViewModel.Search)) ||
-                    (tIViewModel.Sbox.Contains("model") && q.Model.Contains(tIViewModel.Search)) ||
-                    (tIViewModel.Sbox.Contains("serial") && q.Serial.Contains(tIViewModel.Search))
-                );
-            }
 
             // set sort method
             ticketListQuery = tIViewModel.SortDir == "descending"
