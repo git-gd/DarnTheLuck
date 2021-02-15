@@ -7,7 +7,7 @@ namespace DarnTheLuck.ViewModels
     {
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 3;
-        public string Sort { get; set; } = "Ticket";
+        public string Sort { get; set; } = "ticket";
         public string SortDir { get; set; }
         public string Search { get; set; }
         public List<string> Sbox { get; set; } = new List<string> { "ticket", "status", "model", "serial" };
