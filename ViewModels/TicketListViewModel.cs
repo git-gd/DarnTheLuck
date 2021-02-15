@@ -7,7 +7,7 @@ namespace DarnTheLuck.ViewModels
     {
         public int TicketId { get; set; }
         public string Status { get; set; }
-        public DateTime Created { get; set; }
+        public string Created { get; set; }
         public string Model { get; set; }
         public string Serial { get; set; }
 

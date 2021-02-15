@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,40 +48,14 @@ namespace DarnTheLuck.Controllers
             _context = context;
             _userManager = userManager;
         }
-
-        //TODO: clean up this mess
-        // make a new view model called SearchViewModel
-        // move TicketListViewModel to a regular model
-        // include a paginatedlist of ticketlistviewmodel in searchviewmodel
-        // move all of the other variables into searchviewmodel
-
-        public async Task<IActionResult> Index(string sort, string sortDir, string search, List<string> sbox, int page = 1, int pageSize = 3)
+      
+        public async Task<IActionResult> Index(TicketIndexViewModel tIViewModel)
         {
-            if (page < 1) { page = 1; }
-
-            // set default search values
-            if (sbox.Count < 1) { sbox.AddRange(new string[] { "ticket", "status", "model", "serial" }); }
-
-            ViewBag.sort = string.IsNullOrEmpty(sort) ? "ticket" : sort;
-            ViewBag.sortDir = sortDir;
-            ViewBag.pageSize = pageSize;
-            ViewBag.search = search;
-            ViewBag.sbox = sbox;
-
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
-
+            
             IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
-
+          
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
-
-            /*
-             * users grant VIEW access to other users...
-             * we store an entry in a table that is similar to Roles
-             * userId = current userId, grantedId = granted user's userId
-             * then all we have to do is build a List<string> of grantedId
-             * where userId = current userId and Intersect them with the
-             * Ticket.UserId below
-             */
 
             List<string> grantIds = await _context.UserGroups
                 .Where(u => u.GrantId == user.Id && u.Authorized)
@@ -93,7 +68,7 @@ namespace DarnTheLuck.Controllers
                 select new TicketListViewModel()
                 {
                     TicketId = Ticket.TicketId,
-                    Created = Ticket.Created,
+                    Created = Ticket.Created.ToString(), //.ToShortDateString(),
                     Status = Ticket.TicketStatus.Name,
                     Model = Ticket.Model,
                     Serial = Ticket.Serial
@@ -102,27 +77,22 @@ namespace DarnTheLuck.Controllers
             /**************************************************
              * NOTE: The Where Query BELOW is case INSENSITIVE
              * This is a LIKELY source of future bugs
-             * 
-             * ALSO: created is a DATE which causes odd behavior
-             * You can search on numeric values but you cannot
-             * include format characters.. and some search terms
-             * cause incorrect results
              **************************************************/
             // set search value
-            if (search != null && sbox.Count > 0)
+            if (tIViewModel.Search != null && tIViewModel.Sbox.Count > 0)
             {
                 ticketListQuery = ticketListQuery.Where(q =>
-                    (sbox.Contains("ticket") && q.TicketId.ToString().Contains(search)) ||
-                    (sbox.Contains("created") && q.Created.Date.ToString().Contains(search)) || // Date so we don't get time values
-                    (sbox.Contains("status") && q.Status.Contains(search)) ||
-                    (sbox.Contains("model") && q.Model.Contains(search)) ||
-                    (sbox.Contains("serial") && q.Serial.Contains(search)) 
+                    (tIViewModel.Sbox.Contains("ticket") && q.TicketId.ToString().Contains(tIViewModel.Search)) ||
+                    (tIViewModel.Sbox.Contains("created") && q.Created.Contains(tIViewModel.Search)) ||
+                    (tIViewModel.Sbox.Contains("status") && q.Status.Contains(tIViewModel.Search)) ||
+                    (tIViewModel.Sbox.Contains("model") && q.Model.Contains(tIViewModel.Search)) ||
+                    (tIViewModel.Sbox.Contains("serial") && q.Serial.Contains(tIViewModel.Search))
                 );
             }
 
             // set sort method
-            ticketListQuery = sortDir == "descending"
-                ? (sort switch
+            ticketListQuery = tIViewModel.SortDir == "descending"
+                ? (tIViewModel.Sort switch
                 {
                     "status" => ticketListQuery.OrderByDescending(t => t.Status),
                     "created" => ticketListQuery.OrderByDescending(t => t.Created),
@@ -130,7 +100,7 @@ namespace DarnTheLuck.Controllers
                     "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
                     _ => ticketListQuery.OrderByDescending(t => t.TicketId),
                 })
-                : (sort switch
+                : (tIViewModel.Sort switch
                 {
                     "status" => ticketListQuery.OrderBy(t => t.Status),
                     "created" => ticketListQuery.OrderBy(t => t.Created),
@@ -139,9 +109,9 @@ namespace DarnTheLuck.Controllers
                     _ => ticketListQuery.OrderBy(t => t.TicketId),
                 });
 
-            PaginatedList<TicketListViewModel> ticketList = await PaginatedList<TicketListViewModel>.CreateAsync(ticketListQuery, page, pageSize);
+            tIViewModel.TicketList = await PaginatedList<TicketListViewModel>.CreateAsync(ticketListQuery, tIViewModel.Page, tIViewModel.PageSize);
 
-            return View(ticketList);
+            return View(tIViewModel);
         }
 
         [HttpGet]

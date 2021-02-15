@@ -1,7 +1,6 @@
-﻿@using DarnTheLuck.Helpers;
-@using DarnTheLuck.ViewModels;
+﻿@using DarnTheLuck.ViewModels;
 
-@model PaginatedList<TicketListViewModel>
+@model TicketIndexViewModel
 
 @{
     string[][] columns = new string[][] {
@@ -14,9 +13,9 @@
 
     string highlight(string input)
     {
-        if (input != null && ViewBag.search != null)
+        if (input != null && Model.Search != null)
         {
-            if (input.ToLower().Contains(ViewBag.search.ToLower()))
+            if (input.ToLower().Contains(Model.Search.ToLower()))
             {
                 return "style=color:red;";
             }
@@ -29,11 +28,11 @@
     <div class="row ticket-head text-center flex-nowrap text-nowrap">
         @foreach (string[] col in columns)
         {
-            if (ViewBag.sort == col[1])
+            if (Model.Sort == col[1])
             {
-                string flipSort = string.IsNullOrEmpty(ViewBag.sortDir) ? "descending" : string.Empty;
+                string flipSort = string.IsNullOrEmpty(Model.SortDir) ? "descending" : string.Empty;
                 <div class="col d-txt">
-                    <a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(ViewBag.sortDir) ? "#ffff00" : "#ff8000")" onclick="document.getElementById('sort').value='@col[1]';document.getElementById('sortDir').value='@flipSort';document.getElementById('navForm').submit();">@col[0]</a>
+                    <a class="text-decoration-none" style="color:@(string.IsNullOrEmpty(Model.SortDir) ? "#ffff00" : "#ff8000")" onclick="document.getElementById('sort').value='@col[1]';document.getElementById('sortDir').value='@flipSort';document.getElementById('navForm').submit();">@col[0]</a>
                 </div>
             }
             else
@@ -44,56 +43,56 @@
             }
         }
     </div>
-    @foreach (TicketListViewModel ticket in Model)
+    @foreach (TicketListViewModel ticket in Model.TicketList)
     {
         <a asp-controller="Ticket" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
             <div class="row text-center ticket-round border border-dark t-@ticket.Status">
-                <div class="col d-txt" @(ViewBag.sbox.Contains("status")?@highlight(ticket.Status):"")>@ticket.Status</div>
-                <div class="col d-txt" @(ViewBag.sbox.Contains("created")?@highlight(ticket.Created.ToLocalTime().ToString("MM/dd/yy")):"")>@ticket.Created.ToLocalTime().ToString("MM/dd/yy")</div>
-                <div class="col d-txt" @(ViewBag.sbox.Contains("model")?@highlight(ticket.Model):"")>@ticket.Model</div>
-                <div class="col d-txt" @(ViewBag.sbox.Contains("serial")?@highlight(ticket.Serial):"")>@ticket.Serial</div>
-                <div class="col d-txt" @(ViewBag.sbox.Contains("ticket")?@highlight(ticket.TicketId.ToString()):"")>@ticket.TicketId</div>
+                <div class="col d-txt" @(Model.Sbox.Contains("status")?@highlight(ticket.Status):"")>@ticket.Status</div>
+                <div class="col d-txt" @(Model.Sbox.Contains("created")?@highlight(ticket.Created):"")>@ticket.Created</div>
+                <div class="col d-txt" @(Model.Sbox.Contains("model")?@highlight(ticket.Model):"")>@ticket.Model</div>
+                <div class="col d-txt" @(Model.Sbox.Contains("serial")?@highlight(ticket.Serial):"")>@ticket.Serial</div>
+                <div class="col d-txt" @(Model.Sbox.Contains("ticket")?@highlight(ticket.TicketId.ToString()):"")>@ticket.TicketId</div>
             </div>
         </a>
     }
 </div>
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.TicketList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.TicketList.HasNextPage ? "disabled" : "";
 }
 <form method="get" asp-controller="Ticket" asp-action="Index" id="navForm" class="form-row pt-2">
     <div class="col-auto">
-        <button onclick="document.getElementById('page').value = @(Model.PageIndex - 1);"
+        <button onclick="document.getElementById('page').value = @(Model.TicketList.PageIndex - 1);"
             class="btn btn-default font-weight-bold" @prevDisabled>
             Previous
         </button>
     </div>
     <div class="col-auto">
-        <button onclick="document.getElementById('page').value = @(Model.PageIndex + 1);"
+        <button onclick="document.getElementById('page').value = @(Model.TicketList.PageIndex + 1);"
             class="btn btn-default font-weight-bold" @nextDisabled>
             Next
         </button>
     </div>
     <div class="col-auto pt-2">
-        <input type="hidden" name="page" value="@Model.PageIndex" id="page" />
-        <input type="hidden" name="sort" value="@ViewBag.sort" id="sort" />
-        <input type="hidden" name="sortDir" value="@ViewBag.sortDir" id="sortDir" />
+        <input type="hidden" name="page" value="@Model.TicketList.PageIndex" id="page" />
+        <input type="hidden" name="sort" value="@Model.Sort" id="sort" />
+        <input type="hidden" name="sortDir" value="@Model.SortDir" id="sortDir" />
         <label for="pageSize">Records Per Page:</label>
         <select name="pageSize" id="pageSize" onchange="document.getElementById('page').value=1;this.form.submit();">
-            <option value="1" selected="@(ViewBag.pageSize==1)">1</option>
-            <option value="3" selected="@(ViewBag.pageSize==3)">3</option>
-            <option value="5" selected="@(ViewBag.pageSize==5)">5</option>
-            <option value="10" selected="@(ViewBag.pageSize==10)">10</option>
+            <option value="1" selected="@(Model.PageSize==1)">1</option>
+            <option value="3" selected="@(Model.PageSize==3)">3</option>
+            <option value="5" selected="@(Model.PageSize==5)">5</option>
+            <option value="10" selected="@(Model.PageSize==10)">10</option>
         </select>
     </div>
     <div class="col-auto pt-1">
         <div class="container-fluid">
-            <label>Search: <input type="text" name="search" value="@ViewBag.search" class="txt ticket-round" onchange="document.getElementById('page').value=1;this.form.submit();"/></label>
+            <label>Search: <input type="text" name="search" value="@Model.Search" class="txt ticket-round" onchange="document.getElementById('page').value=1;this.form.submit();"/></label>
             <button class="ticket-round" type="submit">Search</button>
         </div>
         @foreach (string[] column in columns)
         {
-            <label><input class="checkbox-round" name="sbox" type="checkbox" value="@column[1]" checked="@ViewBag.sbox.Contains(column[1])" /> @column[0]</label>
+            <label><input class="checkbox-round" name="sbox" type="checkbox" value="@column[1]" checked="@Model.Sbox.Contains(column[1])" /> @column[0]</label>
         }
     </div>
 </form>
