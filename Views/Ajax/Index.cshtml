@@ -52,20 +52,20 @@
     <div class="card-body">
         @foreach (TicketListViewModel ticket in Model.TicketList)
         {
+            <a data-ajax="true"
+               data-ajax-mode="replace"
+               data-ajax-update="#details-@ticket.TicketId"
+               data-ajax-loading="#loading"
+               asp-controller="Ajax" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
+                <div class="row text-center ticket-round border border-dark t-@ticket.Status">
+                    <div class="col d-txt" @(Model.Sbox.Contains("status") ? @highlight(ticket.Status) : "")>@ticket.Status</div>
+                    <div class="col d-txt" @(Model.Sbox.Contains("created") ? @highlight(ticket.CreatedString) : "")>@ticket.CreatedString</div>
+                    <div class="col d-txt" @(Model.Sbox.Contains("model") ? @highlight(ticket.Model) : "")>@ticket.Model</div>
+                    <div class="col d-txt" @(Model.Sbox.Contains("serial") ? @highlight(ticket.Serial) : "")>@ticket.Serial</div>
+                    <div class="col d-txt" @(Model.Sbox.Contains("ticket") ? @highlight(ticket.TicketId.ToString()) : "")>@ticket.TicketId</div>
+                </div>
+            </a>
             <div id="details-@ticket.TicketId">
-                <a data-ajax="true"
-                   data-ajax-mode="replace"
-                   data-ajax-update="#details-@ticket.TicketId"
-                   data-ajax-loading="#loading"
-                   asp-controller="Ajax" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
-                    <div class="row text-center ticket-round border border-dark t-@ticket.Status">
-                        <div class="col d-txt" @(Model.Sbox.Contains("status") ? @highlight(ticket.Status) : "")>@ticket.Status</div>
-                        <div class="col d-txt" @(Model.Sbox.Contains("created") ? @highlight(ticket.CreatedString) : "")>@ticket.CreatedString</div>
-                        <div class="col d-txt" @(Model.Sbox.Contains("model") ? @highlight(ticket.Model) : "")>@ticket.Model</div>
-                        <div class="col d-txt" @(Model.Sbox.Contains("serial") ? @highlight(ticket.Serial) : "")>@ticket.Serial</div>
-                        <div class="col d-txt" @(Model.Sbox.Contains("ticket") ? @highlight(ticket.TicketId.ToString()) : "")>@ticket.TicketId</div>
-                    </div>
-                </a>
             </div>
         }
     </div>
@@ -111,13 +111,4 @@
             </div>
         </form>
     </div>
-</div>
-
-<a data-ajax="true"
-   data-ajax-mode="replace"
-   data-ajax-update="#test"
-   data-ajax-loading="#loading"
-   asp-controller="Ajax" asp-action="Details" asp-route-Id="2">Test</a>
-
-<div id="test">
 </div>
