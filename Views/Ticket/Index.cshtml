@@ -91,7 +91,7 @@
                 </div>
                 <div class="col-auto pt-1">
                     <div class="container-fluid">
-                        <label>Search: <input type="text" name="search" value="@Model.Search" class="txt ticket-round" onchange="document.getElementById('page').value=1;this.form.submit();" /></label>
+                        <label>Search: <input type="text" name="search" id="search" value="@Model.Search" class="txt ticket-round" onchange="document.getElementById('page').value = 1; this.form.submit();"/></label>
                         <button class="ticket-round" type="submit">Search</button>
                     </div>
                     @foreach (string[] column in columns)
@@ -102,9 +102,3 @@
             </form>
         </div>
     </div>
-
-    <script>
-        function submitOnEnter(e) {
-            if (e.key === 'Enter') { document.getElementById('page').value = 1; this.form.submit(); }
-        }
-    </script>
