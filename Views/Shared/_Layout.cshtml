@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject RoleManager<IdentityRole> RoleManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -62,6 +64,13 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownAdminMenuLink">
                                         <a class="dropdown-item" asp-controller="Admin" asp-action="Index">View User Roles</a>
                                         <a class="dropdown-item" asp-controller="Admin" asp-action="ListAllUsers">Delete User Accounts</a>
+                                        @{
+                                            List<IdentityRole> roles = RoleManager.Roles.ToList();
+                                            @foreach (IdentityRole role in roles)
+                                            {
+                                                <a class=" dropdown-item" asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="@role.Id">Manage @role.Name Role</a>
+                                            }
+                                        }
                                     </div>
                                 </div>
                             </li>
