@@ -160,9 +160,7 @@ namespace DarnTheLuck.Controllers
                 await _context.Tickets.AddAsync(newTicket);
                 await _context.SaveChangesAsync();
 
-                TicketViewModel ticketView = new TicketViewModel(newTicket);
-
-                return View("Details", ticketView);
+                return Redirect("/ticket/details/" + newTicket.TicketId);
             }
 
             return View("Create", ticketModel);
