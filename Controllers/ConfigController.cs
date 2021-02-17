@@ -41,7 +41,6 @@ namespace DarnTheLuck.Controllers
                         await _userManager.AddToRoleAsync(user, admin.Name);
                     }
 
-                    //TODO: perhaps the admin controller should do the same when roles are changed?
                     /*
                      *  Updating the Role isn't enough. The Role is stored in the cookie. (~Ugh!)
                      *  We need to refresh the user's Role with SignInManager:

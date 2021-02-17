@@ -1,0 +1,114 @@
+﻿@using DarnTheLuck.ViewModels;
+@model TicketIndexViewModel
+@section CustomStyle {
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"></script>
+}
+
+@{
+    string[][] columns = new string[][] {
+            new string []{ "Status", "status" },
+            new string []{ "Created", "created"},
+            new string []{ "Model", "model" },
+            new string []{ "Serial #", "serial" },
+            new string []{ "Ticket #", "ticket" }
+};
+
+    string highlight(string input)
+    {
+        if (input != null && Model.Search != null)
+        {
+            if (input.ToLower().Contains(Model.Search.ToLower()))
+            {
+                return "style=color:red;";
+            }
+        }
+
+        return "";
+    }
+}
+
+<div class="card outline-box">
+    <div class="card-header">
+        <div class="row text-center flex-nowrap text-nowrap">
+            @foreach (string[] col in columns)
+            {
+                if (Model.Sort == col[1])
+                {
+                    string flipSort = string.IsNullOrEmpty(Model.SortDir) ? "descending" : string.Empty;
+                    <div class="col">
+                        <a class="o-txt font-weight-bold no-select" onclick="document.getElementById('sort').value='@col[1]';document.getElementById('sortDir').value='@flipSort';document.getElementById('navForm').submit();">@col[0] <span class="outline-txt" style="color:#343a40;">@(string.IsNullOrEmpty(Model.SortDir) ? "⮝" : "⮟")</span></a>
+                    </div>
+                }
+                else
+                {
+                    <div class="col">
+                        <a class="o-txt font-weight-bold no-select" onclick="document.getElementById('sort').value='@col[1]';document.getElementById('sortDir').value='';document.getElementById('navForm').submit();">@col[0] <span style="color:#e0e0e0">⮝</span></a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        @foreach (TicketListViewModel ticket in Model.TicketList)
+        {
+            <a data-ajax="true"
+               data-ajax-mode="replace"
+               data-ajax-update="#details-@ticket.TicketId"
+               data-ajax-loading="#loading"
+               asp-controller="Ajax" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
+                <div class="row text-center ticket-round border border-dark t-@ticket.Status">
+                    <div class="col d-txt" @(Model.Sbox.Contains("status") ? @highlight(ticket.Status) : "")>@ticket.Status</div>
+                    <div class="col d-txt" @(Model.Sbox.Contains("created") ? @highlight(ticket.CreatedString) : "")>@ticket.CreatedString</div>
+                    <div class="col d-txt" @(Model.Sbox.Contains("model") ? @highlight(ticket.Model) : "")>@ticket.Model</div>
+                    <div class="col d-txt" @(Model.Sbox.Contains("serial") ? @highlight(ticket.Serial) : "")>@ticket.Serial</div>
+                    <div class="col d-txt" @(Model.Sbox.Contains("ticket") ? @highlight(ticket.TicketId.ToString()) : "")>@ticket.TicketId</div>
+                </div>
+            </a>
+            <div id="details-@ticket.TicketId">
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        @{
+            var prevDisabled = !Model.TicketList.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.TicketList.HasNextPage ? "disabled" : "";
+        }
+        <form method="get" asp-controller="Ajax" asp-action="Index" id="navForm" class="form-row pt-2">
+            <div class="col-auto">
+                <button onclick="document.getElementById('page').value = @(Model.TicketList.PageIndex - 1);"
+                        class="btn btn-default font-weight-bold" @prevDisabled>
+                    Previous
+                </button>
+            </div>
+            <div class="col-auto">
+                <button onclick="document.getElementById('page').value = @(Model.TicketList.PageIndex + 1);"
+                        class="btn btn-default font-weight-bold" @nextDisabled>
+                    Next
+                </button>
+            </div>
+            <div class="col-auto pt-2">
+                <input type="hidden" name="page" value="@Model.TicketList.PageIndex" id="page" />
+                <input type="hidden" name="sort" value="@Model.Sort" id="sort" />
+                <input type="hidden" name="sortDir" value="@Model.SortDir" id="sortDir" />
+                <label for="pageSize">Records Per Page:</label>
+                <select name="pageSize" id="pageSize" onchange="document.getElementById('page').value=1;this.form.submit();">
+                    <option value="1" selected="@(Model.PageSize==1)">1</option>
+                    <option value="3" selected="@(Model.PageSize==3)">3</option>
+                    <option value="5" selected="@(Model.PageSize==5)">5</option>
+                    <option value="10" selected="@(Model.PageSize==10)">10</option>
+                </select>
+            </div>
+            <div class="col-auto pt-1">
+                <div class="container-fluid">
+                    <label>Search: <input type="text" name="search" id="search" value="@Model.Search" class="txt ticket-round" onchange="document.getElementById('page').value = 1; this.form.submit();" /></label>
+                    <button class="ticket-round" type="submit">Search</button>
+                </div>
+                @foreach (string[] column in columns)
+                {
+                    <label><input class="checkbox-round" name="sbox" type="checkbox" value="@column[1]" checked="@Model.Sbox.Contains(column[1])" /> @column[0]</label>
+                }
+            </div>
+        </form>
+    </div>
+</div>

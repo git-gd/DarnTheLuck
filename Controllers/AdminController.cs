@@ -135,6 +135,16 @@ namespace DarnTheLuck.Controllers
                         await _context.SaveChangesAsync();
 
                         await _userManager.DeleteAsync(target);
+
+                        //TODO: Force User Logout - Also fix Identity DELETE button/function
+                        /*
+                         *  If a user is deleted while they are online it causes an error <<<<
+                         *  
+                         *  If a user attempts to delete their own account after creating a ticket it errors due to FK
+                         *  
+                         *  PROBABLY BUG: If a TECHNICIAN is deleted... we might need to remove them from the role first
+                         *  
+                         */
                     }
                 }
             }
