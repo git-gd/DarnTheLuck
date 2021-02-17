@@ -6,7 +6,7 @@ DarnTheLuck is a demo computer repair shop ticket system.
 
 DarnTheLuck uses:
 * C#
-* JavaScript
+* JavaScript / AJAX
 * ASP.NET CORE / MVC
 * Razor / HTML
 * MySQL
