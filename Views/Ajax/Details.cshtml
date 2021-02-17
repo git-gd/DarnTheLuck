@@ -11,10 +11,10 @@ else
 
         <div class="card-header bg-dark text-white mt-3">
             <div class="row">
-                <div class="col-2 d-txt font-weight-bold">Ticket:<a href="#" style="color:yellow;" onclick="document.getElementById('details-@Model.TicketId').innerHTML = null;"> ⮭</a></div>
+                <div class="col-3 d-txt font-weight-bold">Ticket:<a href="#" style="color:yellow;" onclick="document.getElementById('details-@Model.TicketId').innerHTML = null;"> ⮭</a></div>
                 @if (User.IsInRole("Admin"))
                 {
-                    <div class="col-2">
+                    <div class="col-3">
                         <form method="post" asp-controller="Ticket" asp-action="DeleteTicket" onsubmit="return document.getElementById('Id').value == document.getElementById('confirm').value">
                             <input type="hidden" name="Id" id="Id" value="@Model.TicketId" />
                             <input type="hidden" name="confirm" id="confirm" value="0" />
@@ -26,10 +26,10 @@ else
         </div>
         <div class="card-body">
             <div class="row ticket-round border border-dark t-@Model.Status">
-                <div class="col-2 d-txt">Status</div>
+                <div class="col-3 d-txt">Status</div>
                 @if (User.IsInRole("Technician"))
                 {
-                    <div class="col-2 d-txt">
+                    <div class="col-3 d-txt">
                         <form method="post" asp-controller="Ticket" asp-action="UpdateStatus" asp-route-Id="@Model.TicketId">
                             <select name="status" onchange="this.form.submit()" class="bg-transparent border-0 font-weight-bold">
                                 @foreach (TicketStatus status in ViewBag.ticketStatusList)
@@ -45,13 +45,13 @@ else
                 }
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Ticket #</div><div class="col d-txt">@Model.TicketId</div>
+                <div class="col-3 d-txt">Ticket #</div><div class="col d-txt">@Model.TicketId</div>
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Created</div><div class="col d-txt">@Model.Created</div>
+                <div class="col-3 d-txt">Created</div><div class="col d-txt">@Model.Created</div>
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 o-txt">Notes</div>
+                <div class="col-3 o-txt">Notes</div>
                 @if (Model.IsOwner && Model.Status != "Shipped")
                 {
                     <div class="col">
@@ -71,10 +71,10 @@ else
         </div>
         <div class="card-body">
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Model</div><div class="col d-txt">@Model.Model</div>
+                <div class="col-3 d-txt">Model</div><div class="col d-txt">@Model.Model</div>
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Serial #</div><div class="col d-txt">@Model.Serial</div>
+                <div class="col-3 d-txt">Serial #</div><div class="col d-txt">@Model.Serial</div>
             </div>
         </div>
         <div class="card-header bg-dark text-white">
@@ -82,13 +82,13 @@ else
         </div>
         <div class="card-body">
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Name</div><div class="col d-txt">@Model.ContactName</div>
+                <div class="col-3 d-txt">Name</div><div class="col d-txt">@Model.ContactName</div>
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Phone</div><div class="col d-txt">@Model.ContactPhone</div>
+                <div class="col-3 d-txt">Phone</div><div class="col d-txt">@Model.ContactPhone</div>
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.ContactEmail</div>
+                <div class="col-3 d-txt">Email</div><div class="col d-txt">@Model.ContactEmail</div>
             </div>
         </div>
         <div class="card-header bg-dark text-white">
@@ -99,10 +99,10 @@ else
         </div>
         <div class="card-body">
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Name</div><div class="col d-txt">@Model.TechName</div>
+                <div class="col-3 d-txt">Name</div><div class="col d-txt">@Model.TechName</div>
             </div>
             <div class="row ticket-round border border-dark">
-                <div class="col-2 d-txt">Email</div><div class="col d-txt">@Model.TechEmail</div>
+                <div class="col-3 d-txt">Email</div><div class="col d-txt">@Model.TechEmail</div>
             </div>
         </div>
     </div>
