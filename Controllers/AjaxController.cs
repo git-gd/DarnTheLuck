@@ -130,14 +130,14 @@ namespace DarnTheLuck.Controllers
             {
                 Resource = Send.Resource,
             }
-               .Property(Send.FromEmail, "FROMEMAILADDRESS")
+               .Property(Send.FromEmail, Ring.FromEmail)
                .Property(Send.FromName, "DTL")
                .Property(Send.Subject, "Test Email")
                .Property(Send.TextPart, "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
                .Property(Send.HtmlPart, "<h3>Dear passenger, welcome to <a href=\"https://www.mailjet.com/\">Mailjet</a>!<br />May the delivery force be with you!")
                .Property(Send.Recipients, new JArray {
                 new JObject {
-                 {"Email", "TOEMAILADDRESS"}
+                 {"Email", User.Identity.Name} // <<< User Email
                  }
                    });
 
