@@ -123,39 +123,39 @@ namespace DarnTheLuck.Controllers
             return PartialView(ticketView);
         }
 
-        public async Task<IActionResult> TestEmail()
-        {
-            MailjetClient client = new MailjetClient(Ring.MailjetKey1, Ring.MailjetKey2);
-            MailjetRequest request = new MailjetRequest
-            {
-                Resource = Send.Resource,
-            }
-               .Property(Send.FromEmail, Ring.FromEmail)
-               .Property(Send.FromName, "DTL")
-               .Property(Send.Subject, "Test Email")
-               .Property(Send.TextPart, "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
-               .Property(Send.HtmlPart, "<h3>Dear passenger, welcome to <a href=\"https://www.mailjet.com/\">Mailjet</a>!<br />May the delivery force be with you!")
-               .Property(Send.Recipients, new JArray {
-                new JObject {
-                 {"Email", User.Identity.Name} // <<< User Email
-                 }
-                   });
+        //public async Task<IActionResult> TestEmail()
+        //{
+        //    MailjetClient client = new MailjetClient(Ring.MailjetKey1, Ring.MailjetKey2);
+        //    MailjetRequest request = new MailjetRequest
+        //    {
+        //        Resource = Send.Resource,
+        //    }
+        //       .Property(Send.FromEmail, Ring.FromEmail)
+        //       .Property(Send.FromName, "DTL")
+        //       .Property(Send.Subject, "Test Email")
+        //       .Property(Send.TextPart, "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
+        //       .Property(Send.HtmlPart, "<h3>Dear passenger, welcome to <a href=\"https://www.mailjet.com/\">Mailjet</a>!<br />May the delivery force be with you!")
+        //       .Property(Send.Recipients, new JArray {
+        //        new JObject {
+        //         {"Email", User.Identity.Name} // <<< User Email
+        //         }
+        //           });
 
-            MailjetResponse response = await client.PostAsync(request);
-            if (response.IsSuccessStatusCode)
-            {
-                string s1 = string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount());
-                string s2 = response.GetData().ToString();
-            }
-            else
-            {
-                string s3 = string.Format("StatusCode: {0}\n", response.StatusCode);
-                string s4 = string.Format("ErrorInfo: {0}\n", response.GetErrorInfo());
-                string s5 = response.GetData().ToString();
-                string s6 = string.Format("ErrorMessage: {0}\n", response.GetErrorMessage());
-            }
+        //    MailjetResponse response = await client.PostAsync(request);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        string s1 = string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount());
+        //        string s2 = response.GetData().ToString();
+        //    }
+        //    else
+        //    {
+        //        string s3 = string.Format("StatusCode: {0}\n", response.StatusCode);
+        //        string s4 = string.Format("ErrorInfo: {0}\n", response.GetErrorInfo());
+        //        string s5 = response.GetData().ToString();
+        //        string s6 = string.Format("ErrorMessage: {0}\n", response.GetErrorMessage());
+        //    }
 
-            return Redirect("Index");
-        }
+        //    return Redirect("Index");
+        //}
     }
 }
