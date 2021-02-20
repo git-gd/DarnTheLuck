@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
+using DarnTheLuck.Data;
+using DarnTheLuck.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,15 +17,18 @@ namespace DarnTheLuck.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly ApplicationDbContext _context;
 
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -65,6 +72,35 @@ namespace DarnTheLuck.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
+
+            /********************************
+             *  Remove FK Before User (BEGIN)
+             */
+
+            // remove all usergroups that contain the user to be deleted
+            List<UserGroup> userGroups = _context.UserGroups
+                .Where(u => u.UserId == user.Id ||
+                            u.GrantId == user.Id)
+                .ToList();
+            foreach (UserGroup group in userGroups)
+            {
+                _context.UserGroups.Remove(group);
+            }
+
+            // remove all of their tickets before removing the user
+            List<Ticket> tickets = _context.Tickets
+                .Where(t => t.UserId == user.Id)
+                .ToList();
+
+            foreach (Ticket ticket in tickets)
+            {
+                _context.Remove(ticket);
+            }
+            await _context.SaveChangesAsync();
+
+            /******************************
+             *  Remove FK Before User (END)
+             */
 
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
