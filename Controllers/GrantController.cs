@@ -36,6 +36,11 @@ namespace DarnTheLuck.Controllers
                 Authorized = Grant.Authorized,
             }).ToList();
 
+            ViewBag.Granted = _context.UserGroups
+                .Where(u => u.GrantEmail == user.Email && u.Authorized)
+                .Select(u => u.UserEmail)
+                .ToList();
+
             return View(userList);
         }
 
@@ -53,7 +58,12 @@ namespace DarnTheLuck.Controllers
                     userGroup.Authorized = grant.Authorized;
                 }
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            ViewBag.Granted = _context.UserGroups
+                .Where(u => u.GrantEmail == user.Email && u.Authorized)
+                .Select(u => u.UserEmail)
+                .ToList();
 
             return View(userList);
         }
@@ -77,7 +87,7 @@ namespace DarnTheLuck.Controllers
                 GrantId = accessCode,
                 GrantEmail = accessCode
             });
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Redirect("Index");
         }
@@ -188,7 +198,7 @@ namespace DarnTheLuck.Controllers
                     }
                 }
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Redirect("Index");
         }

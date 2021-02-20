@@ -1,32 +1,60 @@
 ﻿@model List<DarnTheLuck.ViewModels.UserGroupViewModel>
-@if (Model == null)
+@if (Model == null || Model.Count < 1)
 {
-    <h2>No Authorized Users Or Unclaimed Codes</h2>
+<div class="card">
+    <div class="card-header">
+        <h2>Users That Can View Your Tickets:</h2>
+    </div>
+    <div class="card-body">
+        <h2>No Authorized Users</h2>
+        <h2>No Unclaimed Codes</h2>
+    </div>
+    <div class="card-footer">
+    </div>
+</div>
 }
 else
 {
-    <form method="post">
-        <div class="card">
-            <div class="card-header">
-                <h2>Users That Can View Your Tickets:</h2>
-            </div>
-            <div class="card-body">
-                @for (int i = 0; i < Model.Count; i++)
-                {
-                    <div class="form-check m-1">
-                        <input type="hidden" asp-for="@Model[i].GrantEmail" />
-                        <input asp-for="@Model[i].Authorized" class="form-check-input checkbox-round" />
-                        <label class="form-check-label" asp-for="@Model[i].Authorized">
-                            @Model[i].GrantEmail
-                        </label>
-                    </div>
-                }
-            </div>
-            <div class="card-footer">
-                <input type="submit" value="Update" class="btn btn-dark" style="width:auto" />
-                <a asp-controller="Grant" asp-action="Index"
-                    class="btn btn-dark" style="width:auto" disabled>Cancel</a>
-            </div>
+<form method="post">
+    <div class="card">
+        <div class="card-header">
+            <h2>Users That Can View Your Tickets:</h2>
         </div>
-    </form>
+        <div class="card-body">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <div class="form-check m-1">
+                    <input type="hidden" asp-for="@Model[i].GrantEmail" />
+                    <input asp-for="@Model[i].Authorized" class="form-check-input checkbox-round" />
+                    <label class="form-check-label" asp-for="@Model[i].Authorized">
+                        @Model[i].GrantEmail
+                    </label>
+                </div>
+            }
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Update" class="btn btn-dark" style="width:auto" />
+            <a asp-controller="Grant" asp-action="Index"
+                class="btn btn-dark" style="width:auto" disabled>Cancel</a>
+        </div>
+    </div>
+</form>
+}
+@if (ViewBag.Granted != null && ViewBag.Granted.Count > 0)
+{
+<div class="card">
+    <div class="card-header">
+        <h2>Users That Have Granted You Access:</h2>
+    </div>
+    <div class="card-body">
+        <ul>
+            @foreach (string email in ViewBag.Granted)
+            {
+                <li>@email</li>
+            }
+        </ul>
+    </div>
+    <div class="card-footer">
+    </div>
+</div>
 }
