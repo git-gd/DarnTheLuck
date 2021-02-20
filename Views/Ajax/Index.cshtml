@@ -3,6 +3,23 @@
 @section CustomStyle {
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        function toggleDetails(ticketId) {
+            let divTag = document.getElementById("details-" + ticketId);
+
+            if (divTag.innerHTML.length < 1) {
+                fetch("/Ajax/Details/" + ticketId)
+                    .then((response) => {
+                        return response.text();
+                    })
+                    .then((result) => {
+                        divTag.innerHTML = result;
+                    });
+            } else {
+                divTag.style.display = (divTag.style.display === "none") ? "block" : "none";
+            }
+        }
+    </script>
 }
 
 @{
@@ -52,11 +69,7 @@
     <div class="card-body">
         @foreach (TicketListViewModel ticket in Model.TicketList)
         {
-            <a data-ajax="true"
-               data-ajax-mode="replace"
-               data-ajax-update="#details-@ticket.TicketId"
-               data-ajax-loading="#loading"
-               asp-controller="Ajax" asp-action="Details" asp-route-Id="@ticket.TicketId" class="text-decoration-none text-dark ticket-created">
+            <a onclick="toggleDetails(@ticket.TicketId);">
                 <div class="row text-center ticket-round border border-dark t-@ticket.Status">
                     <div class="col d-txt" @(Model.Sbox.Contains("status") ? @highlight(ticket.Status) : "")>@ticket.Status</div>
                     <div class="col d-txt" @(Model.Sbox.Contains("created") ? @highlight(ticket.CreatedString) : "")>@ticket.CreatedString</div>
@@ -65,8 +78,7 @@
                     <div class="col d-txt" @(Model.Sbox.Contains("ticket") ? @highlight(ticket.TicketId.ToString()) : "")>@ticket.TicketId</div>
                 </div>
             </a>
-            <div id="details-@ticket.TicketId">
-            </div>
+            <div id="details-@ticket.TicketId"></div>
         }
     </div>
     <div class="card-footer">

@@ -11,7 +11,7 @@ else
 
         <div class="card-header bg-dark text-white mt-3">
             <div class="row">
-                <div class="col-3 d-txt font-weight-bold">Ticket:<a href="#" style="color:yellow;" onclick="document.getElementById('details-@Model.TicketId').innerHTML = null;"> ⮭</a></div>
+                <div class="col-3 d-txt font-weight-bold">Ticket:<a href="#" style="color:yellow;" onclick="document.getElementById('details-@Model.TicketId').style.display = 'none';"> ⮭</a></div>
                 @if (User.IsInRole("Admin"))
                 {
                     <div class="col-3">
