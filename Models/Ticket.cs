@@ -33,14 +33,14 @@ namespace DarnTheLuck.Models
             Created = DateTime.UtcNow; // UTC - Consider using local time
         }
 
-        public Ticket(CreateTicketViewModel ticket, string userId) : this()
+        public Ticket(CreateTicketViewModel ticket, string userId, int status) : this()
         {
             UserId = userId;
             ContactName = ticket.ContactName;
             ContactEmail = ticket.ContactEmail;
             ContactPhone = ticket.ContactPhone;
             TicketNotes = ticket.TicketNotes;
-            TicketStatusId = 1;
+            TicketStatusId = status;
             Model = ticket.Model;
             Serial = ticket.Serial;
         }

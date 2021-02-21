@@ -124,38 +124,11 @@ namespace DarnTheLuck.Controllers
         {
             if (ModelState.IsValid)
             {
-                /*
-                 * Every ticket MUST have a status
-                 * If there are no valid ticket statuses, create them
-                 */
-
-                TicketStatus ticketStatus = await _context.TicketStatuses.FirstOrDefaultAsync(ts => ts.Name == "Created");
-
-                if (ticketStatus == null)
-                {
-                    string[] statuses =
-                    {
-                        "Created",
-                        "Limbo",
-                        "Ready",
-                        "Shipped"
-                    };
-
-                    foreach (string status in statuses)
-                    {
-                        ticketStatus = new TicketStatus()
-                        {
-                            Name = status
-                        };
-                        await _context.TicketStatuses.AddAsync(ticketStatus);
-                    }
-
-                    await _context.SaveChangesAsync();
-                }
+                TicketStatus ticketStatus = await TicketStatus.CreateAsync(_context);
 
                 string userId = _userManager.GetUserId(HttpContext.User);
 
-                Ticket newTicket = new Ticket(ticketModel, userId);
+                Ticket newTicket = new Ticket(ticketModel, userId, ticketStatus.Id);
 
                 await _context.Tickets.AddAsync(newTicket);
                 await _context.SaveChangesAsync();
