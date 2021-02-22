@@ -29,7 +29,7 @@ namespace DarnTheLuck
                 /*
                  * We use MySQL
                  */
-                options.UseMySql(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"),
+                options.UseMySql(Environment.GetEnvironmentVariable("DB_localdb"),
                     mySQLOptions =>
                     {
                         mySQLOptions.EnableRetryOnFailure();
