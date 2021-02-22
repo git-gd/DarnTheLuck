@@ -11,6 +11,8 @@ namespace DarnTheLuck.ViewModels
         public string SortDir { get; set; }
         public string Search { get; set; }
         public List<string> Sbox { get; set; } = new List<string> { "ticket", "status", "model", "serial" };
+        public List<string> GrantEmails { get; set; }
+        public List<string> SelectedEmails { get; set; }
 
         public PaginatedList<TicketListViewModel> TicketList { get; set; }
 

@@ -99,6 +99,12 @@
                         <label><input class="checkbox-round" name="sbox" type="checkbox" value="@column[1]" checked="@Model.Sbox.Contains(column[1])" /> @column[0]</label>
                     }
                 </div>
+                <div class="col-auto pt-1">
+                    @foreach (string email in Model.GrantEmails)
+                    {
+                        <label><input class="checkbox-round" name="SelectedEmails" type="checkbox" value="@email" checked="@Model.SelectedEmails.Contains(email)" /> @email</label>
+                    }
+                </div>
             </form>
         </div>
     </div>

@@ -56,17 +56,38 @@ namespace DarnTheLuck.Controllers
 
             bool isElevated = currentUserRoles.Intersect(elevated).Any();
 
+            if (tIViewModel.GrantEmails == null)
+            {
+                tIViewModel.GrantEmails = await _context.UserGroups
+                    .Where(u => u.GrantEmail == user.Email && u.Authorized)
+                    .Select(u => u.UserEmail)
+                    .ToListAsync();
+                tIViewModel.GrantEmails.Add(user.Email);
+            }
+
+            if (tIViewModel.SelectedEmails == null)
+            {
+                tIViewModel.SelectedEmails = tIViewModel.GrantEmails;
+            }
+
             List<string> grantIds = await _context.UserGroups
-                .Where(u => u.GrantId == user.Id && u.Authorized)
+                .Where(u => u.GrantId == user.Id &&
+                            u.Authorized &&
+                            tIViewModel.SelectedEmails.Contains(u.UserEmail))
                 .Select(u => u.UserId)
                 .ToListAsync();
 
+            if (tIViewModel.SelectedEmails.Contains(user.Email))
+            {
+                grantIds.Add(user.Id);
+            }
+
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
-                where ((Ticket.UserId == user.Id ||
+                where ((//Ticket.UserId == user.Id ||
                         isElevated ||
                         grantIds.Contains(Ticket.UserId)) &&
-                        (string.IsNullOrEmpty(tIViewModel.Search) || 
+                        (string.IsNullOrEmpty(tIViewModel.Search) ||
                             (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search)) ||
                             (tIViewModel.Sbox.Contains("created") && Ticket.Created.Date.ToString().Contains(tIViewModel.Search)) ||
                             (tIViewModel.Sbox.Contains("status") && Ticket.TicketStatus.Name.Contains(tIViewModel.Search)) ||
@@ -84,23 +105,23 @@ namespace DarnTheLuck.Controllers
                 });
 
             //set sort method
-           ticketListQuery = tIViewModel.SortDir == "descending"
-               ? (tIViewModel.Sort switch
-               {
-                   "status" => ticketListQuery.OrderByDescending(t => t.Status),
+            ticketListQuery = tIViewModel.SortDir == "descending"
+                ? (tIViewModel.Sort switch
+                {
+                    "status" => ticketListQuery.OrderByDescending(t => t.Status),
                     "created" => ticketListQuery.OrderByDescending(t => t.Created),
                     "model" => ticketListQuery.OrderByDescending(t => t.Model),
-                   "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
-                   _ => ticketListQuery.OrderByDescending(t => t.TicketId),
-               })
-               : (tIViewModel.Sort switch
-               {
-                   "status" => ticketListQuery.OrderBy(t => t.Status),
+                    "serial" => ticketListQuery.OrderByDescending(t => t.Serial),
+                    _ => ticketListQuery.OrderByDescending(t => t.TicketId),
+                })
+                : (tIViewModel.Sort switch
+                {
+                    "status" => ticketListQuery.OrderBy(t => t.Status),
                     "created" => ticketListQuery.OrderBy(t => t.Created),
                     "model" => ticketListQuery.OrderBy(t => t.Model),
-                   "serial" => ticketListQuery.OrderBy(t => t.Serial),
-                   _ => ticketListQuery.OrderBy(t => t.TicketId),
-               });
+                    "serial" => ticketListQuery.OrderBy(t => t.Serial),
+                    _ => ticketListQuery.OrderBy(t => t.TicketId),
+                });
 
             tIViewModel.TicketList = await PaginatedList<TicketListViewModel>.CreateAsync(ticketListQuery, tIViewModel.Page, tIViewModel.PageSize);
 
@@ -156,7 +177,7 @@ namespace DarnTheLuck.Controllers
             Ticket ticket = await _context.Tickets
                 .Include(t => t.TicketStatus)       // so we can access the Name string in the related table
                 .FirstOrDefaultAsync(t =>
-                    (  t.UserId == user.Id ||       // match UserId - individuals can access their ticket details
+                    (t.UserId == user.Id ||       // match UserId - individuals can access their ticket details
                        isElevated ||                // allow Elevated users (Admin, Tech) to view details
                        grantIds.Contains(t.UserId)) // allow users who have been granted access to view details
                     && t.TicketId == Id);
@@ -190,7 +211,7 @@ namespace DarnTheLuck.Controllers
                 .FirstOrDefaultAsync(t => t.TicketId == Id);
 
             if (ticket != null)
-            {               
+            {
                 ticket.TechName = user.UserName;
                 ticket.TechEmail = user.Email;
 
@@ -203,7 +224,7 @@ namespace DarnTheLuck.Controllers
          * Technicians can change the Ticket Status
          */
 
-        [Authorize(Roles ="Technician")]
+        [Authorize(Roles = "Technician")]
         [HttpPost]
         public async Task<IActionResult> UpdateStatus(int status, int Id)
         {
@@ -241,7 +262,7 @@ namespace DarnTheLuck.Controllers
 
             return Redirect("/ticket/details/" + Id);
         }
-        
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTicket(int confirm, int Id)
@@ -250,8 +271,8 @@ namespace DarnTheLuck.Controllers
             if (confirm == Id)
             {
                 Ticket ticket = await _context.Tickets.FindAsync(Id);
-            
-                if(ticket != null)
+
+                if (ticket != null)
                 {
                     _context.Tickets.Remove(ticket);
                     await _context.SaveChangesAsync();

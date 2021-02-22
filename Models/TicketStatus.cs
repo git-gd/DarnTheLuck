@@ -16,9 +16,11 @@ namespace DarnTheLuck.Models
             if (count < 1)
             {
                 /*
-                 * Every ticket MUST have a status
-                 * If there are no valid ticket statuses, create them
+                 * Ticket Status is stored in a related table so every ticket must have a status
                  *
+                 * Storing ticket status in a related table is completely unnecessary.
+                 * 
+                 * On first run, set the statuses:
                  */
 
                 string[] statuses =
