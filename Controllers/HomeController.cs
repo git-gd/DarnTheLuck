@@ -20,8 +20,6 @@ namespace DarnTheLuck.Controllers
 
             ViewBag.Joke = chuck.Joke;
 
-            ViewBag.Trouble = new string[] { Environment.GetEnvironmentVariable("WEBSITE_MYSQL_PORT") };
-
             return View();
         }
 
