@@ -129,14 +129,25 @@
                 }
             </div>
             <div class="col-auto pt-1">
-                <input id="Ajax" name="Ajax" type="checkbox" checked="@Model.Ajax" asp-for="@Model.Ajax" />
-                <label labelfor="Ajax">Ajax</label>
-            </div>
-            <div class="col-auto pt-1">
+                @*<ul>
                 @foreach (string email in Model.GrantEmails)
                 {
-                    <label><input class="checkbox-round" name="SelectedEmails" type="checkbox" value="@email" checked="@Model.SelectedEmails.Contains(email)" /> @email</label>
+                    <li><label><input class="checkbox-round" name="SelectedEmails" type="checkbox" value="@email" checked="@Model.SelectedEmails.Contains(email)" /> @email</label></li>
                 }
+            </ul>*@
+                <label>Users:
+                    <select id="SelectedEmails" multiple="multiple" name="SelectedEmails" class="custom-select">
+                        @foreach (string email in Model.GrantEmails)
+                        {
+                            <option value="@email" selected="@Model.SelectedEmails.Contains(email)">@email</option>
+                        }
+                    </select>
+                </label>
+            </div>
+            <div class="col-auto pt-1">
+                <label>
+                <input id="Ajax" name="Ajax" type="checkbox" checked="@Model.Ajax" asp-for="@Model.Ajax" />
+                Ajax</label>
             </div>
         </form>
     </div>

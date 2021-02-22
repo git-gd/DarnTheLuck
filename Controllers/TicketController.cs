@@ -58,11 +58,20 @@ namespace DarnTheLuck.Controllers
 
             if (tIViewModel.GrantEmails == null)
             {
-                tIViewModel.GrantEmails = await _context.UserGroups
-                    .Where(u => u.GrantEmail == user.Email && u.Authorized)
-                    .Select(u => u.UserEmail)
-                    .ToListAsync();
-                tIViewModel.GrantEmails.Add(user.Email);
+                if (isElevated)
+                {
+                    tIViewModel.GrantEmails = await _context.Users
+                        .Select(u => u.Email)
+                        .ToListAsync();
+                }
+                else
+                {
+                    tIViewModel.GrantEmails = await _context.UserGroups
+                        .Where(u => u.GrantEmail == user.Email && u.Authorized)
+                        .Select(u => u.UserEmail)
+                        .ToListAsync();
+                    tIViewModel.GrantEmails.Add(user.Email);
+                }
             }
 
             if (tIViewModel.SelectedEmails == null)
@@ -70,12 +79,24 @@ namespace DarnTheLuck.Controllers
                 tIViewModel.SelectedEmails = tIViewModel.GrantEmails;
             }
 
-            List<string> grantIds = await _context.UserGroups
-                .Where(u => u.GrantId == user.Id &&
-                            u.Authorized &&
-                            tIViewModel.SelectedEmails.Contains(u.UserEmail))
-                .Select(u => u.UserId)
-                .ToListAsync();
+            List<string> grantIds;
+
+            if (isElevated)
+            {
+                grantIds = await _context.Users
+                    .Where(u => tIViewModel.SelectedEmails.Contains(u.Email))
+                    .Select(u => u.Id)
+                    .ToListAsync();
+            }
+            else
+            {
+                grantIds = await _context.UserGroups
+                    .Where(u => u.GrantId == user.Id &&
+                                u.Authorized &&
+                                tIViewModel.SelectedEmails.Contains(u.UserEmail))
+                    .Select(u => u.UserId)
+                    .ToListAsync();
+            }
 
             if (tIViewModel.SelectedEmails.Contains(user.Email))
             {
@@ -85,7 +106,7 @@ namespace DarnTheLuck.Controllers
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
                 where ((//Ticket.UserId == user.Id ||
-                        isElevated ||
+                        //isElevated ||
                         grantIds.Contains(Ticket.UserId)) &&
                         (string.IsNullOrEmpty(tIViewModel.Search) ||
                             (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search)) ||
