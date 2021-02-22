@@ -1,8 +1,8 @@
-﻿using DarnTheLuck.Helpers;
-using Mailjet.Client;
+﻿using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Threading.Tasks;
 
 namespace WebPWrecover.Services
@@ -11,13 +11,13 @@ namespace WebPWrecover.Services
     {
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            MailjetClient client = new MailjetClient(Ring.MailjetKey1, Ring.MailjetKey2);
+            MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MailjetKey1"), Environment.GetEnvironmentVariable("MailjetKey2"));
 
             MailjetRequest request = new MailjetRequest
             {
                 Resource = Send.Resource,
             }
-               .Property(Send.FromEmail, Ring.FromEmail)
+               .Property(Send.FromEmail, Environment.GetEnvironmentVariable("FromEmail"))
                .Property(Send.FromName, "DTL")
                .Property(Send.Subject, subject)
                .Property(Send.TextPart, htmlMessage)

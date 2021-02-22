@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using WebPWrecover.Services;
 
 namespace DarnTheLuck
@@ -27,9 +28,8 @@ namespace DarnTheLuck
             services.AddDbContext<ApplicationDbContext>(options =>
                 /*
                  * We use MySQL
-                 * Configuration.GetConnectionString("DefaultConnection") was replaced with Ring.Database
                  */
-                options.UseMySql(DarnTheLuck.Helpers.Ring.Database));
+                options.UseMySql(Environment.GetEnvironmentVariable("DB_CONN_STR")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 //***** Add Role services to Identity
                 // https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-5.0
