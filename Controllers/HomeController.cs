@@ -1,7 +1,7 @@
-﻿using DarnTheLuck.Data;
-using DarnTheLuck.Models;
+﻿using DarnTheLuck.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Diagnostics;
 
 namespace DarnTheLuck.Controllers
@@ -19,6 +19,8 @@ namespace DarnTheLuck.Controllers
             DarnTheLuck.Helpers.Chuck chuck = new DarnTheLuck.Helpers.Chuck();
 
             ViewBag.Joke = chuck.Joke;
+
+            ViewBag.Trouble = new string[] { Environment.GetEnvironmentVariable("WEBSITE_MYSQL_PORT") };
 
             return View();
         }
