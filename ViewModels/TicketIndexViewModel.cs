@@ -13,6 +13,7 @@ namespace DarnTheLuck.ViewModels
         public List<string> Sbox { get; set; } = new List<string> { "ticket", "status", "model", "serial" };
         public List<string> GrantEmails { get; set; }
         public List<string> SelectedEmails { get; set; }
+        public bool Ajax { get; set; }
 
         public PaginatedList<TicketListViewModel> TicketList { get; set; }
 

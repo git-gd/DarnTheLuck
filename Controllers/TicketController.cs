@@ -161,7 +161,7 @@ namespace DarnTheLuck.Controllers
         }
 
         [HttpGet("/ticket/details/{id?}")]
-        public async Task<IActionResult> Details(int Id)
+        public async Task<IActionResult> Details(int Id, string Ajax)
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -194,7 +194,11 @@ namespace DarnTheLuck.Controllers
                 ViewBag.ticketStatusList = await _context.TicketStatuses.ToListAsync();
             }
 
-            return View(ticketView);
+            if (string.IsNullOrEmpty(Ajax))
+            {
+                return View(ticketView);
+            }
+            return PartialView(ticketView);
         }
 
         /*
