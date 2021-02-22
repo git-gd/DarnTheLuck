@@ -29,7 +29,12 @@ namespace DarnTheLuck
                 /*
                  * We use MySQL
                  */
-                options.UseMySql(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb")));
+                options.UseMySql(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"),
+                    mySQLOptions =>
+                    {
+                        mySQLOptions.EnableRetryOnFailure();
+                    }
+                ));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 //***** Add Role services to Identity
                 // https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-5.0
