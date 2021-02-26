@@ -2,22 +2,42 @@
 @model TicketIndexViewModel
 @section CustomStyle {
     <script>
-        function toggleDetails(ticketId) {
+        function toggleDetails(ticketId, status) {
             if (document.getElementById("Ajax").checked) {
                 event.preventDefault();
+
                 let divTag = document.getElementById("details-" + ticketId);
 
                 if (divTag.innerHTML.length < 1) {
                     fetch("/Ticket/Details/" + ticketId + "?Ajax=true")
-                        .then((response) => {
+                        .then(response => {
                             return response.text();
                         })
-                        .then((result) => {
+                        .then(result => {
                             divTag.innerHTML = result;
+                        });
+                } else if (status) {
+                    let formData = new FormData();
+                    formData.append('Id', ticketId);
+                    formData.append('status', status);
+                    formData.append('ajax', "true")
+
+                    fetch("/Ticket/UpdateStatus",
+                        {
+                            body: formData,
+                            method: "post"
+                        })
+                        .then(response => {
+                            return response.text();
+                        })
+                        .then(result => {
+                            location.reload(); //hacky.. need to refresh the list instead of the <div>
                         });
                 } else {
                     divTag.style.display = (divTag.style.display === "none") ? "block" : "none";
                 }
+
+                return false; // may not need
             }
         }
     </script>

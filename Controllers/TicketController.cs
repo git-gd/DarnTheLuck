@@ -251,7 +251,7 @@ namespace DarnTheLuck.Controllers
 
         [Authorize(Roles = "Technician")]
         [HttpPost]
-        public async Task<IActionResult> UpdateStatus(int status, int Id)
+        public async Task<IActionResult> UpdateStatus(int status, int Id, string ajax)
         {
             bool validStatus = await _context.TicketStatuses.Select(ts => ts.Id).ContainsAsync(status);
 
@@ -265,7 +265,9 @@ namespace DarnTheLuck.Controllers
 
                 await _context.SaveChangesAsync();
             }
-            return Redirect("/ticket/details/" + Id);
+            
+            //return Redirect("/ticket/details/" + Id);
+            return RedirectToRoute(new { action = "Details", controller = "Ticket", Id = Id, Ajax = ajax });
         }
 
         /*
