@@ -19,7 +19,7 @@
                 } else if (status) {
                     let formData = new FormData();
                     formData.append('Id', ticketId);
-                    formData.append('status', status);
+                    formData.append('status', status.value);
                     formData.append('ajax', "true")
 
                     fetch("/Ticket/UpdateStatus",
@@ -31,7 +31,18 @@
                             return response.text();
                         })
                         .then(result => {
-                            location.reload(); //hacky.. need to refresh the list instead of the <div>
+                            divTag.innerHTML = result;
+                            let txt = "item-" + ticketId;
+
+                            let container = document.getElementById(txt);
+                            txt = "status-" + ticketId;
+
+                            let statusline = document.getElementById(txt);
+
+                            if (statusline && container) {
+                                statusline.innerHTML = status.options[status.selectedIndex].text;
+                                container.style.backgroundColor = "transparent"; // get the background color?
+                            }
                         });
                 } else {
                     divTag.style.display = (divTag.style.display === "none") ? "block" : "none";
@@ -95,8 +106,8 @@
                asp-route-Id="@ticket.TicketId"
                class="text-decoration-none text-dark ticket-created"
                onclick="toggleDetails(@ticket.TicketId);">
-                <div class="row text-center ticket-round border border-dark t-@ticket.Status">
-                    <div class="col d-txt" @(Model.Sbox.Contains("status") ? @highlight(ticket.Status) : "")>@ticket.Status</div>
+                <div class="row text-center ticket-round border border-dark t-@ticket.Status" id="item-@ticket.TicketId">
+                    <div class="col d-txt" @(Model.Sbox.Contains("status") ? @highlight(ticket.Status) : "") id="status-@ticket.TicketId">@ticket.Status</div>
                     <div class="col d-txt" @(Model.Sbox.Contains("created") ? @highlight(ticket.CreatedString) : "")>@ticket.CreatedString</div>
                     <div class="col d-txt" @(Model.Sbox.Contains("model") ? @highlight(ticket.Model) : "")>@ticket.Model</div>
                     <div class="col d-txt" @(Model.Sbox.Contains("serial") ? @highlight(ticket.Serial) : "")>@ticket.Serial</div>
@@ -147,8 +158,8 @@
                 }
             </div>
             <div class="col-auto pt-1">
-                <label>
-                    <input class="checkbox-rnd-dgr pt-1" id="Ajax" name="Ajax" type="checkbox" checked="@Model.Ajax" asp-for="@Model.Ajax" />
+                <input class="checkbox-round cblabel" pt-1" id="Ajax" name="Ajax" type="checkbox" checked="@Model.Ajax" asp-for="@Model.Ajax" />
+                <label for="Ajax">
                     Ajax
                 </label>
             </div>

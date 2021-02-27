@@ -169,6 +169,11 @@ body {
     border: none;
     background-color: #990000;
 }
+
+.cblabel:checked + label {
+    font-weight: bold;
+}
+
 /*
     https://app.brandmark.io/v3/
 
