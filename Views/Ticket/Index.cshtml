@@ -17,6 +17,9 @@
                             divTag.innerHTML = result;
                         });
                 } else if (status) {
+                    let oldClass = "t-" + status.options[status.selectedIndex].text;
+                    console.log(oldClass);
+
                     let formData = new FormData();
                     formData.append('Id', ticketId);
                     formData.append('status', status.value);
@@ -33,15 +36,15 @@
                         .then(result => {
                             divTag.innerHTML = result;
                             let txt = "item-" + ticketId;
-
                             let container = document.getElementById(txt);
                             txt = "status-" + ticketId;
-
                             let statusline = document.getElementById(txt);
 
                             if (statusline && container) {
                                 statusline.innerHTML = status.options[status.selectedIndex].text;
-                                container.style.backgroundColor = "transparent"; // get the background color?
+                                container.classList.remove(oldClass);
+                                container.classList.add("t-" + statusline.innerHTML);
+                                console.log(container.classList);
                             }
                         });
                 } else {
