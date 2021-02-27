@@ -17,13 +17,12 @@
                             divTag.innerHTML = result;
                         });
                 } else if (status) {
-                    let oldClass = "t-" + status.options[status.selectedIndex].text;
-                    console.log(oldClass);
+                    let oldClass = "t-" + document.getElementById("status-" + ticketId).innerHTML;
 
                     let formData = new FormData();
                     formData.append('Id', ticketId);
                     formData.append('status', status.value);
-                    formData.append('ajax', "true")
+                    formData.append('ajax', "true");
 
                     fetch("/Ticket/UpdateStatus",
                         {
@@ -44,7 +43,6 @@
                                 statusline.innerHTML = status.options[status.selectedIndex].text;
                                 container.classList.remove(oldClass);
                                 container.classList.add("t-" + statusline.innerHTML);
-                                console.log(container.classList);
                             }
                         });
                 } else {
