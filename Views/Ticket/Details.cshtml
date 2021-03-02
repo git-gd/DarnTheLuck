@@ -6,18 +6,6 @@
 }
 else
 {
-    @section CustomStyle {
-        <script>
-            window.onload = ()=> {
-                let container = document.getElementById("item-@Model.TicketId");
-                let statusline = document.getElementById("status-@Model.TicketId");
-                if (statusline) {
-                    statusline.innerHTML = "@Model.Status"
-                }
-            };
-        </script>
-    }
-
     <div class="container ticket-round border bg-light shadow">
 
         <div class="card-header bg-dark text-white mt-3">
