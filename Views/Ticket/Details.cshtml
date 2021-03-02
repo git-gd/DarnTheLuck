@@ -8,13 +8,13 @@ else
 {
     @section CustomStyle {
         <script>
-        window.onload = ()=> {
-            let container = document.getElementById("item-@Model.TicketId");
-            let statusline = document.getElementById("status-@Model.TicketId");
-            if (statusline) {
-                statusline.innerHTML = "@Model.Status"
-            }
-        };
+            window.onload = ()=> {
+                let container = document.getElementById("item-@Model.TicketId");
+                let statusline = document.getElementById("status-@Model.TicketId");
+                if (statusline) {
+                    statusline.innerHTML = "@Model.Status"
+                }
+            };
         </script>
     }
 
@@ -67,7 +67,7 @@ else
                 {
                     <div class="col">
                         <form method="post" id="statFrm" asp-controller="Ticket" asp-action="UpdateTicket" asp-route-Id="@Model.TicketId">
-                            <textarea class="form-control border-0 o-txt" name="notes" onchange="document.getElementById('statFrm').submit();">@Model.TicketNotes</textarea>
+                            <textarea class="form-control border-0 o-txt" name="notes" onchange="if (document.getElementById('Ajax') !== null) { toggleDetails(@Model.TicketId, this); } else { this.form.submit(); }">@Model.TicketNotes</textarea>
                         </form>
                     </div>
                 }

@@ -274,7 +274,7 @@ namespace DarnTheLuck.Controllers
          * Currently only allows Ticket Owners to update Ticket Notes if the Ticket Status is not Shipped
          */
         [HttpPost]
-        public async Task<IActionResult> UpdateTicket(string notes, int Id)
+        public async Task<IActionResult> UpdateTicket(string notes, int Id, string ajax)
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
             Ticket ticket = await _context.Tickets
@@ -287,7 +287,7 @@ namespace DarnTheLuck.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return Redirect("/ticket/details/" + Id);
+            return RedirectToRoute(new { action = "Details", controller = "Ticket", Id = Id, Ajax = ajax });
         }
 
         [HttpPost]

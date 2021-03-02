@@ -2,7 +2,7 @@
 @model TicketIndexViewModel
 @section CustomStyle {
     <script>
-        function toggleDetails(ticketId, status) {
+        function toggleDetails(ticketId, formfield) {
             if (document.getElementById("Ajax").checked) {
                 event.preventDefault();
 
@@ -16,15 +16,16 @@
                         .then(result => {
                             divTag.innerHTML = result;
                         });
-                } else if (status) {
+                } else if (formfield) {
                     let oldClass = "t-" + document.getElementById("status-" + ticketId).innerHTML;
-
                     let formData = new FormData();
                     formData.append('Id', ticketId);
-                    formData.append('status', status.value);
                     formData.append('ajax', "true");
+                    formData.append(formfield.name, formfield.value);
 
-                    fetch("/Ticket/UpdateStatus",
+                    let ticketroute = (formfield.name === "status") ? "/Ticket/UpdateStatus" : "/Ticket/UpdateTicket";
+
+                    fetch(ticketroute,
                         {
                             body: formData,
                             method: "post"
@@ -34,22 +35,23 @@
                         })
                         .then(result => {
                             divTag.innerHTML = result;
-                            let txt = "item-" + ticketId;
-                            let container = document.getElementById(txt);
-                            txt = "status-" + ticketId;
-                            let statusline = document.getElementById(txt);
-
-                            if (statusline && container) {
-                                statusline.innerHTML = status.options[status.selectedIndex].text;
-                                container.classList.remove(oldClass);
-                                container.classList.add("t-" + statusline.innerHTML);
-                            }
                         });
+
+                    if (formfield.name === "status") {
+                        let txt = "item-" + ticketId;
+                        let container = document.getElementById(txt);
+                        txt = "status-" + ticketId;
+                        let statusline = document.getElementById(txt);
+
+                        if (statusline && container) {
+                            statusline.innerHTML = formfield.options[formfield.selectedIndex].text;
+                            container.classList.remove(oldClass);
+                            container.classList.add("t-" + statusline.innerHTML);
+                        }
+                    }
                 } else {
                     divTag.style.display = (divTag.style.display === "none") ? "block" : "none";
                 }
-
-                return false; // may not need
             }
         }
     </script>
