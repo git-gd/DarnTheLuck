@@ -102,13 +102,11 @@ body {
 .d-txt {
     overflow: hidden;
     white-space: nowrap;
-    font-size: 24px; /* fallback */
-    font-size: 2vw;
+    font-size: clamp(12px, 2vw, 48px);
 }
 
 .o-txt {
-    font-size: 24px; /* fallback */
-    font-size: 2vw;
+    font-size: clamp(12px, 2vw, 48px);
 }
 
 /* ticket status colors */
