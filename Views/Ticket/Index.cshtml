@@ -17,49 +17,37 @@
                             divTag.innerHTML = result;
                         });
                 } else if (formfield) {
+                    let oldClass = "t-" + document.getElementById("status-" + ticketId).innerHTML;
                     let formData = new FormData();
                     formData.append('Id', ticketId);
                     formData.append('ajax', "true");
+                    formData.append(formfield.name, formfield.value);
+
+                    let ticketroute = (formfield.name === "status") ? "/Ticket/UpdateStatus" : "/Ticket/UpdateTicket";
+
+                    fetch(ticketroute,
+                        {
+                            body: formData,
+                            method: "post"
+                        })
+                        .then(response => {
+                            return response.text();
+                        })
+                        .then(result => {
+                            divTag.innerHTML = result;
+                        });
 
                     if (formfield.name === "status") {
-                        let oldClass = "t-" + document.getElementById("status-" + ticketId).innerHTML;
+                        let txt = "item-" + ticketId;
+                        let container = document.getElementById(txt);
+                        txt = "status-" + ticketId;
+                        let statusline = document.getElementById(txt);
 
-                        formData.append('status', formfield.value);
-
-                        fetch("/Ticket/UpdateStatus",
-                            {
-                                body: formData,
-                                method: "post"
-                            })
-                            .then(response => {
-                                return response.text();
-                            })
-                            .then(result => {
-                                divTag.innerHTML = result;
-                                let txt = "item-" + ticketId;
-                                let container = document.getElementById(txt);
-                                txt = "status-" + ticketId;
-                                let statusline = document.getElementById(txt);
-
-                                if (statusline && container) {
-                                    statusline.innerHTML = formfield.options[formfield.selectedIndex].text;
-                                    container.classList.remove(oldClass);
-                                    container.classList.add("t-" + statusline.innerHTML);
-                                }
-                            });
-                    } else if (formfield.name === "notes") {
-                        formData.append('notes', formfield.value);
-                        fetch("/Ticket/UpdateTicket",
-                            {
-                                body: formData,
-                                method: "post"
-                            })
-                            .then(response => {
-                                return response.text();
-                            })
-                            .then(result => {
-                                divTag.innerHTML = result;
-                            });
+                        if (statusline && container) {
+                            statusline.innerHTML = formfield.options[formfield.selectedIndex].text;
+                            container.classList.remove(oldClass);
+                            container.classList.add("t-" + statusline.innerHTML);
+                        }
                     }
                 } else {
                     divTag.style.display = (divTag.style.display === "none") ? "block" : "none";
