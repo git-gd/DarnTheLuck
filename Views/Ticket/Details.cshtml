@@ -94,7 +94,6 @@ else
             <div class="form-inline d-txt font-weight-bold">
                 Technician:@if (User.IsInRole("Technician"))
                 {
-                    @*<form method="post" asp-controller="Ticket" asp-action="UpdateTech" asp-route-Id="@Model.TicketId"><div class="col d-txt"><button class="btn btn-danger d-txt font-weight-bold">Claim Ticket</button></div></form>*@
                 <div class="col d-txt">
                     <button class="btn btn-danger d-txt font-weight-bold" onclick="fetch('/Ticket/UpdateTech/@Model.TicketId', { method: 'post' }).then(response => response.json()).then(data => {document.getElementById('techName@(Model.TicketId)').innerHTML = data.name; document.getElementById('techEmail@(Model.TicketId)').innerHTML = data.email;}).catch((error) => {console.error('Error:', error);});">Claim Ticket</button>
                 </div>
