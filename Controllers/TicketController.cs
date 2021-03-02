@@ -36,7 +36,6 @@ namespace DarnTheLuck.Controllers
         * 
         */
 
-
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
@@ -105,16 +104,14 @@ namespace DarnTheLuck.Controllers
 
             IQueryable<TicketListViewModel> ticketListQuery = (
                 from Ticket in _context.Tickets
-                where ((//Ticket.UserId == user.Id ||
-                        //isElevated ||
-                        grantIds.Contains(Ticket.UserId)) &&
-                        (string.IsNullOrEmpty(tIViewModel.Search) ||
-                            (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search)) ||
-                            (tIViewModel.Sbox.Contains("created") && Ticket.Created.Date.ToString().Contains(tIViewModel.Search)) ||
-                            (tIViewModel.Sbox.Contains("status") && Ticket.TicketStatus.Name.Contains(tIViewModel.Search)) ||
-                            (tIViewModel.Sbox.Contains("model") && Ticket.Model.Contains(tIViewModel.Search)) ||
-                            (tIViewModel.Sbox.Contains("serial") && Ticket.Serial.Contains(tIViewModel.Search))
-                        )
+                where ((grantIds.Contains(Ticket.UserId)) &&
+                    (string.IsNullOrEmpty(tIViewModel.Search) ||
+                        (tIViewModel.Sbox.Contains("ticket") && Ticket.TicketId.ToString().Contains(tIViewModel.Search)) ||
+                        (tIViewModel.Sbox.Contains("created") && Ticket.Created.Date.ToString().Contains(tIViewModel.Search)) ||
+                        (tIViewModel.Sbox.Contains("status") && Ticket.TicketStatus.Name.Contains(tIViewModel.Search)) ||
+                        (tIViewModel.Sbox.Contains("model") && Ticket.Model.Contains(tIViewModel.Search)) ||
+                        (tIViewModel.Sbox.Contains("serial") && Ticket.Serial.Contains(tIViewModel.Search))
+                    )
                 )
                 select new TicketListViewModel()
                 {
@@ -198,7 +195,7 @@ namespace DarnTheLuck.Controllers
             Ticket ticket = await _context.Tickets
                 .Include(t => t.TicketStatus)       // so we can access the Name string in the related table
                 .FirstOrDefaultAsync(t =>
-                    (t.UserId == user.Id ||       // match UserId - individuals can access their ticket details
+                    (t.UserId == user.Id ||         // match UserId - individuals can access their ticket details
                        isElevated ||                // allow Elevated users (Admin, Tech) to view details
                        grantIds.Contains(t.UserId)) // allow users who have been granted access to view details
                     && t.TicketId == Id);
@@ -242,7 +239,8 @@ namespace DarnTheLuck.Controllers
 
                 await _context.SaveChangesAsync();
             }
-            return Redirect("/ticket/details/" + Id);
+
+            return Json(new { email = user.Email, name = user.UserName });
         }
 
         /*
@@ -266,7 +264,6 @@ namespace DarnTheLuck.Controllers
                 await _context.SaveChangesAsync();
             }
             
-            //return Redirect("/ticket/details/" + Id);
             return RedirectToRoute(new { action = "Details", controller = "Ticket", Id = Id, Ajax = ajax });
         }
 
