@@ -242,7 +242,9 @@ namespace DarnTheLuck.Controllers
 
                 await _context.SaveChangesAsync();
             }
-            return Redirect("/ticket/details/" + Id);
+            //return Redirect("/ticket/details/" + Id);
+
+            return Json(new { email = user.Email, name = user.UserName });
         }
 
         /*
