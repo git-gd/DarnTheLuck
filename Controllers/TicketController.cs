@@ -289,6 +289,39 @@ namespace DarnTheLuck.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> AddTicketNote(string notes, int id)
+        {
+            if (!string.IsNullOrEmpty(notes))
+            {
+                IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+                IList<string> currentUserRoles = await _userManager.GetRolesAsync(user);
+                bool isElevated = currentUserRoles.Intersect(elevated).Any();
+
+                // does the user have permission to add ticket notes to this ticket?
+                // Note: already apparent that this is being repeated and should be handled in a class, something to keep in mind for revisions
+
+                // create a list of users that have granted our current user access
+                List<string> grantIds = await _context.UserGroups
+                    .Where(u => u.GrantId == user.Id && u.Authorized)
+                    .Select(u => u.UserId)
+                    .ToListAsync();
+
+                // compare the ticket id to owner, grants and elevated
+                int result = await _context.Tickets // we only need to know if the query found a match
+                    .Where(t => (t.TicketId == id) && (t.UserId == user.Id || grantIds.Contains(t.UserId) || isElevated))
+                    .CountAsync();
+
+                // if our count returned a number greater than 0 then the ticket exists and we have permission to add notes to the ticket
+                if (result > 0)
+                {
+                    await TicketNotes.CreateNoteAsync(_context, user.Id, id, notes);
+                }
+            }
+            return Ok();
+        }
+
+        [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTicket(int confirm, int Id)
         {
