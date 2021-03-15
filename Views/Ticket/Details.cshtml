@@ -63,7 +63,21 @@ else
                 {
                     <div class="col o-txt">@Model.TicketNotes</div>
                 }
-                @*TODO: Remove the old Note code, create a list of notes, allow others to add new notes or edit their notes*@
+                @*TODO: Remove the old Note code, create a list of notes, allow others to add new notes or edit their notes
+                    if the user can view the ticket, the user should have permission to add notes (verified in the controller)
+                *@
+                <div>
+                    @foreach (TicketNotes item in Model.TicketNoteList)
+                    {
+                        <p>@item.User @item.Note</p>
+                    }
+                </div>
+                <div>
+                    <form method="post" asp-controller="Ticket" asp-action="AddTicketNote" asp-route-id="@Model.TicketId">
+                        <textarea name="notes" placeholder="Add Notes Here"></textarea>
+                        <button>Submit</button>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="card-header bg-dark text-white">
@@ -95,9 +109,9 @@ else
             <div class="form-inline d-txt font-weight-bold">
                 Technician:@if (User.IsInRole("Technician"))
                 {
-                <div class="col d-txt">
-                    <button class="btn btn-danger d-txt font-weight-bold" onclick="fetch('/Ticket/UpdateTech/@Model.TicketId', { method: 'post' }).then(response => response.json()).then(data => {document.getElementById('techName@(Model.TicketId)').innerHTML = data.name; document.getElementById('techEmail@(Model.TicketId)').innerHTML = data.email;}).catch((error) => {console.error('Error:', error);});">Claim Ticket</button>
-                </div>
+                    <div class="col d-txt">
+                        <button class="btn btn-danger d-txt font-weight-bold" onclick="fetch('/Ticket/UpdateTech/@Model.TicketId', { method: 'post' }).then(response => response.json()).then(data => {document.getElementById('techName@(Model.TicketId)').innerHTML = data.name; document.getElementById('techEmail@(Model.TicketId)').innerHTML = data.email;}).catch((error) => {console.error('Error:', error);});">Claim Ticket</button>
+                    </div>
                 }
             </div>
         </div>

@@ -1,4 +1,5 @@
 ﻿using DarnTheLuck.Models;
+using System.Collections.Generic;
 
 namespace DarnTheLuck.ViewModels
 {
@@ -12,6 +13,7 @@ namespace DarnTheLuck.ViewModels
         public string ContactPhone { get; set; }
         public string ContactEmail { get; set; }
         public string TicketNotes { get; set; }
+        public ICollection<TicketNotes> TicketNoteList { get; set; }
         public string Status { get; set; }
         public string Model { get; set; }
         public string Serial { get; set; }
@@ -26,6 +28,7 @@ namespace DarnTheLuck.ViewModels
             ContactPhone = ticket.ContactPhone;
             ContactEmail = ticket.ContactEmail;
             TicketNotes = ticket.TicketNotes;
+            TicketNoteList = ticket.TicketNoteList;
             Status = ticket.TicketStatus.Name;
             Model = ticket.Model;
             Serial = ticket.Serial;

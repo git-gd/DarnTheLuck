@@ -194,7 +194,8 @@ namespace DarnTheLuck.Controllers
 
             Ticket ticket = await _context.Tickets
                 .Include(t => t.TicketStatus)       // so we can access the Name string in the related table
-                .Include(t => t.TicketNoteList)
+                .Include(t => t.TicketNoteList)     // so we can access TicketNoteList fields
+                    .ThenInclude(tn => tn.User)     // so we can access related User fields of TicketNoteList (not ticket)
                 .FirstOrDefaultAsync(t =>
                     (t.UserId == user.Id ||         // match UserId - individuals can access their ticket details
                        isElevated ||                // allow Elevated users (Admin, Tech) to view details
@@ -289,7 +290,7 @@ namespace DarnTheLuck.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddTicketNote(string notes, int id)
+        public async Task<IActionResult> AddTicketNote(string notes, int id, string ajax)
         {
             if (!string.IsNullOrEmpty(notes))
             {
@@ -318,7 +319,7 @@ namespace DarnTheLuck.Controllers
                     await TicketNotes.CreateNoteAsync(_context, user.Id, id, notes);
                 }
             }
-            return Ok();
+            return RedirectToRoute(new { action = "Details", controller = "Ticket", Id = id});
         }
 
         [HttpPost]
