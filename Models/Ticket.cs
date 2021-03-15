@@ -1,6 +1,7 @@
 ﻿using DarnTheLuck.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 
 namespace DarnTheLuck.Models
 {
@@ -17,6 +18,7 @@ namespace DarnTheLuck.Models
         public string ContactEmail { get; set; }
 
         public string TicketNotes { get; set; }
+        public ICollection<TicketNotes> TicketNoteList { get; set; }
 
         public int TicketStatusId { get; set; }
         public TicketStatus TicketStatus { get; set; }

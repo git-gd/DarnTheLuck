@@ -194,6 +194,7 @@ namespace DarnTheLuck.Controllers
 
             Ticket ticket = await _context.Tickets
                 .Include(t => t.TicketStatus)       // so we can access the Name string in the related table
+                .Include(t => t.TicketNoteList)
                 .FirstOrDefaultAsync(t =>
                     (t.UserId == user.Id ||         // match UserId - individuals can access their ticket details
                        isElevated ||                // allow Elevated users (Admin, Tech) to view details
