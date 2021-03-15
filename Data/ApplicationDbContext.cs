@@ -14,6 +14,8 @@ namespace DarnTheLuck.Data
          */
         public DbSet<TicketStatus> TicketStatuses { get; set; }
 
+        public DbSet<TicketNotes> TicketNotes { get; set; }
+
         public DbSet<UserGroup> UserGroups { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
