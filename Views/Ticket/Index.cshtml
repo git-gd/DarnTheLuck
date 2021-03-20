@@ -23,8 +23,7 @@
                     formData.append('ajax', "true");
                     formData.append(formfield.name, formfield.value);
 
-                    let ticketroute = (formfield.name === "status") ? "/Ticket/UpdateStatus" : "/Ticket/UpdateTicket";
-
+                    let ticketroute = (formfield.name === "status") ? "/Ticket/UpdateStatus" : "/Ticket/AddTicketNote"; //Ticket/UpdateTicket";
                     fetch(ticketroute,
                         {
                             body: formData,

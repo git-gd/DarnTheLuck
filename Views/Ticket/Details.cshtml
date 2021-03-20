@@ -51,34 +51,39 @@ else
             </div>
             <div class="row ticket-round border border-dark">
                 <div class="col-2 d-txt">Notes</div>
-                @if (Model.IsOwner && Model.Status != "Shipped")
-                {
-                    <div class="col">
-                        <form method="post" id="statFrm" asp-controller="Ticket" asp-action="UpdateTicket" asp-route-Id="@Model.TicketId">
-                            <textarea class="form-control border-0 o-txt" name="notes" onchange="if (document.getElementById('Ajax') !== null) { toggleDetails(@Model.TicketId, this); } else { this.form.submit(); }">@Model.TicketNotes</textarea>
-                        </form>
-                    </div>
-                }
-                else
-                {
-                    <div class="col o-txt">@Model.TicketNotes</div>
-                }
+                @*@if (Model.IsOwner && Model.Status != "Shipped")
+            {
+                <div class="col">
+                    <form method="post" id="statFrm" asp-controller="Ticket" asp-action="UpdateTicket" asp-route-Id="@Model.TicketId">
+                        <textarea class="form-control border-0 o-txt" name="notes" onchange="if (document.getElementById('Ajax') !== null) { toggleDetails(@Model.TicketId, this); } else { this.form.submit(); }">@Model.TicketNotes</textarea>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="col o-txt">@Model.TicketNotes</div>
+            }*@
                 @*TODO: Remove the old Note code, create a list of notes, allow others to add new notes or edit their notes
-                    if the user can view the ticket, the user should have permission to add notes (verified in the controller)
+            if the user can view the ticket, the user should have permission to add notes (verified in the controller)
                 *@
-                <div>
+                <div class="col o-txt">
                     @foreach (TicketNotes item in Model.TicketNoteList)
                     {
                         <p>@item.User @item.Note</p>
                     }
                 </div>
-                <div>
-                    <form method="post" asp-controller="Ticket" asp-action="AddTicketNote" asp-route-id="@Model.TicketId">
-                        <textarea name="notes" placeholder="Add Notes Here"></textarea>
-                        <button>Submit</button>
-                    </form>
-                </div>
             </div>
+            @if (Model.Status != "Shipped") //
+            {
+                <div class="row">
+                    <div class="col">
+                        <form method="post" asp-controller="Ticket" asp-action="AddTicketNote" asp-route-id="@Model.TicketId">
+                            <textarea name="notes" id="notefield" placeholder="Add Notes Here"></textarea>
+                            <button onclick="if (document.getElementById('Ajax') !== null) { toggleDetails(@Model.TicketId, document.getElementById('notefield')); } else { this.form.submit(); }">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            }
         </div>
         <div class="card-header bg-dark text-white">
             <div class="d-txt font-weight-bold">Device:</div>

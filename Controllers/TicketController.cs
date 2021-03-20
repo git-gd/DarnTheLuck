@@ -290,7 +290,7 @@ namespace DarnTheLuck.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddTicketNote(string notes, int id, string ajax)
+        public async Task<IActionResult> AddTicketNote(string notes, int Id, string ajax)
         {
             if (!string.IsNullOrEmpty(notes))
             {
@@ -310,16 +310,16 @@ namespace DarnTheLuck.Controllers
 
                 // compare the ticket id to owner, grants and elevated
                 int result = await _context.Tickets // we only need to know if the query found a match
-                    .Where(t => (t.TicketId == id) && (t.UserId == user.Id || grantIds.Contains(t.UserId) || isElevated))
+                    .Where(t => (t.TicketId == Id) && (t.UserId == user.Id || grantIds.Contains(t.UserId) || isElevated))
                     .CountAsync();
 
                 // if our count returned a number greater than 0 then the ticket exists and we have permission to add notes to the ticket
                 if (result > 0)
                 {
-                    await TicketNotes.CreateNoteAsync(_context, user.Id, id, notes);
+                    await TicketNotes.CreateNoteAsync(_context, user.Id, Id, notes);
                 }
             }
-            return RedirectToRoute(new { action = "Details", controller = "Ticket", Id = id});
+            return RedirectToRoute(new { action = "Details", controller = "Ticket", Id = Id, Ajax = ajax});
         }
 
         [HttpPost]
