@@ -78,8 +78,8 @@ else
                 <div class="row">
                     <div class="col">
                         <form method="post" asp-controller="Ticket" asp-action="AddTicketNote" asp-route-id="@Model.TicketId">
-                            <textarea name="notes" id="notefield" placeholder="Add Notes Here"></textarea>
-                            <button onclick="if (document.getElementById('Ajax') !== null) { toggleDetails(@Model.TicketId, document.getElementById('notefield')); } else { this.form.submit(); }">Submit</button>
+                            <textarea name="notes" id="notefield@(Model.TicketId)" placeholder="Add Notes Here"></textarea>
+                            <button onclick="if (document.getElementById('Ajax') !== null) { toggleDetails(@Model.TicketId, document.getElementById('notefield@(Model.TicketId)')); } else { this.form.submit(); }">Submit</button>
                         </form>
                     </div>
                 </div>
