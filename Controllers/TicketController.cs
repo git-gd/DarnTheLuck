@@ -172,6 +172,8 @@ namespace DarnTheLuck.Controllers
                 await _context.Tickets.AddAsync(newTicket);
                 await _context.SaveChangesAsync();
 
+                await TicketNotes.CreateNoteAsync(_context, userId, newTicket.TicketId, newTicket.TicketNotes);
+
                 return Redirect("/ticket/details/" + newTicket.TicketId);
             }
 
@@ -272,22 +274,22 @@ namespace DarnTheLuck.Controllers
         /*
          * Currently only allows Ticket Owners to update Ticket Notes if the Ticket Status is not Shipped
          */
-        [HttpPost]
-        public async Task<IActionResult> UpdateTicket(string notes, int Id, string ajax)
-        {
-            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
-            Ticket ticket = await _context.Tickets
-                .Include(t => t.TicketStatus)
-                .FirstOrDefaultAsync(t => t.TicketId == Id);
+        //[HttpPost]
+        //public async Task<IActionResult> UpdateTicket(string notes, int Id, string ajax)
+        //{
+        //    IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+        //    Ticket ticket = await _context.Tickets
+        //        .Include(t => t.TicketStatus)
+        //        .FirstOrDefaultAsync(t => t.TicketId == Id);
 
-            if (ticket != null && user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped")
-            {
-                ticket.TicketNotes = notes;
-                await _context.SaveChangesAsync();
-            }
+        //    if (ticket != null && user.Id == ticket.UserId && ticket.TicketStatus.Name != "Shipped")
+        //    {
+        //        ticket.TicketNotes = notes;
+        //        await _context.SaveChangesAsync();
+        //    }
 
-            return RedirectToRoute(new { action = "Details", controller = "Ticket", Id = Id, Ajax = ajax });
-        }
+        //    return RedirectToRoute(new { action = "Details", controller = "Ticket", Id = Id, Ajax = ajax });
+        //}
 
         [HttpPost]
         public async Task<IActionResult> AddTicketNote(string notes, int Id, string ajax)
